@@ -1,0 +1,37 @@
+/* Component properties */
+
+.contenedorCalendario {
+  width: 90%;
+  height: 100vh;
+
+  padding: .5rem;
+
+  border: 1px solid blue;
+}
+
+.fc-day-mon {
+  cursor: not-allowed;
+  background-color: var(--gray-color);
+}
+
+.fc-day-sun {
+  cursor: not-allowed;
+  background-color: var(--gray-color);
+}
+
+.fc-day-tue,
+.fc-day-wed,
+.fc-day-thu,
+.fc-day-fri,
+.fc-day-sat {
+  cursor: pointer;
+}
+
+.fc-scrollgrid-sync-inner a {
+  text-decoration: none;
+}
+
+.fc-col-header-cell-cushion,
+.fc-daygrid-day-number {
+  color: black;
+}

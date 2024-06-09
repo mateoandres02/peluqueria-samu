@@ -1,0 +1,97 @@
+/* Custom properties */
+
+:root {
+    /* Colors */
+
+    --first-color: ;
+    --first-alpha-color: ;
+    --second-color: ;
+    --second-alpha-color: ;
+    --third-color: ;
+    --third-alpha-color: ;
+
+    --white-color: #FFFFFF;
+    --white-alpha-color: #FFFFFFF0;
+    --gray-color: #CCCCCC;
+    --gray-alpha-color: #CCCCCCC0;
+    --black-color: #000000;
+    --black-alpha-color: #00000050;
+
+    --box-shadow: #00000025;
+
+    --text-color: #222222;
+
+    /* Fonts */
+
+    --primary-font: system-ui;
+
+    /* Measures */
+
+    --max-width: 1280px;
+    --header-height: 80px;
+}
+
+/* Reset */
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+img,
+video,
+svg {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    min-width: 320px;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+/* Site properties */
+
+#app {
+    width: var(--max-width);
+    margin: 0 auto;
+    border: 1px solid red;
+
+    display: flex;
+}
+
+/* Utilities */
+
+
+
+/* Media queries */
+

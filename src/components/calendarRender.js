@@ -1,14 +1,26 @@
 import esLocale from "@fullcalendar/core/locales/es";
-import { createModal } from "./modal.js";
+import { modal } from "./modal.js";
 
 const d = document;
-createModal()
 
 export default function calendarRender () {
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
+    // Vista inicial
     initialView: "dayGridMonth",
+
+    // establece la zona horaria (no se si funciona correctamente)
+    timeZone: 'America/Argentina/Cordoba',
+
+    // Nav del header
+    headerToolbar: { 
+      left: 'dayGridMonth,timeGridWeek,timeGridDay,myCustomButton',
+      center: 'title',
+      right: 'prev,next'
+    },
+
+    // Botones customizables
     customButtons: {
       myCustomButton: {
         text: `boton personalizado`,
@@ -17,40 +29,31 @@ export default function calendarRender () {
         }
       }
     },
+
+    dayCellDidMount: function(info) {
+      // Agregar data-atributes a las celdas para que hagan desplegar la modal
+      info.el.setAttribute('data-bs-toggle', 'modal');
+      info.el.setAttribute('data-bs-target', '#dateClickModal');
+    },
+
+    // Trabajamos la funcionalidad de modal
     dateClick: function(info) {
-      const modal = d.getElementById("dateClickModal");
-      const eventDate = d.getElementById("eventDate");
-
-      // Set the date input value to the clicked date
-      eventDate.value = info.dateStr;
-
-      // Muestra el modal
-      modal.style.display = "block";
-
-      // Cerrar el modal por boton cerrar
-      const closeModal = d.getElementById("closeModal");
-      closeModal.onclick = function() {
-        modal.style.display = "none";
-      };
-
-      // Cerrar la modal cuando se clickea fuera de ella
-      window.onclick = function(e) {
-        if (e.target == modal) {
-          modal.style.display = "none";
-        }
-      };
+      //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
+      modal(info);
     },
-    headerToolbar: { 
-      left: 'dayGridMonth,timeGridWeek,timeGridDay myCustomButton',
-      center: 'title',
-      right: 'prev next'
-    },
+
+    // Permite que se puedan seleccionar las casillas.
     selectable: true,
+
+    // Bloquea selección en dias no trabajables (lunes y domingos).
     selectAllow: function(selectInfo) {
       let day = selectInfo.start.getUTCDay();
       return day !== 0 && day !== 1;
     },
+
     // titleFormat: { year: "numeric", month: "short", day: "numeric"},
+
+    // No se que hace.
     locale: esLocale
   });
 

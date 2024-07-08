@@ -1,30 +1,35 @@
 import parseDate from "./date";
+import '../styles/modal.css';
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">New message</h1>
-          <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Agregar cliente</h1>
+          <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x"></i>
+          </button>
         </div>
         <div class="modal-body">
-          <form id="eventForm">
-            <label for="eventTitle">Título del Evento:</label>
-            <input type="text" id="eventTitle" name="eventTitle" required>
+          <form id="eventForm" >
+            <label for="input-name">Nombre</label>
+            <input type="text" id="input-name" class="input" required>
 
-            <label for="eventDate">Fecha del Evento:</label>
-            <input type="text" id="eventDate" name="eventDate" readonly>
+            <label for="input-number">Teléfono</label>
+            <input type="number" id="input-number" class="input" required>
 
-            <label for="eventDescription">Descripción:</label>
-            <textarea id="eventDescription" name="eventDescription"></textarea>
+            <label for="eventDate">Para el día...</label>
+            <input type="text" id="eventDate" class="input" readonly>
 
-            <button type="submit">Guardar</button>
+            <label for="event-datetime">A las...</label>
+            <input type="datetime" id="event-datetime" class="input" placeholder="hh:mm">
+
+            <div class="modal-footer">
+              <button id="closeModal" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
           </form>
-        </div>
-        <div class="modal-footer">
-          <button id="closeModal" class="modal-close" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary">Send message</button>
         </div>
       </div>
     </div>

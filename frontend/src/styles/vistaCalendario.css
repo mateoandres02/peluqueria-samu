@@ -9,15 +9,13 @@
   border: 1px solid blue;
 }
 
-.fc-day-mon {
-  cursor: not-allowed;
-  background-color: var(--gray-color);
-}
+/* .fc-day-mon {
+} */
 
-.fc-day-sun {
+/* .fc-day-sun {
   cursor: not-allowed;
   background-color: var(--gray-color);
-}
+} */
 
 .fc-day-tue,
 .fc-day-wed,

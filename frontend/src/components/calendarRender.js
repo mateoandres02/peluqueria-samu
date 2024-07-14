@@ -8,10 +8,26 @@ export default function calendarRender () {
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
     // Vista inicial
-    initialView: "dayGridMonth",
+    initialView: "timeGridWeek",
 
     // establece la zona horaria (no se si funciona correctamente)
     timeZone: 'America/Argentina/Cordoba',
+
+    // establece el rango horario cada media hora
+    slotLabelFormat: {
+      hour: 'numeric',
+      minute: '2-digit',
+      omitZeroMinute: false,
+    },
+    slotLabelInterval: '00:30:00',
+    slotDuration: '00:30:00',
+
+    // establece rango horario desde las 8 hasta las 11
+    slotMinTime: '08:00:00',
+    slotMaxTime: '23:30:00',
+
+    //desactiva la opcion todo el dia de la vista semanal en el top de la vista del calendario
+    allDaySlot: false,
 
     // Nav del header
     headerToolbar: { 
@@ -46,10 +62,10 @@ export default function calendarRender () {
     selectable: true,
 
     // Bloquea selección en dias no trabajables (lunes y domingos).
-    selectAllow: function(selectInfo) {
-      let day = selectInfo.start.getUTCDay();
-      return day !== 0 && day !== 1;
-    },
+    // selectAllow: function(selectInfo) {
+    //   let day = selectInfo.start.getUTCDay();
+    //   return day !== 0 && day !== 1;
+    // },
 
     // titleFormat: { year: "numeric", month: "short", day: "numeric"},
 
@@ -58,5 +74,4 @@ export default function calendarRender () {
   });
 
   calendar.render();
-
 };

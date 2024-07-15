@@ -6,7 +6,7 @@ const modalElement = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Agregar cliente</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar cliente</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -19,10 +19,10 @@ const modalElement = `
             <label for="input-number">Teléfono</label>
             <input type="number" id="input-number" class="input" required>
 
-            <label for="eventDate">Para el día...</label>
+            <label for="eventDate">Fecha</label>
             <input type="text" id="eventDate" class="input" readonly>
 
-            <label for="event-datetime">A las...</label>
+            <label for="event-datetime">Horario</label>
             <input type="datetime" id="event-datetime" class="input" placeholder="hh:mm">
 
             <div class="modal-footer">

@@ -23,7 +23,7 @@ const users = sequelize.define(
 );
 
 // users.hasMany(turns, { foreignKey: 'NroUsuario', as: 'nro_usuario' });
-turns.belongsTo(users, { foreignKey: 'NroUsuario', as: 'nro_usuario' });
+turns.belongsTo(users, { foreignKey: 'NroUsuario', as: 'peluquero' });
 
 const start = async (reset = false) => {
     try {

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { PORT } from "./config.js";
 import db from "./app/database/setup.js";
-// import routes from "./app/routes/routes.js";
+import routes from "./app/routes/routes.js";
 
 const app = express();
 
@@ -11,7 +11,7 @@ app.use(cors());
 
 db.start(true);
 
-// routes(app);
+routes(app);
 
 app.listen(PORT, () => {
     console.log(`

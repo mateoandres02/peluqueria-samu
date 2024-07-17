@@ -1,8 +1,70 @@
 /* Component properties */
 
-.header {
-    width: 10%;
+.sidebar {
+    width: 20%;
     padding: .5rem;
+    border: thin solid green;
+    background-color: var(--sidebar-grey);
+    color: var(--light-grey-letter);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.profile-icon {
+    width: 50px;
+    height: 50px;
+    border: thin solid yellow;
+    border-radius: 50%; 
+}
+
+.profile-name {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.menu {
+    width: 100%;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    width: 100%;
+    margin: 10px 0;
+
+}
+
+.menu a {
+    height: 5rem;
+
+    color: white;
+    text-decoration: none;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 1.3rem;
+}
+
+.menu a:hover {
+    background-color: #34495e;
+}
+
+.icon {
+    margin-right: 10px;
 }
 
 .logo {
@@ -10,3 +72,4 @@
     text-decoration: none;
     text-align: center;
 }
+

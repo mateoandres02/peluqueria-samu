@@ -16,13 +16,14 @@
     --gray-alpha-color: #CCCCCCC0;
     --black-color: #000000;
     --black-alpha-color: #00000050;
-    --dark-grey: #39383E;
+    --bg-color-sidebar: #39383E;
     --super-light-blue: #F8F4FC;
     --white: #FFFFFF;
     --light-grey-bg-form: #D9D9D9;
     --light-grey-letter: #DFDEE3;
     --dark-blue: #383F59;
     --line-grey: #4E4E56;
+    --sidebar-grey: #2F2E33;
 
     --box-shadow: #00000025;
 
@@ -34,7 +35,7 @@
 
     /* Measures */
 
-    --max-width: 1280px;
+    --max-width: 1350px;
     --header-height: 80px;
 }
 
@@ -90,10 +91,13 @@ p {
 
 #app {
     width: var(--max-width);
+    height: 100vh;
     margin: 0 auto;
     border: 1px solid red;
 
     display: flex;
+    gap: 2rem;
+
 }
 
 /* Utilities */

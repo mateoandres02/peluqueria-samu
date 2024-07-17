@@ -1,8 +1,75 @@
 /* Component properties */
 
-.header {
-    width: 10%;
+.sidebar {
+    width: 20%;
     padding: .5rem;
+    border: thin solid green;
+    background-color: var(--sidebar-grey);
+    color: var(--light-grey-letter);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.profile {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--bg-color-sidebar);
+}
+
+.profile-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; 
+}
+
+.profile-name {
+    display: block;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.menu {
+    width: 100%;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    width: 100%;
+    margin: 10px 0;
+
+}
+
+.menu a {
+    height: 5rem;
+    color: var(--light-grey-letter);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+    font-size: 1.3rem;
+    transition: background-color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #34495e;
+}
+
+.icon {
+    height: inherit;
+    width: 3rem;
+    margin-right: 10px;
 }
 
 .logo {
@@ -10,3 +77,6 @@
     text-decoration: none;
     text-align: center;
 }
+
+
+

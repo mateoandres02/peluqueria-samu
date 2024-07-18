@@ -6,9 +6,11 @@ const usersAttributes = {
         primaryKey: true,
         autoincrement: true,
 
+        // Podemos generar una id hasheada con sequelize.
         // type: DataTypes.UUID,
         // defaultValue: UUIDV4,
         // primaryKey: true,
+
     },
     Nombre: {
         type: DataTypes.STRING,

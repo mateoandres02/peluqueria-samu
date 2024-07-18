@@ -2,57 +2,81 @@ import db from "../database/setup.js";
 import bcrypt from "bcrypt";
 import { SALT_ROUNDS } from "../../config.js";
 
+// Importamos el modelo de la tabla Usuarios.
 const users = db.users;
 
+// Creamos una clase para el manejo de los métodos sobre los usuarios.
 export class UserRepository {
+
+  // Declaramos que los métodos sean estáticos para no tener que generar una instancia de esta clase.
+
+  static async create ({ Nombre, Contrasena }) {
+
+    // Validamos que los parámetros sean lógicos y correctos.
+    Validation.username(Nombre);
+    Validation.password(Contrasena);
+
+    // Si encontramos un usuario que esté en la base de datos con el nuevo usuario ingresado marcamos que hay un error porque ese usuario ya existe.
+    const user = await users.findOne({ where: { Nombre } });
+    if (user) throw new Error('username already exists');      
+
+    // Hasheamos la contraseña con bcript.
+    const hashedPassword = await bcrypt.hash(Contrasena, SALT_ROUNDS);
+
+    // Creamos un objeto con la nueva información del usuario y lo guardamos en la base de datos.
+    const newUser = await users.create({
+      Nombre,
+      Contrasena: hashedPassword
+    });
+
+    // Devolvemos el nuevo usuario creado pero sin mostrar información delicada.
+    const { Contrasena: _, ...publicUser } = newUser;
+
+    // Si queremos devolver información del usuario, usamos esto.
+    // return publicUser.dataValues;
+    // Si no queremos devolver información del usuario, usamos esto.
+    return "Usuario creado correctamente!";
+
+  };
   
-    static async create ({ Nombre, Contrasena }) {
+  static async login ({ Nombre, Contrasena }) {
 
-      Validation.username(Nombre);
-      Validation.password(Contrasena);
+    // Validamos que los parámetros sean lógicos y correctos.
+    Validation.username(Nombre);
+    Validation.password(Contrasena);
 
-      const user = await users.findOne({ where: { Nombre } });
-      if (user) throw new Error('username already exists');      
-  
-      const hashedPassword = await bcrypt.hash(Contrasena, SALT_ROUNDS);
+    // Si encontramos un usuario que quiera ingresar no esté en la base de datos, entonces marcamos que hay un error diciendo que ese usuario no existe.
+    const user = await users.findOne({ where: { Nombre } });
+    if (!user) throw new Error('Username does not exists');
 
-      const newUser = await users.create({
-        Nombre,
-        Contrasena: hashedPassword
-      });
+    // Comparamos la contraseña ingresada por el usuario con la contraseña hasheada en la base de datos.
+    const isValid = await bcrypt.compare(Contrasena, user.Contrasena);
+    if (!isValid) throw new Error('password is invalid');
 
-      return newUser;
+    // Devolvemos el nuevo usuario creado pero sin mostrar información delicada.
+    const { Contrasena: _, ...publicUser } = user;
 
-    };
-  
-    static async login ({ Nombre, Contrasena }) {
-
-      Validation.username(Nombre);
-      Validation.password(Contrasena);
-  
-      const user = await users.findOne({ where: { Nombre } });
-      console.log(user);
-      if (!user) throw new Error('Username does not exists');
-  
-      const isValid = await bcrypt.compare(Contrasena, user.Contrasena);
-      if (!isValid) throw new Error('password is invalid');
-
-      const { password: _, ...publicUser } = user;
- 
-      return publicUser;
-      
-    };
+    // Si queremos devolver información del usuario, usamos esto.
+    // return publicUser.dataValues;
+    // Si no queremos devolver información del usuario, usamos esto.
+    return "Usuario logueado correctamente!";
+    
+  };
     
 };
 
+// Creamos una clase de validaciones.
 class Validation {
-    static username(username) {
-      if (typeof username !== 'string') throw new Error('username must be a string');
-      if (username.length < 3) throw new Error('username must be at least 3 characters long');
-    }
+
+  // Declaramos los métodos estáticos para no tener que generar una instancia de esta clase para poder usarlos.
+  static username(username) {
+    if (typeof username !== 'string') throw new Error('username must be a string');
+    if (username.length < 3) throw new Error('username must be at least 3 characters long');
+  };
   
-    static password(password) {
-      if (typeof password !== 'string') throw new Error('password must be a string');
-      if (password.length < 6) throw new Error('password must be at least 3 characters long');
-    }
+  static password(password) {
+    if (typeof password !== 'string') throw new Error('password must be a string');
+    if (password.length < 6) throw new Error('password must be at least 3 characters long');
+  };
+
 }

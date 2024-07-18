@@ -5,6 +5,10 @@ const usersAttributes = {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoincrement: true,
+
+        // type: DataTypes.UUID,
+        // defaultValue: UUIDV4,
+        // primaryKey: true,
     },
     Nombre: {
         type: DataTypes.STRING,

@@ -57,6 +57,7 @@ const getByIdUser = (req, res) => {
             message: e.message || `Ocurrió un error al recuperar el registro del usuario con id = ${id}`
         });
     });
+    
 }
 
 // post

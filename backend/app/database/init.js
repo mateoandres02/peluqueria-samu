@@ -12,7 +12,9 @@ const createData = async (users, turns) => {
 
         await turns.bulkCreate([
             { Nombre: 'Paola', Telefono: '3519999999', Fecha:'1111-11-11', Horario: '11:11:11', NroUsuario: 1},
-            { Nombre: 'Javier', Telefono: '3511111111', Fecha:'1111-11-11', Horario: '11:11:11', NroUsuario: 2}
+            { Nombre: 'Javier', Telefono: '3511111111', Fecha:'1111-11-11', Horario: '11:11:11', NroUsuario: 2},
+            // { Nombre: 'Paola', Telefono: '3519999999', Fecha:'1111-11-11', Horario: '11:11:11'},
+            // { Nombre: 'Javier', Telefono: '3511111111', Fecha:'1111-11-11', Horario: '11:11:11'}
         ]);
 
     } catch (error) {

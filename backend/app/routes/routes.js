@@ -8,20 +8,21 @@ import actionsTurns from '../controllers/turns.controller.js';
 // Iniciamos el router.
 const router = Router();
 
-// Rutas para la tabla Oficinas
+// Rutas para la tabla Usuarios
 router.get("/users", actionsUsers.getAllUsers);
 router.get("/users/:id", actionsUsers.getByIdUser);
 router.post("/users", actionsUsers.postUser);
 router.put("/users/:id", actionsUsers.updateUser);
 router.delete("/users/:id", actionsUsers.deleteUser);
 
-// Rutas para la tabla Empleados
+// Rutas para la tabla Turnos
 router.get("/turns", actionsTurns.getAllTurns);
 router.get("/turns/:id", actionsTurns.getByIdTurn);
 router.post("/turns", actionsTurns.postTurn);
 router.put("/turns/:id", actionsTurns.updateTurn);
 router.delete("/turns/:id", actionsTurns.deleteTurn);
 
+// Declaramos la instancia de router como middleware.
 const routes = (app) => {
     app.use('/api', router);
 }

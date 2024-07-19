@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <link rel='stylesheet' href='./login.css'>
+  <link rel='stylesheet' href='style.css'>
+  <link rel='stylesheet' href='normalize.css'>
+  <title>Iniciar Sesion</title>
+  <script src="login.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <div class="form-container">
+      <h1>Iniciar Sesion</h1>
+      <hr>
+      <p>Ingresa tus credenciales para acceder al area de administracion de la barberia</p>
+      <form id="login-form">
+        <label for='user' class="sr-only">User</label>
+        <input type='text' name="user" id="user" placeholder="Nombre de Usuario">
+        <label for='password' class="sr-only">Password</label>
+        <input type='password' name="password" id="password" placeholder="Contraseña">
+        <hr class="line-form">
+        <button type="submit">Iniciar sesion</button>
+        <p class="error escondido">Error al iniciar sesion</p>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

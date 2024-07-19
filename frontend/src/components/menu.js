@@ -13,7 +13,7 @@ const menu = `
                 <li><a href="#administrar-calendario"><img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario</a></li>
                 <li><a href="#administrar-barberos"><img src="../../public/assets/icons/edit-user.svg" alt="Administrar barberos" class="icon">Administrar Barberos</a></li>
                 <li><a href="#generar-tabla"><img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">Generar Tabla Turnos</a></li>
-                <li><a href="#cerrar-sesion"><img src="../../public/assets/icons/log-out.svg" alt="Cerrar sesion" class="icon">Cerrar Sesion</a></li>
+                <li><a href="/login.html"><img src="../../public/assets/icons/log-out.svg" alt="Cerrar sesion" class="icon">Cerrar Sesion</a></li>
             </ul>
         </nav>
     </aside>

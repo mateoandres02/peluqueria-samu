@@ -50,7 +50,7 @@ const start = async (reset = false) => {
 
 // Carga de datos iniciales.
 // const loadInitialData = async () => {
-//     await createData(users, turns);
+//     await createData(users);
 //     console.log('¡Datos iniciales cargados!');
 // };
 

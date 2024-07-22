@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./config.js";
+import { config } from "./app/config/config.js";
 import db from "./app/database/setup.js";
 import routes from "./app/routes/routes.js";
 import sessionRoutes from "./app/routes/sessions.js";
+
+// Importamos cookie parser para guardar el token de jwt en una cookie.
+import cookieParser from "cookie-parser";
 
 // Iniciamos la aplicación con express.
 const app = express();
@@ -13,6 +16,8 @@ const app = express();
 app.use(express.json());
 // Cors es un middleware que controla las solicitudes a nuestra aplicación proveniente de otras aplicaciones o servidores.
 app.use(cors());
+// Cookie parser.
+app.use(cookieParser());
 
 // Iniciamos la base de datos.
 db.start(true);
@@ -23,9 +28,9 @@ routes(app);
 sessionRoutes(app);
 
 // Levantamos el puerto.
-app.listen(PORT, () => {
+app.listen(config.port, () => {
     console.log(`
-        Servidor iniciado en http://localhost:${PORT}
+        Servidor iniciado en http://localhost:${config.port}
     `);
 });
 

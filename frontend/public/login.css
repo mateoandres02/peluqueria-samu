@@ -1,0 +1,131 @@
+:root {
+  /* Colors */
+
+  --first-color: ;
+  --first-alpha-color: ;
+  --second-color: ;
+  --second-alpha-color: ;
+  --third-color: ;
+  --third-alpha-color: ;
+
+  --white-color: #FFFFFF;
+  --white-alpha-color: #FFFFFFF0;
+  --gray-color: #CCCCCC;
+  --gray-alpha-color: #CCCCCCC0;
+  --black-color: #000000;
+  --black-alpha-color: #00000050;
+  --bg-color-sidebar: #39383E;
+  --super-light-blue: #F8F4FC;
+  --white: #FFFFFF;
+  --light-grey-bg-form: #D9D9D9;
+  --light-grey-letter: #DFDEE3;
+  --dark-blue: #383F59;
+  --line-grey: #4E4E56;
+  --sidebar-grey: #2F2E33;
+
+  --box-shadow: #00000025;
+
+  --text-color: #222222;
+
+  --button-color:#908cac;
+
+  /* Fonts */
+
+  --primary-font: system-ui;
+
+  /* Measures */
+
+  --max-width: 1280px;
+  --header-height: 80px;
+}
+
+html {
+  min-width: 1400px;
+  height: 100svh;
+  font-family: var(--primary-font);
+}
+
+body {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100svh;
+  font-size: larger;
+  border: thin solid red;
+  background-image: url('./assets/waves.svg');
+  background-size: cover; /* Ajusta el tamaño del fondo */
+  background-repeat: no-repeat; /* Evita que el fondo se repita */
+  background-position: center; /* Centra el fondo */
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.form-container{
+  width: 400px;
+  background-color: var(--bg-color-sidebar);
+  border-radius: 10px;
+  padding: 50px;
+  color: var(--light-grey-letter);
+}
+
+.form-container h1{
+  margin-top: 0;
+}
+
+.form-container hr{
+  border: 0;
+  height: 1px;
+  border-top: 1px solid var(--line-grey);
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+form+p, form p{
+  text-align: center;
+}
+
+.sr-only{
+  position: absolute;
+  left: 100000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+input, button {
+  border: 4px;
+  border: unset;
+  border-radius: 15px;
+  padding: 15px 30px;
+  font-size: larger;
+}
+
+button {
+  background-color: #1d1d1d;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--button-color);
+  color: var(--dark-blue);
+}
+
+.escondido {
+  display: none;
+}
+
+.error {
+  color: rgb(255, 81, 81);
+}
+

@@ -1,6 +1,6 @@
 import db from "../database/setup.js";
 import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "../../config.js";
+import { config } from "../config/config.js";
 
 // Importamos el modelo de la tabla Usuarios.
 const users = db.users;
@@ -10,7 +10,7 @@ export class UserRepository {
 
   // Declaramos que los métodos sean estáticos para no tener que generar una instancia de esta clase.
 
-  static async create ({ Nombre, Contrasena }) {
+  static async create ({ Nombre, Contrasena, Rol }) {
 
     // Validamos que los parámetros sean lógicos y correctos.
     Validation.username(Nombre);
@@ -21,25 +21,26 @@ export class UserRepository {
     if (user) throw new Error('username already exists');      
 
     // Hasheamos la contraseña con bcript.
-    const hashedPassword = await bcrypt.hash(Contrasena, SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(Contrasena, config.saltRounds);
 
     // Creamos un objeto con la nueva información del usuario y lo guardamos en la base de datos.
     const newUser = await users.create({
       Nombre,
-      Contrasena: hashedPassword
+      Contrasena: hashedPassword,
+      Rol
     });
 
     // Devolvemos el nuevo usuario creado pero sin mostrar información delicada.
     const { Contrasena: _, ...publicUser } = newUser;
 
     // Si queremos devolver información del usuario, usamos esto.
-    // return publicUser.dataValues;
+    return publicUser.dataValues;
     // Si no queremos devolver información del usuario, usamos esto.
-    return "Usuario creado correctamente!";
+    // return "Usuario creado correctamente!";
 
   };
   
-  static async login ({ Nombre, Contrasena }) {
+  static async login ({ Nombre, Contrasena, Rol }) {
 
     // Validamos que los parámetros sean lógicos y correctos.
     Validation.username(Nombre);
@@ -57,9 +58,9 @@ export class UserRepository {
     const { Contrasena: _, ...publicUser } = user;
 
     // Si queremos devolver información del usuario, usamos esto.
-    // return publicUser.dataValues;
+    return publicUser.dataValues;
     // Si no queremos devolver información del usuario, usamos esto.
-    return "Usuario logueado correctamente!";
+    // return "Usuario logueado correctamente!";
     
   };
     

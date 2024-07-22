@@ -19,6 +19,11 @@ const usersAttributes = {
     Contrasena: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    Rol: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Empleado'
     }
 };
 

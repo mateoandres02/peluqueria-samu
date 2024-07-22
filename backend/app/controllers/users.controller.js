@@ -64,7 +64,8 @@ const getByIdUser = (req, res) => {
 
 const postUser = (req, res) => {
     if (!req.body.Nombre || 
-        !req.body.Contrasena) {
+        !req.body.Contrasena ||
+        !req.body.Rol) {
             
         res.status(400).send({
             message: "¡No hay contenido para el post!"
@@ -76,6 +77,7 @@ const postUser = (req, res) => {
     const user = {
         Nombre: req.body.Nombre,
         Contrasena: req.body.Contrasena,
+        Rol: req.body.Rol
     };
 
     users.create(user)
@@ -87,6 +89,7 @@ const postUser = (req, res) => {
             message: e.message || "Ocurrió algun error creando un registro para los usuarios."
         });
     });
+    
 }
 
 // update

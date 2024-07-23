@@ -20,7 +20,7 @@ app.use(cors());
 app.use(cookieParser());
 
 // Iniciamos la base de datos.
-db.start(true);
+db.start();
 
 // Endpoints.
 // Le pasamos como parámetro la aplicación de express porque necesitamos usarlo como middleware con el app.use().

@@ -25,17 +25,18 @@ const login = async (req, res) => {
             }, 
             config.secretJwtKey, 
             {
-                expiresIn: '1h'
+                expiresIn: '20m'
             }
         );
 
         // Guardamos el token en una cookie y enviamos la información del usuario logueado.
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            // secure: process.env.NODE_ENV === 'production',
+            secure: false,
             sameSite: 'strict',
-            maxAge: 1000 * 60 * 60
-        }).send({ user });
+            maxAge: 20 * 60 * 1000 // 20 minutos
+        }).send({ user, token });
 
     } catch (error) {
         // Manejamos posible error.

@@ -14,7 +14,7 @@ const sessionRouter = Router();
 sessionRouter.post('/login', session.login);
 sessionRouter.post('/register', session.register);
 sessionRouter.post('/logout', session.logout);
-sessionRouter.get('/protected', verifyToken, isAdmin, session.routeProtected);
+sessionRouter.get('/protected', verifyToken, session.routeProtected);
 sessionRouter.get('/not-protected', verifyToken, session.routeNotProtected);
 
 // Declaramos la instancia de router como middleware.

@@ -53,13 +53,19 @@ body {
   align-items: center;
   min-height: 100svh;
   font-size: larger;
-  border: thin solid red;
-  background-image: url('./assets/waves.svg');
+  background-image: url('/public/assets/waves.svg');
   background-size: cover; /* Ajusta el tamaño del fondo */
   background-repeat: no-repeat; /* Evita que el fondo se repita */
   background-position: center; /* Centra el fondo */
   overflow-x: hidden;
   overflow-y: hidden;
+}
+
+.main-container {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-container{

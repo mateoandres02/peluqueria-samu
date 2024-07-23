@@ -31,12 +31,14 @@ export class UserRepository {
     });
 
     // Devolvemos el nuevo usuario creado pero sin mostrar información delicada.
-    const { Contrasena: _, ...publicUser } = newUser;
+    // const { Contrasena: _, ...publicUser } = newUser;
 
     // Si queremos devolver información del usuario, usamos esto.
-    return publicUser.dataValues;
+    // return publicUser.dataValues;
     // Si no queremos devolver información del usuario, usamos esto.
     // return "Usuario creado correctamente!";
+    
+    return newUser;
 
   };
   
@@ -55,10 +57,10 @@ export class UserRepository {
     if (!isValid) throw new Error('password is invalid');
 
     // Devolvemos el nuevo usuario creado pero sin mostrar información delicada.
-    const { Contrasena: _, ...publicUser } = user;
+    const { Contrasena: _, ...publicUser } = user.dataValues;
 
     // Si queremos devolver información del usuario, usamos esto.
-    return publicUser.dataValues;
+    return publicUser;
     // Si no queremos devolver información del usuario, usamos esto.
     // return "Usuario logueado correctamente!";
     

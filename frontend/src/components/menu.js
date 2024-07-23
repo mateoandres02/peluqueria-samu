@@ -1,3 +1,4 @@
+// import { logout } from '../main.js';
 import '/src/styles/menu.css';
 
 const menu = `
@@ -13,10 +14,22 @@ const menu = `
                 <li><a href="#administrar-calendario"><img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario</a></li>
                 <li><a href="#administrar-barberos"><img src="../../public/assets/icons/edit-user.svg" alt="Administrar barberos" class="icon">Administrar Barberos</a></li>
                 <li><a href="#generar-tabla"><img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">Generar Tabla Turnos</a></li>
-                <li><a href="/login.html"><img src="../../public/assets/icons/log-out.svg" alt="Cerrar sesion" class="icon">Cerrar Sesion</a></li>
+                <li>
+                    <button id="logoutBtn">
+                        Cerrar Sesion
+                    </button>
+                </li>
             </ul>
         </nav>
     </aside>
 `;
 
+// document.getElementById('logoutBtn').addEventListener('click', () => {
+//     logout();
+// });
+// document.addEventListener('DOMContentLoaded', ()=>{
+// })
+
+{/* <img src="../../public/assets/icons/log-out.svg" alt="Cerrar sesion" class="icon">Cerrar Sesion */}
 export default menu;
+

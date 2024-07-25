@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang='en'>
-<head>
-  <meta charset='UTF-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <link rel='stylesheet' href='/src/styles/login.css'>
-  <title>Iniciar Sesion</title>
-</head>
+<html lang='es'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <link rel='stylesheet' href='/src/styles/login.css'>
+        <title>Iniciar Sesion</title>
+    </head>
 
-<body>
-  <main>
-    <div class="form-container">
-      <h1>Iniciar Sesion</h1>
-      <hr>
-      <p>Ingresa tus credenciales para acceder al area de administracion de la barberia</p>
-      <form id="login-form">
-        <label for='user' class="sr-only">User</label>
-        <input type='text' name="user" id="user" placeholder="Nombre de Usuario" required>
-        <label for='password' class="sr-only">Password</label>
-        <input type='password' name="password" id="password" placeholder="Contraseña" required>
-        <hr class="line-form">
-        <button type="submit">Iniciar sesion</button>
-        <p class="error escondido">Error al iniciar sesion</p>
-      </form>
-    </div>
-  </main>
-  <script src="./src/sesion/login.js"></script>
-</body>
+    <body>
+        <main>
+            <div class="form-container">
+                <h1>Iniciar Sesion</h1>
+                <hr>
+                <p>Ingresa tus credenciales para acceder al area de administracion de la barberia</p>
+                <form id="login-form">
+                    <label for='username' class="sr-only">User</label>
+                    <input type='text' name="username" id="username" placeholder="Nombre de Usuario" required>
+                    <label for='password' class="sr-only">Password</label>
+                    <input type='password' name="password" id="password" placeholder="Contraseña" required>
+                    <hr class="line-form">
+                    <button type="submit">Iniciar sesion</button>
+                    <p class="error escondido">Error al iniciar sesion</p>
+                </form>
+            </div>
+        </main>
+        <script src="/src/components/login.js"></script>
+    </body>
 </html>

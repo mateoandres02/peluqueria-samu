@@ -4,8 +4,8 @@ import Sequelize from "sequelize";
 // import createData from "./init.js";
 
 // Importamos los modelos de la base de datos.
-import turnsModel from "../models/turns.model.js";
-import usersModel from "../models/users.model.js";
+import turnsModel from "../models/mTurn.js";
+import usersModel from "../models/mUser.js";
 
 // Creamos una instancia de Sequelize.
 const sequelize = new Sequelize({

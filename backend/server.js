@@ -37,12 +37,22 @@ db.start();
 app.use(routesSession);
 
 app.get('/verify-token', verifyToken, (req, res) => {
-    res.send('<h1>Hola mundo</h1>');
+    // console.log(req);
+
+    // Obtenemos el user logueado de la request.
+    const user = req.user;
+    // const access_token = req.cookies.access_token;
+
+    // console.log(access_token);
+    
+    // Se lo enviamos de nuevo para que el front lo manipule.
+    // res.send({ user, access_token });
+    res.send({ user });
 });
 
-app.get("/", verifyToken, (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-})
+// app.get("/", verifyToken, (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// })
 
 app.use(routesTurn);
 app.use(routesUser);

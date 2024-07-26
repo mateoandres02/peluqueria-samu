@@ -1,7 +1,5 @@
-import calendarRender from './components/calendarRender.js';
-import calendario from "./components/calendario.js";
-import menu from "./components/menu.js";
-import { modalElement } from "./components/modal.js"
+import renderIndexAdmin from "./components/indexAdminView.js";
+import renderIndexEmployee from "./components/indexEmployeeView.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,36 +11,27 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
 
+            console.log(response);
+            
             if (!response.ok) {
-
+                
                 window.location.href = '/login.html';
-
+                
             } else {
 
-                app.innerHTML = '';
-                app.innerHTML += menu;
-                app.innerHTML += calendario;
-                app.innerHTML += modalElement;
-                        
-                calendarRender();
+                // Leemos el cuerpo de la respuesta, en el cual recibimos el usuario logueado.
+                const data = await response.json(); 
+                console.log(data);
+                console.log(data.user);
 
-                const $btnLogout = document.querySelector('#logout');
-
-                $btnLogout.addEventListener('click', async () => {
-
-                    const response = await fetch('http://localhost:3001/logout', {
-                        method: 'POST',
-                        credentials: 'include'
-                    });
-
-                    if (response.ok) {
-                        window.location.href = '/login.html';
-                    } else {
-                        console.log('error al realizar el logout');
-                    }
-
-                });
-            
+                if (data.user.Rol === "Empleado") {
+                    console.log(window)
+                    renderIndexEmployee(data.user.Nombre);
+                } else if (data.user.Rol === "Admin") {
+                    console.log(window)
+                    renderIndexAdmin(data.user.Nombre);
+                }
+                
             } 
 
         } catch (error) {
@@ -50,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/login.html';
             
         };
+
     };
 
     checkAuthentication();

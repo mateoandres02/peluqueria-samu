@@ -1,5 +1,6 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { modal } from "./modal.js";
+import checkAuthentication from "./auth.js";
 
 const d = document;
 
@@ -54,6 +55,8 @@ export default function calendarRender () {
 
     // Trabajamos la funcionalidad de modal
     dateClick: function(info) {
+      // Preguntamos si el usuario está autenticado.
+      checkAuthentication();
       //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
       modal(info);
     },

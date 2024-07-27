@@ -19,14 +19,4 @@ const verifyToken = (req, res, next) => {
 
 };
 
-const isAdmin = (req, res, next) => {
-
-    if (req.user.Rol !== 'Admin') {
-        return res.status(403).send('Access not authorized for non-admin users.');
-    }
-    
-    next();
-
-};
-
-export { verifyToken, isAdmin };
+export { verifyToken };

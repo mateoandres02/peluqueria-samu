@@ -1,3 +1,5 @@
+const mensajeError = document.getElementsByClassName("error")[0];
+
 document.getElementById('login-form').addEventListener('submit', async (event) => {
     
     event.preventDefault();
@@ -13,16 +15,13 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         body: JSON.stringify({ Nombre: username, Contrasena: password }),
         credentials: 'include',
     });
-
-    const data = await response.json();
     
     if (response.ok) {
-
         window.location.href = '/';
-
-    } else {
-
-        alert(data.message);
+    } 
+    
+    if (!response.ok) {
+        return mensajeError.classList.toggle("escondido", false);
     }
 
 });

@@ -39,6 +39,7 @@ const modalElement = `
 function modal(info) {
   const d = document;
   const $modal = d.getElementById("dateClickModal");
+  const $modalContent = d.getElementById("modal-content");
   const $inputEventDate = d.getElementById("eventDate");
 
   // Set the date input value to the clicked date
@@ -53,6 +54,7 @@ function modal(info) {
   const $closeModal = d.getElementById("closeModal");
   $closeModal.onclick = function() {
     $modal.style.display = "none";
+    $modalContent.style.display = "none";
   };
 
   // Cerrar la modal cuando se clickea fuera de ella

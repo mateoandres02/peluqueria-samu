@@ -55,15 +55,47 @@ export default function calendarRender () {
 
     // Trabajamos la funcionalidad de modal
     dateClick: function(info) {
+      // reveer despues, checkAuthentication deberia ser cambiado por una logica de verificacion si es ese usuario en vez si es ese rol
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();
       //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
       modal(info);
+      console.log("Fecha clickeada", info.dateStr)
     },
 
     // Permite que se puedan seleccionar las casillas.
     selectable: true,
 
+    // Restringe la seleccion a un solo dia, es decir que no permite el arrastre de seleccion de dias, sino la seleccion de un solo dia en mas de un horario
+    selectAllow: function(selectInfo) {
+      const startDate = new Date(selectInfo.start);
+      const endDate = new Date(selectInfo.end);
+      // const startDate = selectInfo.startStr; 
+      // const endDate = selectInfo.endStr; 
+      // const isSingleDay = selectInfo.startStr === selectInfo.endStr;
+      
+      console.log("startStr:", startDate);
+      console.log("endStr:", endDate);
+
+      // Convertir a solo la parte de la fecha (ignorar la hora)
+      const isSingleDay = startDate.toISOString().split('T')[0] === endDate.toISOString().split('T')[0];
+
+
+      if (isSingleDay) {
+        calendarEl.classList.add("fc-allowed-selection");
+        console.log("Selección permitida para un solo día");
+      } else {
+        calendarEl.classList.remove("fc-allowed-selection");
+      }
+      
+      // document.addEventListener('mouseup', function() {
+      //   calendarEl.classList.remove("fc-allowed-selection");
+      // });
+
+      return isSingleDay
+    },
+
+    
     // Bloquea selección en dias no trabajables (lunes y domingos).
     // selectAllow: function(selectInfo) {
     //   let day = selectInfo.start.getUTCDay();
@@ -72,7 +104,7 @@ export default function calendarRender () {
 
     // titleFormat: { year: "numeric", month: "short", day: "numeric"},
 
-    // No se que hace.
+    // Configura el idioma
     locale: esLocale
   });
 

@@ -1,16 +1,22 @@
 /* CAMBIOS A IMPLEMENTAR CON BOOTSTRAP  https://getbootstrap.com/docs/5.3/components/modal/#how-it-works posiblemente diseno de la modal en varying modal content */
 
 .modal {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow-y: hidden;
+
 }
 
 .modal-content {
-  background-color: var(--dark-grey);
-  margin: 15% auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--sidebar-grey);
   padding: 20px;
   width: 80%;
   max-width: 500px;
@@ -22,8 +28,6 @@
 .modal-header {
     border-bottom-color: var(--line-grey);
 }
-
-
 
 .modal-footer {
   padding: 10px;
@@ -91,3 +95,11 @@ input[type="number"] {
     -moz-appearance: textfield;
     appearance: textfield;
 }
+
+/* Media queries CELULAR*/
+
+/*
+@media only screen and (max-width: 600px) {
+  /* estilos para pantallas menores o iguales a 600px 
+}
+*/

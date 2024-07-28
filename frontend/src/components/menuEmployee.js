@@ -13,7 +13,7 @@ const menu = (user) => {
                     <li><a href="#compartir-calendario"><img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">Compartir calendaior</a></li>
                     <li><a href="#administrar-calendario"><img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario</a></li>
                     <li><a href="#generar-tabla"><img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">Generar Tabla Turnos</a></li>
-                    <li>
+                    <li class="button-logout-container">
                         <button id="logout">
                             Cerrar Sesion
                         </button>

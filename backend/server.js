@@ -11,17 +11,10 @@ import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
 import { verifyToken } from "./app/middlewares/auth.js";
 
-// Importamos modulos de node.
-import path from "path";
-
 // Iniciamos la aplicación con express.
 const app = express();
 
-// __dirname
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 // Middlewares.
-app.use(express.static(path.join(__dirname, '../frontend')));
 app.use(express.json());
 // Configuramos el cors para que acepte request de otro servidor (en este caso, del front ya que está separado del back)
 app.use(cors({

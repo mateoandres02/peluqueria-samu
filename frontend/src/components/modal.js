@@ -41,11 +41,23 @@ function modal(info) {
   const $modal = d.getElementById("dateClickModal");
   const $modalContent = d.getElementById("modal-content");
   const $inputEventDate = d.getElementById("eventDate");
+  const $inputEventTime = d.getElementById("event-datetime");
+  const { dayWithoutYear, timeWithoutSeconds } = parseDate(info.dateStr);
 
   // Set the date input value to the clicked date
-  $inputEventDate.value = parseDate(info.dateStr);
+  $inputEventDate.value = dayWithoutYear;
+  // muestra fecha y hora en formateo aaaa-mm-ddThh:mm:ss
 
-  // console.log(info)
+  // Set the Time selected into input value 
+  $inputEventTime.value = timeWithoutSeconds;
+
+  console.log(`$inputEventTime: `, $inputEventTime)
+
+  // console.log(dayWithoutYear)
+  // console.log(timeWithoutSeconds)
+
+  const dateOffParse = info.dateStr
+  console.log(dateOffParse)
 
   // Muestra el modal
   $modal.style.display = "block";

@@ -53,47 +53,67 @@ export default function calendarRender () {
       info.el.setAttribute('data-bs-target', '#dateClickModal');
     },
 
+    // Añadir atributos a las celdas de tiempo
+    // datesSet: function (info) {
+    //   document.querySelectorAll('.fc-timegrid-slot').forEach(cell => {
+    //     cell.info.setAttribute('data-bs-toggle', 'modal');
+    //     cell.info.setAttribute('data-bs-target', '#dateClickModal');
+    //   });
+    // },
+
+    // Añadir atributos a las celdas de tiempo en la vista semanal
+    datesSet: function () {
+      document.querySelectorAll('.fc-timegrid-slot').forEach(cell => {
+        cell.setAttribute('data-bs-toggle', 'modal');
+        cell.setAttribute('data-bs-target', '#dateClickModal');
+      });
+    },
+
     // Trabajamos la funcionalidad de modal
     dateClick: function(info) {
       // reveer despues, checkAuthentication deberia ser cambiado por una logica de verificacion si es ese usuario en vez si es ese rol
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();
+      console.log(info.dayEl)
+      console.log(info)
+      
       //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
-      modal(info);
       console.log("Fecha clickeada", info.dateStr)
+      
+      modal(info);
     },
 
     // Permite que se puedan seleccionar las casillas.
-    selectable: true,
+    // selectable: true,
 
     // Restringe la seleccion a un solo dia, es decir que no permite el arrastre de seleccion de dias, sino la seleccion de un solo dia en mas de un horario
-    selectAllow: function(selectInfo) {
-      const startDate = new Date(selectInfo.start);
-      const endDate = new Date(selectInfo.end);
-      // const startDate = selectInfo.startStr; 
-      // const endDate = selectInfo.endStr; 
-      // const isSingleDay = selectInfo.startStr === selectInfo.endStr;
+    // selectAllow: function(selectInfo) {
+    //   const startDate = new Date(selectInfo.start);
+    //   const endDate = new Date(selectInfo.end);
+    //   // const startDate = selectInfo.startStr; 
+    //   // const endDate = selectInfo.endStr; 
+    //   // const isSingleDay = selectInfo.startStr === selectInfo.endStr;
       
-      console.log("startStr:", startDate);
-      console.log("endStr:", endDate);
+    //   console.log("startStr:", startDate);
+    //   console.log("endStr:", endDate);
 
-      // Convertir a solo la parte de la fecha (ignorar la hora)
-      const isSingleDay = startDate.toISOString().split('T')[0] === endDate.toISOString().split('T')[0];
+    //   // Convertir a solo la parte de la fecha (ignorar la hora)
+    //   const isSingleDay = startDate.toISOString().split('T')[0] === endDate.toISOString().split('T')[0];
 
 
-      if (isSingleDay) {
-        calendarEl.classList.add("fc-allowed-selection");
-        console.log("Selección permitida para un solo día");
-      } else {
-        calendarEl.classList.remove("fc-allowed-selection");
-      }
+    //   if (isSingleDay) {
+    //     calendarEl.classList.add("fc-allowed-selection");
+    //     console.log("Selección permitida para un solo día");
+    //   } else {
+    //     calendarEl.classList.remove("fc-allowed-selection");
+    //   }
       
-      // document.addEventListener('mouseup', function() {
-      //   calendarEl.classList.remove("fc-allowed-selection");
-      // });
+    //   // document.addEventListener('mouseup', function() {
+    //   //   calendarEl.classList.remove("fc-allowed-selection");
+    //   // });
 
-      return isSingleDay
-    },
+    //   return isSingleDay
+    // },
 
     
     // Bloquea selección en dias no trabajables (lunes y domingos).

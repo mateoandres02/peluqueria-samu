@@ -10,11 +10,35 @@ const menuFunction = (user) => {
             </div>
             <nav class="menu">
                 <ul>
-                    <li><a href="#seguimiento-caja"><img src="../../public/assets/icons/cash-register.svg" alt="Ver caja" class="icon">Seguimiento de caja</a></li>
-                    <li><a href="#compartir-calendario"><img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">Compartir calendaior</a></li>
-                    <li><a href="#administrar-calendario"><img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario</a></li>
-                    <li><a href="#administrar-barberos"><img src="../../public/assets/icons/edit-user.svg" alt="Administrar barberos" class="icon">Administrar Barberos</a></li>
-                    <li><a href="#generar-tabla"><img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">Generar Tabla Turnos</a></li>
+                    <li>
+                        <a href="#admin-calendar">
+                            <img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#cash-register">
+                            <img src="../../public/assets/icons/cash-register.svg" alt="Ver caja" class="icon">
+                            Seguimiento de caja
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#share-calendar">
+                            <img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">
+                            Compartir calendaior
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#manage-barbers">
+                            <img src="../../public/assets/icons/edit-user.svg" alt="Administrar barberos" class="icon">
+                            Administrar Barberos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#generate-table">
+                            <img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">
+                            Generar Tabla Turnos
+                        </a>
+                    </li>
                     <li class="button-logout-container">
                         <button id="logout">
                             Cerrar Sesion

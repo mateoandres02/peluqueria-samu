@@ -14,6 +14,7 @@ const verifyToken = (req, res, next) => {
     
     jwt.verify(token, config.secretJwtKey, (err, user) => {
         if (err) {
+            console.log('err', err);
             res.status(401).json({
                 message: 'Toket inválido.'
             })
@@ -21,7 +22,7 @@ const verifyToken = (req, res, next) => {
         req.user = user;
         next();
     });
-
+    
 };
 
 

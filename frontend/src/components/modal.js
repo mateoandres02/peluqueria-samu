@@ -39,7 +39,7 @@ const modalElement = `
 function modal(info) {
   const d = document;
   const $modal = d.getElementById("dateClickModal");
-  const $modalContent = d.getElementById("modal-content");
+  const $modalContent = d.querySelector(".modal-content");
   const $inputEventDate = d.getElementById("eventDate");
 
   // Set the date input value to the clicked date

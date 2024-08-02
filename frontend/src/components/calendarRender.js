@@ -37,6 +37,29 @@ export default function calendarRender () {
       right: 'prev,next'
     },
 
+    // Eventos
+    events: [
+      {
+        id:"1",
+        title: "Evento 1",
+        start: "2024-08-01T10:00:00",
+        extendedProps: {
+          telefono: "3517594888"
+        },
+        description: "lectura"
+      },
+      {
+        id:"2",
+        title: "Evento 2",
+        start: "2024-08-01T16:30:00",
+        end: "2024-08-01T17:00:00",
+        extendedProps: {
+          telefono: "3517594888"
+        },
+        description: "lectura"
+      }
+    ],
+
     // Botones customizables
     customButtons: {
       myCustomButton: {
@@ -47,11 +70,11 @@ export default function calendarRender () {
       }
     },
 
-    dayCellDidMount: function(info) {
-      // Agregar data-atributes a las celdas para que hagan desplegar la modal
-      info.el.setAttribute('data-bs-toggle', 'modal');
-      info.el.setAttribute('data-bs-target', '#dateClickModal');
-    },
+    // dayCellDidMount: function(info) {
+    //   // Agregar data-atributes a las celdas para que hagan desplegar la modal
+    //   info.el.setAttribute('data-bs-toggle', 'modal');
+    //   info.el.setAttribute('data-bs-target', '#dateClickModal');
+    // },
 
     // Añadir atributos a las celdas de tiempo
     // datesSet: function (info) {
@@ -80,11 +103,11 @@ export default function calendarRender () {
       //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
       console.log("Fecha clickeada", info.dateStr)
       
-      modal(info);
+      modal(info, calendar);
     },
 
     // Permite que se puedan seleccionar las casillas.
-    // selectable: true,
+    selectable: false,
 
     // Restringe la seleccion a un solo dia, es decir que no permite el arrastre de seleccion de dias, sino la seleccion de un solo dia en mas de un horario
     // selectAllow: function(selectInfo) {

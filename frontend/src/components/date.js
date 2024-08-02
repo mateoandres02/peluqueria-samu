@@ -16,16 +16,17 @@ function parseDate(date) {
     // console.log(timePart)
 
     // Separar los componentes de la hora
-    const [hour, minute] = timePart.split(":");
+    const [hour, minute, ] = timePart.split(":");
 
     //Formatear las variables
     const dayWithoutYear = `${month}-${day}`;
-    const timeWithoutSecond = `${hour}:${minute}`;
+    const timeWithoutSeconds = `${hour}:${minute}`;
+
     // console.log(timeWithoutSecond)
 
     return {
         dayWithoutYear,
-        timeWithoutSecond,
+        timeWithoutSeconds,
     }
 }
 

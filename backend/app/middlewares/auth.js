@@ -7,17 +7,17 @@ const verifyToken = (req, res, next) => {
     const token = req.cookies.access_token;
 
     if (!token) {
-        res.status(401).json({
-            message: 'Acceso denegado.'
+        return res.status(401).json({
+            message: 'Acceso denegado. Token no proporcionado.'
         });
     };
     
     jwt.verify(token, config.secretJwtKey, (err, user) => {
         if (err) {
             console.log('err', err);
-            res.status(401).json({
-                message: 'Toket inválido.'
-            })
+            return res.status(401).json({
+                message: 'Acceso denegado. Token inválido.'
+            });
         }
         req.user = user;
         next();

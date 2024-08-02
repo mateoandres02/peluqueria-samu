@@ -24,13 +24,13 @@ const menuFunction = (user) => {
                     <li>
                         <a href="#share-calendar">
                             <img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">
-                            Compartir calendaior
+                            Compartir calendario
                         </a>
                     </li>
                     <li>
-                        <a href="#manage-barbers">
-                            <img src="../../public/assets/icons/edit-user.svg" alt="Administrar barberos" class="icon">
-                            Administrar Barberos
+                        <a href="#manage-employees">
+                            <img src="../../public/assets/icons/edit-user.svg" alt="Administrar empleados" class="icon">
+                            Administrar empleados
                         </a>
                     </li>
                     <li>

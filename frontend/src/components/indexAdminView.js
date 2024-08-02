@@ -48,27 +48,93 @@ const indexView = async (user) => {
             containerPostEmployee.insertAdjacentHTML('beforeend', modalRegisterEmployee);
             
             const $btnPostEmployee = document.querySelector('.registerEmployee-btn');
+
+            // Seteamos atributos en el boton para conectarlo a la modal.
+            $btnPostEmployee.setAttribute('data-bs-toggle', 'modal');
+            $btnPostEmployee.setAttribute('data-bs-target', '#postEmployee');
+
             const $modal = document.querySelector('#postEmployee');
-            
+
             $btnPostEmployee.addEventListener('click', () => {
-                console.log('boton', $btnPostEmployee)
-                console.log('modal', $modal);
-                console.log('se hizoc lick ene l boton');
 
                 $modal.style.display = 'block';
 
-                const $closeModal = document.querySelector(".btn-close");
+                const $closeModal = document.querySelector(".closeModal");
                 $closeModal.onclick = function() {
                     $modal.style.display = "none";
                 };
 
-                  // Cerrar la modal cuando se clickea fuera de ella
                 window.onclick = function(e) {
                     if (e.target == $modal) {
                         $modal.style.display = "none";
                     }
                 };
+
             });
+
+            const $formPostEmployee = document.querySelector('#formPOSTEmployee');
+            const $modalFooter = document.querySelector('.modal-footer');
+            const span = document.createElement('span');
+            span.innerHTML = 'Error al crear el usuario.';
+            span.style.textAlign = 'center'
+            span.style.width = '100%';
+            span.style.marginTop = '1rem';
+            span.style.marginBottom = '0rem';
+            span.style.paddingBottom = '0rem';
+
+            const bootstrapModal = bootstrap.Modal.getInstance($modal);
+            
+            $formPostEmployee.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const username = $formPostEmployee.Nombre.value;
+                const password = $formPostEmployee.Contrasena.value;
+                const role = $formPostEmployee.Rol.value;
+                
+                const user = {
+                    "Nombre": username,
+                    "Contrasena": password,
+                    "Rol": role
+                };
+                
+                fetch('http://localhost:3001/register', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(user)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    
+                    if (data.error !== undefined) {
+                        span.innerHTML = `${data.error}`;
+                        span.style.color = 'red';
+                    } else {
+                        span.innerHTML = '¡Usuario creado correctamente!'
+                        span.style.color = 'green';
+
+                        setInterval(() => {
+                            bootstrapModal.hide();
+                        }, 1500);
+
+                    };
+
+                    $modalFooter.appendChild(span);
+
+                })
+                .catch((e) => {
+                    console.log('error del servidor:', e);
+                });
+
+            });
+
+            const $btnPut = document.querySelector('.modify');
+
+            console.log($btnPut)
+
+            $btnPut.addEventListener('click', () => {
+                console.log('click en el lapiz azul')
+                bootstrapModal.show();
+            })
 
             break;
 

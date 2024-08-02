@@ -119,7 +119,7 @@ function clickButtonSubmit(info, button, calendar) {
 function modal(info, calendar) {
   const d = document;
   const $modal = d.getElementById("dateClickModal");
-  const $modalContent = d.getElementById("modal-content");
+  const $modalContent = d.querySelector(".modal-content");
   const $inputEventDate = d.getElementById("eventDate");
   const $inputEventTime = d.getElementById("event-datetime");
   const { dayWithoutYear, timeWithoutSeconds } = parseDate(info.dateStr);

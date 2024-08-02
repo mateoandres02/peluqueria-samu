@@ -1,5 +1,6 @@
 import db from "../database/setup.js";
 import { Op } from "sequelize";
+import { UserRepository } from "../models/mUserRepository.js";
 
 const users = db.users;
 
@@ -62,7 +63,7 @@ const getByIdUser = (req, res) => {
 
 // post
 
-const postUser = (req, res) => {
+const postUser = async (req, res) => {
     if (!req.body.Nombre || 
         !req.body.Contrasena ||
         !req.body.Rol) {
@@ -80,16 +81,35 @@ const postUser = (req, res) => {
         Rol: req.body.Rol
     };
 
-    users.create(user)
-    .then(data => {
-        res.status(201).send(data);
-    })
-    .catch(e => {
-        res.status(500).send({
-            message: e.message || "Ocurrió algun error creando un registro para los usuarios."
+    const response = await UserRepository.create(user);
+
+    console.log(response.dataValues)
+
+    if (response.ok) {
+        users.create(user)
+        .then(data => {
+            res.status(201).send(data);
+        })
+        .catch(e => {
+            res.status(500).send({
+                message: e.message || "Ocurrió algun error creando un registro para los usuarios."
+            });
         });
-    });
-    
+    } else {
+        res.status(401).send({message: 'ocurrió un error al crear el usuario.'})
+    }
+
+    // users.UserRepository.create(user)
+    // .then(data => {
+    //     res.status(201).send(data);
+    // })
+    // .catch(e => {
+    //     res.status(500).send({
+    //         message: e.message || "Ocurrió algun error creando un registro para los usuarios."
+    //     });
+    // });
+
+    // users.UserRepository.create(user)
 }
 
 // update

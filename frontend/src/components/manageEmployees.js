@@ -1,19 +1,19 @@
-import '../styles/postEmployee.css';
+import '../styles/manageEmployees.css';
 
-let postEmployeeView = '<div class="containerPostEmployee"></div>';
+let manageEmployeesView = '<div class="manageEmployeesContainer"></div>';
 
-const registerEmployee = `
-  <div class="registerEmployee">
-    <h3 class="registerEmployee-h3">Administración de Empleados</h3>
-    <p class="registerEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y contraseña.</p>
-    <button type="button" class="registerEmployee-btn">
+const postEmployee = `
+  <div class="postEmployee">
+    <h3 class="postEmployee-h3">Administración de Empleados</h3>
+    <p class="postEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y contraseña.</p>
+    <button type="button" class="postEmployee-btn">
       <img src="../../public/assets/icons/person-fill-add.svg">
       Agregar <br> Empleado
     </button>
   </div>
 `;
 
-const modalRegisterEmployee = `
+const modal = `
   <div class="modal fade" id="postEmployee" tabindex="-1" aria-labelledby="postEmployeeLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -49,28 +49,29 @@ const rows = (data) => {
 
   let row = '';
 
-  let ids = 0;
+  data.forEach((user, index) => {
+    
+    if (index > 0) {
+      
+      row += `
+        <tr class="table-row" key=${user.Id}>
+          <td scope="row">${user.Id}</td>
+          <td>${user.Nombre}</td>
+          <td>${user.Contrasena}</td>
+          <td>${user.Rol}</td>
+          <td>
+            <button class="table-btns modify">
+              <i class="bi bi-pencil-fill" key=${user.Id}></i>
+            </button>
+            <button class="table-btns delete">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+      `;
 
-  data.forEach(user => {
+    }
 
-    ids += 1;
-
-    row += `
-      <tr>
-        <td scope="row">${user.Id}</td>
-        <td>${user.Nombre}</td>
-        <td>${user.Contrasena}</td>
-        <td>${user.Rol}</td>
-        <td>
-          <button class="table-btns modify" id=${ids}>
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-          <button class="table-btns delete">
-            <i class="bi bi-trash-fill"></i>
-          </button>
-        </td>
-      </tr>
-    `;
   })
 
   return row;
@@ -120,4 +121,4 @@ const usersData = async () => {
 
 };
 
-export { registerEmployee, modalRegisterEmployee, usersData, postEmployeeView };
+export { postEmployee, modal, usersData, manageEmployeesView };

@@ -3,22 +3,22 @@
     max-width: 1000px;
 }
 
-.registerEmployee {
+.postEmployee {
     padding: 1rem;
     width: 80%;
 }
 
-.registerEmployee-h3 {
+.postEmployee-h3 {
     font-size: 2.4rem;
     font-weight: 700;
 }
 
-.registerEmployee-p {
+.postEmployee-p {
     font-weight: 600;
     font-size: 1.2rem;
 }
 
-.registerEmployee-btn {
+.postEmployee-btn {
     background-color: #25a844;
     outline: none;
     border: none;
@@ -36,11 +36,11 @@
     transition: opacity .15s ease;
 }
 
-.registerEmployee-btn:hover {
+.postEmployee-btn:hover {
     opacity: .8;
 }
 
-.registerEmployee-btn img {
+.postEmployee-btn img {
     width: 30px;
     height: 30px;
     display: inline-block;

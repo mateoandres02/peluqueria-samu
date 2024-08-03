@@ -82,7 +82,6 @@ const indexView = async (user) => {
             span.style.marginBottom = '0rem';
             span.style.paddingBottom = '0rem';
 
-            const bootstrapModal = bootstrap.Modal.getInstance($modal);
             
             $formPostEmployee.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -113,9 +112,11 @@ const indexView = async (user) => {
                         span.style.color = 'green';
 
                         setInterval(() => {
+                            const bootstrapModal = bootstrap.Modal.getInstance($modal);
                             bootstrapModal.hide();
+                            window.location.reload();
                         }, 1500);
-
+                        
                     };
 
                     $modalFooter.appendChild(span);

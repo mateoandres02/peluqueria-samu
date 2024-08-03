@@ -1,11 +1,14 @@
 .containerPostEmployee {
     width: 100%;
     max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
 .registerEmployee {
     padding: 1rem;
     width: 80%;
+    max-width: 800px;
 }
 
 .registerEmployee-h3 {
@@ -48,32 +51,55 @@
 }
 
 .table-container {
+    height: 25rem;
+    max-height: 400px;
     width: 100%;
-    border-radius: 1rem;
-    margin: 1rem 0rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 100%;
+    margin: 1rem 0;
+    /* padding: 1rem 0; */
+    box-sizing: border-box;
+    overflow-y: auto;
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .table-container table {
-    margin: 1.5rem 1.5rem;
+    height: 100%;
+    width: 100%;
+    /* margin: 1.5rem 0; */
+    border-collapse: collapse;
 }
 
 .table-container thead {
     background-color: #f6f4fa;
     color: #9f9ca3;
     font-weight: 700;
+    position: sticky;
+    top: -1px;
+    z-index: 1;
 }
 
 .table-container th, .table-container td {
-    padding: 10px
+    padding: 10px;
+    /* border: thin solid #ccc; */
 }
 
 .table-container td {
+    margin: auto 0;
     font-weight: 600;
+    font-size: .9rem;
     color: #353439;
+    /* white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all; */
+}
+
+.table-container th:nth-child(1), .table-container td:nth-child(1), /* Columna Nombre */
+.table-container th:nth-child(2), .table-container td:nth-child(2) { /* Columna Contraseña */
+    white-space: normal; /* Permitir que el texto se ajuste a múltiples líneas */
+    word-wrap: break-word; /* Ajustar palabras largas para que no se desborden */
+    word-break: break-all; /* Romper palabras largas si es necesario */
+    max-width: 150px; /* Ajustar el ancho máximo específico para estas columnas */
 }
 
 .table-container tbody tr td:last-child {
@@ -86,6 +112,11 @@
 .table-container .table-btns {
     border: none;
     outline: none;
+}
+
+.table-container .bi-pencil-fill, .bi-trash-fill  {
+    background-color: var(--white);
+    transition: color 0.63s ease;
 }
 
 .table-container .bi-pencil-fill:hover {

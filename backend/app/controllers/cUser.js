@@ -1,6 +1,8 @@
 import db from "../database/setup.js";
 import { Op } from "sequelize";
-import { UserRepository } from "../models/mUserRepository.js";
+import { UserRepository, Validation } from "../models/mUserRepository.js";
+import bcrypt from "bcrypt";
+import { config } from "../config/config.js";
 
 const users = db.users;
 
@@ -114,35 +116,51 @@ const postUser = async (req, res) => {
 
 // update
 
-const updateUser = (req, res) => {
-    const id = req.params.id;
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-    users.update(req.body, {
-        where: { Id: id }
-    })
-    .then(num => {
-        if (num == 1) {
+        const user = req.body;
 
-            // Significa que la actualización se hizo correctamente.
+        Validation.username(user.Nombre);
+        Validation.password(user.Contrasena);
 
-            return users.findByPk(id);
+        const hashedPassword = await bcrypt.hash(user.Contrasena, config.saltRounds);
+        
+        const newUser = {
+            Id: id,
+            Nombre: user.Nombre,
+            Contrasena: hashedPassword,
+            Rol: user.Rol
+        }
 
-        } else {
-            res.status(404).send({
-                message: `No se pudo actualizar el registro del usuario con id = ${id}`
+        users.update(newUser, {
+            where: { Id: id }
+        })
+        .then(num => {
+            if (num == 1) {
+                // Significa que la actualización se hizo correctamente.
+                return users.findByPk(id);
+            } else {
+                res.status(400).json({
+                    error: `No se pudo actualizar el registro del usuario con id = ${id}`
+                });
+            }
+        })
+        .then(data => {
+            if (data) {
+                res.json(data);
+            }
+        })
+        .catch(e => {
+            res.status(500).json({
+                error: e.message || "Ocurrió un error al actualizar el registro del usuario con id = " + id
             });
-        }
-    })
-    .then(data => {
-        if (data) {
-            res.send(data);
-        }
-    })
-    .catch(e => {
-        res.status(500).send({
-            message: e.message || "Ocurrió un error al actualizar el registro del usuario con id = " + id
         });
-    });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+    
 }
 
 // delete

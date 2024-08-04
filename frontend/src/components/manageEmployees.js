@@ -54,7 +54,7 @@ const rows = (data) => {
     if (index > 0) {
       
       row += `
-        <tr class="table-row" key=${user.Id}>
+        <tr key=${user.Id}>
           <td scope="row">${user.Id}</td>
           <td>${user.Nombre}</td>
           <td>${user.Contrasena}</td>

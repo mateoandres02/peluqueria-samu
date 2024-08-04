@@ -59,7 +59,7 @@ export class UserRepository {
 };
 
 // Creamos una clase de validaciones.
-class Validation {
+export class Validation {
 
   // Declaramos los métodos estáticos para no tener que generar una instancia de esta clase para poder usarlos.
   static username(username) {

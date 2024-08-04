@@ -4,7 +4,6 @@ import menu from "./menuAdmin.js";
 import { modalElement } from "./modal.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView } from './manageEmployees.js';
-// import '../styles/manageEmployees.css';
 
 const indexView = async (user) => {
 
@@ -139,7 +138,7 @@ const indexView = async (user) => {
 
                     // Si hubo algun error, lo mostramos en el span.
                     if (data.error !== undefined) {
-                        span.innerHTML = `${data.error}`;
+                        span.innerHTML = `${data.error}` || 'Usuario o contraseña inválidos.';
                         span.style.color = 'red';
                     } else {
                         // Si entra acá significa que no hubo ningun error.

@@ -52,7 +52,7 @@ const indexView = async (user) => {
             // Agregamos la modal para manipular las distintas acciones sobre los empleados, a la vista.
             manageEmployeesContainer.insertAdjacentHTML('beforeend', modal);
             
-            // Obtenemos 
+            // Obtenemos el boton para crear un registro.
             const $btnPostEmployee = document.querySelector('.postEmployee-btn');
 
             // Seteamos atributos en el boton para conectarlo a la modal.
@@ -92,6 +92,22 @@ const indexView = async (user) => {
             span.style.marginTop = '1rem';
             span.style.marginBottom = '0rem';
             span.style.paddingBottom = '0rem';
+
+            // Obtenemos el boton para cancelar la accion sobre el registro.
+            const $btnCancel = document.querySelector('.btnCancel');
+
+            // Le damos eventos al boton de cancelar de la modal.
+            $btnCancel.addEventListener('click', (e) => {
+                // Quitamos evento por defecto (detectaba un submit)
+                e.preventDefault();
+
+                // Reseteamos contraseña puesta en otro actualizar.
+                $formPostEmployee.Contrasena.value = '';               
+
+                // Cerramos la modal.
+                const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+                bootstrapModal.hide();
+            });
 
             // Manejamos el evento submit del formulario.
             $formPostEmployee.addEventListener('submit', (e) => {
@@ -192,6 +208,9 @@ const indexView = async (user) => {
                     // Seteamos atributos para que la modal pase a modo create
                     $putFormModal.setAttribute('data-mode', 'update');
                     $putFormModal.setAttribute('data-id', key);
+
+                    // Reseteamos contraseña posiblemente existente.
+                    $putFormModal.Contrasena.value = ''; 
 
                     // Cargamos los inputs con los valores del user a modificar.
                     $putFormModal.Nombre.value = data.Nombre;

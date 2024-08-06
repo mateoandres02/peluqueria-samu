@@ -12,13 +12,11 @@ const turnsAttributes = {
     },
     Telefono: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
-    Fecha: {
-        type: DataTypes.DATEONLY,
-    },
-    Horario: {
-        type: DataTypes.TIME,
+    Date: {
+        type: DataTypes.DATE,
+        allowNull: false,
     },
     NroUsuario: {
         type: DataTypes.INTEGER,

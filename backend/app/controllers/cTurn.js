@@ -57,8 +57,7 @@ const getByIdTurn = (req, res) => {
 const postTurn = (req, res) => {
     if (!req.body.Nombre ||
         !req.body.Telefono || 
-        !req.body.Fecha || 
-        !req.body.Horario || 
+        !req.body.Date || 
         !req.body.NroUsuario) {
             
         res.status(400).send({
@@ -71,8 +70,7 @@ const postTurn = (req, res) => {
     const turn = {
         Nombre: req.body.Nombre,
         Telefono: req.body.Telefono,
-        Fecha: req.body.Fecha,
-        Horario: req.body.Horario,
+        Date: req.body.Date,
         NroUsuario: req.body.NroUsuario
     };
 

@@ -26,7 +26,7 @@ const modalElement = `
             <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm">
 
             <div class="modal-footer">
-              <button id="closeModal" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+              <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
             </div>
           </form>
@@ -36,28 +36,69 @@ const modalElement = `
   </div>
 `;
 
-function clickButtonSubmit(info, form, calendar, date) {
+// El parámetro data contiene información del usuario logueado.
+function modal(info, calendar, data) {
+  
+  const d = document;
 
-  // console.log(button)
-  // console.log(form)
-  // console.log(date)
-  // console.log(calendar.events.start)
+  // Inicializamos la modal
+  const $modal = new bootstrap.Modal(d.getElementById('dateClickModal'));
+  
+  const $inputEventDate = d.getElementById("eventDate");
+  const $inputEventTime = d.getElementById("event-datetime");
+  const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
+  const $formModal = d.getElementById("eventForm");
+
+  // Set the date input value to the clicked date
+  $inputEventDate.value = dayWithoutYear;
+
+  // Set the Time selected into input value 
+  $inputEventTime.value = timeWithoutSeconds;
+
+  // Mostramos la modal.
+  $modal.show();
+
+  const $btnCancel = document.querySelector('.btnCancel');
+
+  $btnCancel.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+    bootstrapModal.hide();
+
+    $modal.hide();
+  });
+
+  clickButtonSubmit(info, $formModal, calendar, completeDate, data);
+}
+
+async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
+
+  // Obtenemos el footer de la modal para luego agregarle el mensaje sobre el resultado del envio del formulario.
+  const $modalFooter = document.querySelector('.modal-footer');
+
+  // Creamos la etiqueta donde se va a almacenar el resultado del envio del formulario.
+  const span = document.createElement('span');
+  span.innerHTML = 'Error al crear el turno.';
+  span.style.textAlign = 'center'
+  span.style.width = '100%';
+  span.style.marginTop = '1rem';
+  span.style.marginBottom = '0rem';
+  span.style.paddingBottom = '0rem';
+
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
     
+    const idBarber = dataUserActive.user.Id;
     const clientName = form.inputName.value;
     const clientNumber = form.inputNumber.value;
     const dateOutParsed = date;
-
-    console.log(userName)
-    console.log(userNumber)
-    console.log(dateOutParsed)
 
     const turn = {
       Nombre : clientName,
       Telefono : clientNumber,
       Date: dateOutParsed,
-      NroUsuario: 1,
+      NroUsuario: idBarber,
     }
 
     const url = 'http://localhost:3001/turns';
@@ -66,13 +107,20 @@ function clickButtonSubmit(info, form, calendar, date) {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(turn),
-    }
+    };
 
-    const response = await fetch(url, options)
+    const response = await fetch(url, options);
 
-    const data = await response.json()
+    const data = await response.json();
 
-    console.log(data)
+    
+    // if (response.ok) {
+    //   console.log(data)
+    //   console.log('salio bien')
+    // } else {
+    //   console.log('salio mal')
+    // }
+
     
     // const inputName = document.getElementById("input-name").value;
     // const inputNumber = document.getElementById("input-number").value;
@@ -105,43 +153,6 @@ function clickButtonSubmit(info, form, calendar, date) {
     //   alert("Por favor, completa todos los campos.");
     // }
   });
-}
-
-
-function modal(info, calendar) {
-  const d = document;
-  const $modal = d.getElementById("dateClickModal");
-  const $modalContent = d.querySelector(".modal-content");
-  const $inputEventDate = d.getElementById("eventDate");
-  const $inputEventTime = d.getElementById("event-datetime");
-  const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
-  const $buttonSubmit = d.getElementById("saveTurn");
-  const $formModal = d.getElementById("eventForm");
-
-  // Set the date input value to the clicked date
-  $inputEventDate.value = dayWithoutYear;
-
-  // Set the Time selected into input value 
-  $inputEventTime.value = timeWithoutSeconds;
-
-  // Muestra el modal
-  $modal.style.display = "block";
-
-  // Cerrar el modal por botón cerrar
-  const $closeModal = d.getElementById("closeModal");
-  $closeModal.onclick = function() {
-    $modal.style.display = "none";
-    $modalContent.style.display = "none";
-  };
-
-  // Cerrar la modal cuando se clickea fuera de ella
-  window.onclick = function(e) {
-    if (e.target == $modal) {
-      $modal.style.display = "none";
-    }
-  };
-
-  clickButtonSubmit(info, $formModal, calendar, completeDate);
 }
 
 export {

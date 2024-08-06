@@ -4,7 +4,8 @@ import checkAuthentication from "./auth.js";
 
 const d = document;
 
-export default function calendarRender () {
+// El parámetro data contiene la información del usuario logueado.
+export default function calendarRender (data) {
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -85,25 +86,20 @@ export default function calendarRender () {
     // },
 
     // Añadir atributos a las celdas de tiempo en la vista semanal
-    datesSet: function () {
-      document.querySelectorAll('.fc-timegrid-slot').forEach(cell => {
-        cell.setAttribute('data-bs-toggle', 'modal');
-        cell.setAttribute('data-bs-target', '#dateClickModal');
-      });
-    },
+    // datesSet: function () {
+    //   // document.querySelectorAll('.fc-timegrid-slot').forEach(cell => {
+    //   //   cell.setAttribute('data-bs-toggle', 'modal');
+    //   //   cell.setAttribute('data-bs-target', '#dateClickModal');
+    //   // });
+    // },
 
     // Trabajamos la funcionalidad de modal
+    // Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
     dateClick: function(info) {
-      // reveer despues, checkAuthentication deberia ser cambiado por una logica de verificacion si es ese usuario en vez si es ese rol
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();
-      console.log(info.dayEl)
-      console.log(info)
       
-      //  Esa estructura es correcta. Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
-      console.log("Fecha clickeada", info.dateStr)
-      
-      modal(info, calendar);
+      modal(info, calendar, data);
     },
 
     // Permite que se puedan seleccionar las casillas.

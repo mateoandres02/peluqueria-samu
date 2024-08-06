@@ -5,20 +5,30 @@ import { modalElement } from "./modal.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView } from './manageEmployees.js';
 
-const indexView = async (user) => {
+let body = document.body;
+
+// el parámetro data contiene la información del usuario activo en la sesion.
+const indexView = async (data) => {
+    
+    const userActive = data.user.Nombre;
 
     const urlActive = window.location.hash;
-
+    
     app.innerHTML = '';
-    app.innerHTML += menu(user);
+    app.innerHTML += menu(userActive);
     
     switch (urlActive) {
         case '#admin-calendar':
             
+            let modalActive = document.querySelector('.modal');
+
+            if (!modalActive) {
+                body.insertAdjacentHTML('beforeend', modalElement);
+            }
+
             app.innerHTML += calendario;
-            app.innerHTML += modalElement;
             
-            calendarRender();
+            calendarRender(data);
             
             break;
         
@@ -268,9 +278,14 @@ const indexView = async (user) => {
         default:
 
             app.innerHTML += calendario;
-            app.innerHTML += modalElement;
+
+            let modal_active = document.querySelector('.modal');
+
+            if (!modal_active) {
+                body.insertAdjacentHTML('beforeend', modalElement);
+            }
             
-            calendarRender();
+            calendarRender(data);
 
             break;
 

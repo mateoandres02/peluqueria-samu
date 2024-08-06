@@ -1,12 +1,14 @@
 import '/src/styles/menu.css';
 
-const menu = (user) => {
+const menu = (data) => {
+
+    const userActive = data.user.Nombre;
 
     const menu = `
         <aside class="sidebar">
             <div class="profile">
                 <img src="../../public/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
-                <span class="profile-name">${user}</span>
+                <span class="profile-name">${userActive}</span>
             </div>
             <nav class="menu">
                 <ul>

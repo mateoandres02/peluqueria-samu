@@ -20,6 +20,7 @@ const login = async (req, res) => {
         // Generamos el token de acceso.
         const token = jwt.sign(
             {
+                Id: user.Id,
                 Nombre: user.Nombre,
                 Rol: user.Rol
             }, 

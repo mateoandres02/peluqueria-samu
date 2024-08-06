@@ -4,10 +4,10 @@ import menu from "./menuEmployee.js";
 import { modalElement } from "./modal.js";
 import { logout } from './logout.js';
 
-const indexView = (user) => {
+const indexView = (data) => {
 
     app.innerHTML = '';
-    app.innerHTML += menu(user);
+    app.innerHTML += menu(data);
     app.innerHTML += calendario;
     app.innerHTML += modalElement;
             

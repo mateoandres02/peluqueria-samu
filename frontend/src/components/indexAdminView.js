@@ -236,9 +236,7 @@ const indexView = async (data) => {
 
             // A cada boton le damos el evento click.
             $btnsDelete.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-
-                    
+                btn.addEventListener('click', async (e) => {                    
                     // Obtenemos la key
                     const key = e.currentTarget.closest('tr').getAttribute('key');
                     console.log(key)

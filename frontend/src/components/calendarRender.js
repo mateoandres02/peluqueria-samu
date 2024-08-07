@@ -6,8 +6,34 @@ const d = document;
 
 let body = document.body;
 
+const getTurnsByUserActive = async (data) => {
+  const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
+
+  const turns = await response.json();
+
+  console.log(turns);
+
+  return turns;
+}
+
 // El parámetro data contiene la información del usuario logueado.
-export default function calendarRender (modalElement, data) {
+export default async function calendarRender (modalElement, data) {
+
+  // Renderizamos los turnos
+  const turns = await getTurnsByUserActive(data);
+
+  const arrayTurns = turns.map(turn => {
+    return {
+      id: turn.Id,
+      title: turn.Nombre,
+      start: turn.Date,
+      extendedProps: {
+        telefono: turn.Telefono
+      },
+      description: "Lectura"
+    };
+  });
+
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -41,27 +67,28 @@ export default function calendarRender (modalElement, data) {
     },
 
     // Eventos
-    events: [
-      {
-        id:"1",
-        title: "Evento 1",
-        start: "2024-08-01T10:00:00",
-        extendedProps: {
-          telefono: "3517594888"
-        },
-        description: "lectura"
-      },
-      {
-        id:"2",
-        title: "Evento 2",
-        start: "2024-08-01T16:30:00",
-        end: "2024-08-01T17:00:00",
-        extendedProps: {
-          telefono: "3517594888"
-        },
-        description: "lectura"
-      }
-    ],
+    // events: [
+    //   {
+    //     id:"1",
+    //     title: "Evento 1",
+    //     start: "2024-08-01T10:00:00",
+    //     extendedProps: {
+    //       telefono: "3517594888"
+    //     },
+    //     description: "lectura"
+    //   },
+    //   {
+    //     id:"2",
+    //     title: "Evento 2",
+    //     start: "2024-08-01T16:30:00",
+    //     end: "2024-08-01T17:00:00",
+    //     extendedProps: {
+    //       telefono: "3517594888"
+    //     },
+    //     description: "lectura"
+    //   }
+    // ],
+    events: arrayTurns,
 
     // Botones customizables
     customButtons: {
@@ -98,6 +125,8 @@ export default function calendarRender (modalElement, data) {
     // Trabajamos la funcionalidad de modal
     // Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
     dateClick: function(info) {
+
+      console.log(info)
 
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();

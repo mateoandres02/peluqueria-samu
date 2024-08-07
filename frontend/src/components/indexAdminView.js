@@ -19,16 +19,10 @@ const indexView = async (data) => {
     
     switch (urlActive) {
         case '#admin-calendar':
-            
-            let modalActive = document.querySelector('.modal');
-
-            if (!modalActive) {
-                body.insertAdjacentHTML('beforeend', modalElement);
-            }
 
             app.innerHTML += calendario;
             
-            calendarRender(data);
+            calendarRender(modalElement, data);
             
             break;
         
@@ -117,6 +111,9 @@ const indexView = async (data) => {
                 // Cerramos la modal.
                 const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
                 bootstrapModal.hide();
+
+                // $modal.dispose();
+                // document.getElementById('postEmployee').remove();
             });
 
             // Manejamos el evento submit del formulario.
@@ -278,14 +275,8 @@ const indexView = async (data) => {
         default:
 
             app.innerHTML += calendario;
-
-            let modal_active = document.querySelector('.modal');
-
-            if (!modal_active) {
-                body.insertAdjacentHTML('beforeend', modalElement);
-            }
             
-            calendarRender(data);
+            calendarRender(modalElement, data);
 
             break;
 

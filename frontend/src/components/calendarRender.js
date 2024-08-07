@@ -4,8 +4,10 @@ import checkAuthentication from "./auth.js";
 
 const d = document;
 
+let body = document.body;
+
 // El parámetro data contiene la información del usuario logueado.
-export default function calendarRender (data) {
+export default function calendarRender (modalElement, data) {
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -96,10 +98,16 @@ export default function calendarRender (data) {
     // Trabajamos la funcionalidad de modal
     // Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
     dateClick: function(info) {
+
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();
+
+      // Insertamos la modal cuando se hace click en una celda
+      body.insertAdjacentHTML('beforeend', modalElement);
       
+      // Manejamos funcionalidad de la modal.
       modal(info, calendar, data);
+
     },
 
     // Permite que se puedan seleccionar las casillas.
@@ -145,6 +153,7 @@ export default function calendarRender (data) {
 
     // Configura el idioma
     locale: esLocale
+  
   });
 
   calendar.render();

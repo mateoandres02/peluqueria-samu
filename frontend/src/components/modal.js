@@ -44,20 +44,28 @@ function modal(info, calendar, data) {
   // Inicializamos la modal
   const $modal = new bootstrap.Modal(d.getElementById('dateClickModal'));
   
+  // Obtenemos los inputs del formulario.
   const $inputEventDate = d.getElementById("eventDate");
   const $inputEventTime = d.getElementById("event-datetime");
+
+  // Parseamos los datos de la fechas y el horario.
   const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
+
+  // Obtenemos el formulario.
   const $formModal = d.getElementById("eventForm");
 
-  // Set the date input value to the clicked date
-  $inputEventDate.value = dayWithoutYear;
+  // Reseteamos valores de los inputs de escritura.
+  $formModal.inputName.value = '';
+  $formModal.inputNumber.value = '';
 
-  // Set the Time selected into input value 
+  // Le cargamos los valores a los inputs de lectura.
+  $inputEventDate.value = dayWithoutYear;
   $inputEventTime.value = timeWithoutSeconds;
 
   // Mostramos la modal.
   $modal.show();
 
+  // Programamos la funcionalidad de cancelar el registro del turno.
   const $btnCancel = document.querySelector('.btnCancel');
 
   $btnCancel.addEventListener('click', (e) => {
@@ -66,14 +74,16 @@ function modal(info, calendar, data) {
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
 
-    $modal.hide();
+    document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+      this.remove();
+    });
   });
 
-  clickButtonSubmit(info, $formModal, calendar, completeDate, data);
+  // Instanciamos la función que maneja el envio del formulario para registrar el turno.
+  handleSubmit($formModal, completeDate, data, $modal);
 }
 
-async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
-
+async function handleSubmit(form, date, dataUserActive, $modal) {
   // Obtenemos el footer de la modal para luego agregarle el mensaje sobre el resultado del envio del formulario.
   const $modalFooter = document.querySelector('.modal-footer');
 
@@ -86,14 +96,17 @@ async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
   span.style.marginBottom = '0rem';
   span.style.paddingBottom = '0rem';
 
+  // Programamos el evento del formulario que enviará los datos al back.
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
     
+    // Obtenemos los datos ingresados por el usuario.
     const idBarber = dataUserActive.user.Id;
     const clientName = form.inputName.value;
     const clientNumber = form.inputNumber.value;
     const dateOutParsed = date;
 
+    // Creamos el turno.
     const turn = {
       Nombre : clientName,
       Telefono : clientNumber,
@@ -101,6 +114,7 @@ async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
       NroUsuario: idBarber,
     }
 
+    // Manejamos el post de la información ingresada por el usuario al back.
     const url = 'http://localhost:3001/turns';
 
     const options = {
@@ -111,17 +125,23 @@ async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
 
     const response = await fetch(url, options);
 
-    const data = await response.json();
+    if (response.ok) {
+      span.innerHTML = 'Turno creado correctamente'
+      span.style.color = 'green';
 
-    
-    // if (response.ok) {
-    //   console.log(data)
-    //   console.log('salio bien')
-    // } else {
-    //   console.log('salio mal')
-    // }
+      setTimeout(() => {
+        const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+        bootstrapModal.hide();
+        window.location.reload();
+      }, 1500);
 
-    
+    } else {
+      span.style.color = 'red';
+    }
+
+    // Agregamos el elemento con el mensaje al footer de la modal.
+    $modalFooter.appendChild(span);
+
     // const inputName = document.getElementById("input-name").value;
     // const inputNumber = document.getElementById("input-number").value;
     // // const inputDate = document.getElementById("input-date").value;
@@ -153,10 +173,10 @@ async function clickButtonSubmit(info, form, calendar, date, dataUserActive) {
     //   alert("Por favor, completa todos los campos.");
     // }
   });
+
 }
 
 export {
   modalElement,
   modal,
-  
 }

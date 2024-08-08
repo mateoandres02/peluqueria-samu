@@ -22,7 +22,6 @@ function parseDate(date) {
     const dayWithoutYear = `${month}-${day}`;
     const timeWithoutSeconds = `${hour}:${minute}`;
 
-
     //Mostrar fecha completa
     const completeDate = date
     // console.log(timeWithoutSecond)

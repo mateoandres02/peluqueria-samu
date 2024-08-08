@@ -79,6 +79,13 @@ function modal(info, calendar, data) {
     });
   });
 
+  // Cerrar la modal cuando se clickea fuera de ella
+  // window.onclick = () => {
+  //   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+  //     this.remove();
+  //   });
+  // };
+
   // Instanciamos la función que maneja el envio del formulario para registrar el turno.
   handleSubmit($formModal, completeDate, data, $modal);
 }

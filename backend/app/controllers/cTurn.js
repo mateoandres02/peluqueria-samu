@@ -7,8 +7,11 @@ const users = db.users;
 // getall
 
 const getAllTurns = (req, res) => {
-    
+
+    const id = req.params.idUserActive;
+
     turns.findAll({
+        where: { NroUsuario: id },
         include: [
             { model: users, attributes: ['Nombre'], as: 'peluquero' },
         ]

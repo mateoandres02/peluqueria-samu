@@ -24,6 +24,7 @@ const modal = `
           </button>
         </div>
         <div class="modal-body">
+
           <form id="formPOSTEmployee">
             <label for="username">Nombre</label>
             <input type="text" id="username" name="Nombre" class="input" required>
@@ -33,11 +34,12 @@ const modal = `
 
             <label for="rol">Rol</label>
             <input type="text" id="rol" class="input" name="Rol" value="Empleado" readonly>
-
+            
             <div class="modal-footer">
-              <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
+              <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>
+
           </form>
         </div>
       </div>

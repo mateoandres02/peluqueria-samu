@@ -1,5 +1,5 @@
 import esLocale from "@fullcalendar/core/locales/es";
-import { modal } from "./modal.js";
+import { modal, modalTurnContent, modalTurnContentDisplay } from "./modal.js";
 import checkAuthentication from "./auth.js";
 
 const d = document;
@@ -118,7 +118,13 @@ export default async function calendarRender (modalElement, data) {
     events: arrayTurns,
 
     eventClick: function(info){
-      alert("ula")
+      body.insertAdjacentHTML('beforeend', modalTurnContent);
+
+      modalTurnContentDisplay(info);
+
+      document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+      });
     },
 
     // Botones customizables

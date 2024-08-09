@@ -73,18 +73,7 @@ function modal(info, calendar, data) {
 
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
-
-    document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
-      this.remove();
-    });
   });
-
-  // Cerrar la modal cuando se clickea fuera de ella
-  // window.onclick = () => {
-  //   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
-  //     this.remove();
-  //   });
-  // };
 
   // Instanciamos la función que maneja el envio del formulario para registrar el turno.
   handleSubmit($formModal, completeDate, data, $modal);
@@ -148,37 +137,7 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
 
     // Agregamos el elemento con el mensaje al footer de la modal.
     $modalFooter.appendChild(span);
-
-    // const inputName = document.getElementById("input-name").value;
-    // const inputNumber = document.getElementById("input-number").value;
-    // // const inputDate = document.getElementById("input-date").value;
-    // const inputTime = document.getElementById("input-time").value;
     
-    // const dateStr = info.dateStr.split('T')[0];
-    // const eventDateTime = `${dateStr}T${inputTime}:00`;
-    
-    // window.alert("eee")
-
-    // if (inputName && inputNumber && inputDate && inputTime) {
-    //   // Crear el evento
-    //   const newEvent = {
-    //     title: inputName,
-    //     start: eventDateTime,
-    //     // Puedes agregar más propiedades según lo necesites
-    //     extendedProps: {
-    //       phone: inputNumber,
-    //     }
-    //   };
-
-    //   // Agregar el evento al calendario
-    //   calendar.addEvent(newEvent);
-      
-    //   // Cerrar la modal
-    //   const $modal = document.getElementById("dateClickModal");
-    //   $modal.style.display = "none";
-    // } else {
-    //   alert("Por favor, completa todos los campos.");
-    // }
   });
 
 }

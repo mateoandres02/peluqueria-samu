@@ -86,6 +86,7 @@ const postTurn = (req, res) => {
             message: e.message || "Ocurrió algun error creando un registro para los turnos."
         });
     });
+
 }
 
 // update

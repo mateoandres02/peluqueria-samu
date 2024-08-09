@@ -11,9 +11,33 @@ const getTurnsByUserActive = async (data) => {
 
   const turns = await response.json();
 
-  console.log(turns);
-
   return turns;
+}
+
+const turnDateEnd = (date) => {
+  const [datePart, timePart] = date.split('T');
+
+  const [hour, minute, ] = timePart.split(":");
+
+  let dateHourEnd = hour;
+  let dateMinutesEnd = '';
+
+  if (minute === '00') {
+    dateMinutesEnd = '30';
+  } else if (minute === '30') {
+    dateHourEnd = parseInt(dateHourEnd) + 1;
+    dateMinutesEnd = '00';
+  }
+
+  if (dateHourEnd === 9) {
+    dateHourEnd = '09'
+  }
+
+  const dateEnd = `${dateHourEnd}:${dateMinutesEnd}`;
+
+  const completeDateEnd = `${datePart}T${dateEnd}`;
+
+  return completeDateEnd;
 }
 
 // El parámetro data contiene la información del usuario logueado.
@@ -21,17 +45,20 @@ export default async function calendarRender (modalElement, data) {
 
   // Renderizamos los turnos
   const turns = await getTurnsByUserActive(data);
-
+  
   const arrayTurns = turns.map(turn => {
+    const dateEnd = turnDateEnd(turn.Date);
+
     return {
       id: turn.Id,
       title: turn.Nombre,
       start: turn.Date,
+      end: dateEnd,
       extendedProps: {
         telefono: turn.Telefono
-      },
-      description: "Lectura"
+      }
     };
+
   });
 
   let calendarEl = d.getElementById("calendar");
@@ -54,7 +81,7 @@ export default async function calendarRender (modalElement, data) {
 
     // establece rango horario desde las 8 hasta las 11
     slotMinTime: '08:00:00',
-    slotMaxTime: '23:30:00',
+    editable: true,
 
     //desactiva la opcion todo el dia de la vista semanal en el top de la vista del calendario
     allDaySlot: false,
@@ -89,6 +116,10 @@ export default async function calendarRender (modalElement, data) {
     //   }
     // ],
     events: arrayTurns,
+
+    eventClick: function(info){
+      alert("ula")
+    },
 
     // Botones customizables
     customButtons: {
@@ -136,6 +167,10 @@ export default async function calendarRender (modalElement, data) {
       
       // Manejamos funcionalidad de la modal.
       modal(info, calendar, data);
+
+      document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+        this.remove();
+      });
 
     },
 

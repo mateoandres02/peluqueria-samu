@@ -97,31 +97,12 @@ const indexView = async (data) => {
             span.style.marginBottom = '0rem';
             span.style.paddingBottom = '0rem';
 
-            // Obtenemos el boton para cancelar la accion sobre el registro.
-            const $btnCancel = document.querySelector('.btnCancel');
-
-            // Le damos eventos al boton de cancelar de la modal.
-            $btnCancel.addEventListener('click', (e) => {
-                // Quitamos evento por defecto (detectaba un submit)
-                e.preventDefault();
-
-                // Reseteamos contraseña puesta en otro actualizar.
-                $formPostEmployee.Contrasena.value = '';               
-
-                // Cerramos la modal.
-                const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
-                bootstrapModal.hide();
-
-                // $modal.dispose();
-                // document.getElementById('postEmployee').remove();
-            });
-
             // Manejamos el evento submit del formulario.
             $formPostEmployee.addEventListener('submit', (e) => {
 
                 // Desactivamos el refresco por defecto del evento submit de los formularios.
                 e.preventDefault();
-        
+                
                 // Obtenemos el modo en el que está el formulario.
                 const mode = $formPostEmployee.getAttribute('data-mode');
 
@@ -188,6 +169,25 @@ const indexView = async (data) => {
                     console.log('Error del servidor:', e);
                 });
         
+            });
+
+            // Obtenemos el boton para cancelar la accion sobre el registro.
+            const $btnCancel = document.querySelector('.btnCancel');
+
+            // Le damos eventos al boton de cancelar de la modal.
+            $btnCancel.addEventListener('click', (e) => {
+                alert('fui pulsado')
+
+                // Quitamos evento por defecto (detectaba un submit)
+                e.preventDefault();
+
+                // Reseteamos contraseña puesta en otro actualizar.
+                $formPostEmployee.Contrasena.value = '';               
+                $formPostEmployee.Nombre.value = '';               
+
+                // Cerramos la modal.
+                const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+                bootstrapModal.hide();
             });
 
             // Obtenemos todos los botones para modificar un registro.

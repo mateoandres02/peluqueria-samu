@@ -31,6 +31,9 @@
 .modal-footer {
   padding: 10px;
   text-align: right;
+
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .modal-close {

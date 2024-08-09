@@ -36,6 +36,91 @@ const modalElement = `
   </div>
 `;
 
+const modalTurnContent = `
+  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Informacion de Turno</h1>
+          <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h2 id="infoName">Nombre y Apellido: <span id="spanName"></span> </h2>
+          <h2 id="infoTel">Teléfono: <span id="spanTel"></span></h2>
+          <h2 id="infoDay">Día: <span id="spanDay"></span></h2>
+          <h2 id="infoStartTime">Inicio de Turno: <span id="spanStartTime"></span></h2>
+          <h2 id="infoEndTime">Fin de Turno: <span id="spanEndTime"></span></h2>
+          <div class="modal-footer">
+              <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal"><i class="bi bi-trash"></i></button>
+              <button id="contactWsp" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+function modalTurnContentDisplay(info) {
+  const d = document;
+
+  // Inicializamos la modal
+  const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
+  
+  
+  // Obtenemos los elementos de la modal 
+  const $h2Name = d.getElementById("infoName");
+  const $h2Tel = d.getElementById("infoTel");
+  const $h2Day = d.getElementById("infoDay");
+  const $h2StartTime = d.getElementById("infoStartTime");
+  const $h2EndTime = d.getElementById("infoEndTime");
+
+  const $spanName = d.getElementById("spanName");
+  const $spanTel = d.getElementById("spanTel");
+  const $spanDay = d.getElementById("spanDay");
+  const $spanStartTime = d.getElementById("spanStartTime");
+  const $spanEndTime = d.getElementById("spanEndTime");
+  
+  // Obtenemos la fecha parseada de el start
+  const { dayWithoutYear, timeWithoutSeconds:timeWithoutSecondsStart } = parseDate(info.event.startStr);
+
+  // Obtenemos la fecha parseada de el end
+  const { timeWithoutSeconds:timeWithoutSecondsEnd  } = parseDate(info.event.endStr);
+
+  // Obtenemos los valores de cada input
+  const name = info.event._def.title;
+  const tel = info.event._def.extendedProps.telefono;
+  const day = dayWithoutYear;
+  const startTime = timeWithoutSecondsStart;
+  const endTime = timeWithoutSecondsEnd;
+  
+  // Reseteamos valores cada vez que se vuelve a abrir la modal
+  $spanName.innerHTML = "";
+  $spanTel.innerHTML = "";
+  $spanDay.innerHTML = "";
+  $spanStartTime.innerHTML = "";
+  $spanEndTime.innerHTML = "";
+
+  // Ingresamos los datos correspondientes a cada elemento
+  $spanName.innerHTML += `${name}`;
+  $spanTel.innerHTML += `${tel}`;
+  $spanDay.innerHTML += `${day}`;
+  $spanStartTime.innerHTML += `${startTime}`;
+  $spanEndTime.innerHTML += `${endTime}`;
+
+  // Mostramos la modal.
+  $modal.show();
+
+  // Programamos la funcionalidad de cancelar el registro del turno.
+  const $btnCancel = document.querySelector('.btnCancel');
+
+  $btnCancel.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+    bootstrapModal.hide();
+  });
+}
 // El parámetro data contiene información del usuario logueado.
 function modal(info, calendar, data) {
   
@@ -143,6 +228,8 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
 }
 
 export {
-  modalElement,
   modal,
+  modalElement,
+  modalTurnContent,
+  modalTurnContentDisplay
 }

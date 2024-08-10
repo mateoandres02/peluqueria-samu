@@ -83,6 +83,17 @@ export default async function calendarRender (modalElement, data) {
     slotMinTime: '08:00:00',
     editable: true,
 
+    dayMaxEventRows: true,
+
+    views: {
+      timeGrid: {
+        dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+      },
+      dayGrid: {
+        dayMaxEventRows: 3
+      }
+    },
+
     //desactiva la opcion todo el dia de la vista semanal en el top de la vista del calendario
     allDaySlot: false,
 

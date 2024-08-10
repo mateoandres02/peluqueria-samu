@@ -32,6 +32,26 @@
     padding: 1rem;
 }
 
+.modal-body h2 {
+    font-size: 1.2rem
+}
+
+.modal-body h2 {
+    margin-bottom: .5rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#infoEndTime {
+    margin-bottom: 1rem;
+}
+
+.modal-body span {
+    font-weight: 800;
+}
+
 .modal-footer {
   padding: 10px;
   text-align: right;

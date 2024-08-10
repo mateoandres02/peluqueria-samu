@@ -26,8 +26,8 @@ const modalElement = `
             <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm">
 
             <div class="modal-footer">
-              <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
+              <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>
           </form>
         </div>
@@ -52,21 +52,25 @@ const modalTurnContent = `
           <h2 id="infoDay">Día: <span id="spanDay"></span></h2>
           <h2 id="infoStartTime">Inicio de Turno: <span id="spanStartTime"></span></h2>
           <h2 id="infoEndTime">Fin de Turno: <span id="spanEndTime"></span></h2>
-          <div class="modal-footer">
-              <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal"><i class="bi bi-trash"></i></button>
-              <button id="contactWsp" class="btn btn-success">Guardar</button>
-            </div>
+          <div class="modal-footer modal-footer-calendar">
+            <button id="contactWsp" class="btn btn-success">
+              <i class="bi bi-whatsapp"></i>
+            </button>
+            <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal"><i class="bi bi-trash"></i></button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 `;
+
 function modalTurnContentDisplay(info) {
+  console.log(info);
+  
   const d = document;
 
   // Inicializamos la modal
   const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
-  
   
   // Obtenemos los elementos de la modal 
   const $h2Name = d.getElementById("infoName");
@@ -114,12 +118,34 @@ function modalTurnContentDisplay(info) {
   // Programamos la funcionalidad de cancelar el registro del turno.
   const $btnCancel = document.querySelector('.btnCancel');
 
-  $btnCancel.addEventListener('click', (e) => {
+  $btnCancel.addEventListener('click', async (e) => {
     e.preventDefault();
+
+    // Obtenemos el publicId del turno creado
+    const publicId = info.event._def.publicId;
+
+    // Confirmamos la eliminación del registro.
+    const $confirm = confirm(`¿Estás seguro que quieres eliminar el turno?`);
+
+    // Si la confirmación es true, eliminamos el registro.
+    if ($confirm) {
+      const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+        method: 'DELETE'  
+      });
+
+      if (response.ok) {
+        // Una vez eliminado el registro, recargamos la página.
+        window.location.reload();
+      } else {
+        alert('Error al eliminar el turno.');
+      };
+    };
 
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
   });
+
+
 }
 // El parámetro data contiene información del usuario logueado.
 function modal(info, calendar, data) {

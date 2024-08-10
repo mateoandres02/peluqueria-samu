@@ -146,6 +146,7 @@ const deleteTurn = (req, res) => {
             message: err.message || "No se pudo borrar el registro con id = " + id
         });
     });
+    
 }
 
 const actionsTurns = {

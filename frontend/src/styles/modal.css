@@ -60,6 +60,13 @@
     margin-top: 1rem;
 }
 
+
+.modal-footer-calendar {
+    display: flex;
+    justify-content: center !important; 
+}
+
+
 .modal-close {
     border-radius: .25rem;
 }

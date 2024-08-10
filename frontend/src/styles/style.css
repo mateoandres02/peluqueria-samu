@@ -33,7 +33,7 @@
 
     /* Fonts */
 
-    --primary-font: system-ui;
+    --primary-font: 'Poppins', system-ui;
 
     /* Measures */
 
@@ -97,7 +97,8 @@ p {
     margin: 0 auto;
 
     display: flex;
-    gap: 2rem;
+
+    font-family: var(--primary-font) !important;
 }
 
 /* Utilities */

@@ -6,7 +6,7 @@ const modalElement = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar turno</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar cliente</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -14,16 +14,16 @@ const modalElement = `
         <div class="modal-body">
           <form id="eventForm" >
             <label for="input-name">Nombre</label>
-            <input type="text" name="inputName" id="input-name" class="input" required>
+            <input type="text" name="inputName" id="input-name" class="input" required pattern="^[a-zA-Z\\s]{1,25}$">
 
             <label for="input-number">Teléfono</label>
-            <input type="number" name="inputNumber" id="input-number" class="input" required>
+            <input type="number" name="inputNumber" id="input-number" class="input" required pattern="^\\+?\\d{1,15}$">
 
             <label for="eventDate">Fecha</label>
             <input type="text" name="eventDate" id="eventDate" class="input" readonly>
 
             <label for="event-datetime">Horario</label>
-            <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm">
+            <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm" readonly>
 
             <div class="modal-footer">
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
@@ -37,11 +37,11 @@ const modalElement = `
 `;
 
 const modalTurnContent = `
-  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalTurnContentLabel" aria-hidden="true">
+  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalTurnContentLabel">Informacion del Turno</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Informacion de Turno</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -53,10 +53,12 @@ const modalTurnContent = `
           <h2 id="infoStartTime">Inicio de Turno: <span id="spanStartTime"></span></h2>
           <h2 id="infoEndTime">Fin de Turno: <span id="spanEndTime"></span></h2>
           <div class="modal-footer modal-footer-calendar">
-            <button id="contactWsp" class="btn btn-success">
+            <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>
+            </a>
+            <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal">
+              <i class="bi bi-trash"></i>
             </button>
-            <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal"><i class="bi bi-trash"></i></button>
           </div>
         </div>
       </div>
@@ -64,9 +66,39 @@ const modalTurnContent = `
   </div>
 `;
 
-function modalTurnContentDisplay(info) {
-  console.log(info);
+const modalConfirm = `
+  <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Advertencia</h1>
+          <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h2>Deseas eliminar el turno?</h2>
+        </div>
+        <div class="modal-body">
+          <button id="deleteTurn" class="btn btn-success">Eliminar</button>
+          <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+
+function modalConfirmDisplay() {
+  const $modalConfirm = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
+
+  const $confirm = document.getElementById('deleteTurn');
+  // const $cancel = document.getElementById('deleteTurn');
+
+  $modalConfirm.show();
   
+}
+
+function modalTurnContentDisplay(info) {
   const d = document;
 
   // Inicializamos la modal
@@ -115,37 +147,59 @@ function modalTurnContentDisplay(info) {
   // Mostramos la modal.
   $modal.show();
 
-  // Programamos la funcionalidad de cancelar el registro del turno.
-  const $btnCancel = document.querySelector('.btnCancel');
+  // Botones de modal footer
+  const $btnCancel = document.getElementById("deleteTurn");
+  const $btnWsp = document.getElementById("contactWsp")
+  const body = document.body
 
   $btnCancel.addEventListener('click', async (e) => {
     e.preventDefault();
+    alert("sad")
+    // body.insertAdjacentHTML('beforeend', modalConfirm);
 
-    // Obtenemos el publicId del turno creado
-    const publicId = info.event._def.publicId;
+    // modalConfirmDisplay();
+    // const publicId = info.event._def.publicId;
+    // document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+    //   this.remove();
+    // });
+  })
+  // Programamos la funcionalidad de cancelar el registro del turno.
+  // $btnCancel.addEventListener('click', async (e) => {
+  //   e.preventDefault();
 
-    // Confirmamos la eliminación del registro.
-    const $confirm = confirm(`¿Estás seguro que quieres eliminar el turno?`);
+  //   // Obtenemos el publicId del turno creado
+  //   const publicId = info.event._def.publicId;
 
-    // Si la confirmación es true, eliminamos el registro.
-    if ($confirm) {
-      const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
-        method: 'DELETE'  
-      });
+  //   // Confirmamos la eliminación del registro.
+  //   const $confirm = confirm(`¿Estás seguro que quieres eliminar el turno?`);
 
-      if (response.ok) {
-        // Una vez eliminado el registro, recargamos la página.
-        window.location.reload();
-      } else {
-        alert('Error al eliminar el turno.');
-      };
-    };
+  //   // Si la confirmación es true, eliminamos el registro.
+  //   if ($confirm) {
+  //     const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+  //       method: 'DELETE'  
+  //     });
 
-    const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
-    bootstrapModal.hide();
+  //     if (response.ok) {
+  //       // Una vez eliminado el registro, recargamos la página.
+  //       window.location.reload();
+  //     } else {
+  //       alert('Error al eliminar el turno.');
+  //     };
+  //   };
+
+  //   const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+  //   bootstrapModal.hide();
+  // });
+
+  $btnWsp.addEventListener('click', async(e) => {
+    e.preventDefault();
+    
+    const msg = `Hola ${name} espero que te encuentres muy bien!, tenes un turno agendado para el dia ${day}, a las ${startTime}`
+    const wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+    $btnWsp.href = wspUrl
+    
+    window.open(wspUrl, '_blank');
   });
-
-
 }
 // El parámetro data contiene información del usuario logueado.
 function modal(info, calendar, data) {
@@ -203,15 +257,69 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
   span.style.marginBottom = '0rem';
   span.style.paddingBottom = '0rem';
 
+  document.getElementById('input-name').addEventListener('input', function(event) {
+    const input = event.target;
+  
+    const namePattern = /^[a-zA-Z\s]{1,25}$/;
+  
+    if (!namePattern.test(input.value)) {
+      input.setCustomValidity("solo letras y espacios hasta 25 caracteres.");
+    } else {
+      input.setCustomValidity(""); // Restablece la validez del input si coincide con el patrón
+    }
+  });
+  
+  document.getElementById('input-number').addEventListener('input', function(event) {
+    const input = event.target;
+  
+    const numberPattern = /^\+?\d{1,15}$/;
+  
+    if (!numberPattern.test(input.value)) {
+      input.setCustomValidity("Solo numeros hasta 15 digitos.");
+    } else {
+      input.setCustomValidity(""); // Restablece la validez del input si coincide con el patrón
+    }
+  });
+
   // Programamos el evento del formulario que enviará los datos al back.
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
     
+    const $nameInput = document.getElementById('input-name');
+    const $numberInput = document.getElementById('input-number');
+
     // Obtenemos los datos ingresados por el usuario.
+    const clientName = form.inputName.value.trim();
+    const clientNumber = form.inputNumber.value.trim();
     const idBarber = dataUserActive.user.Id;
-    const clientName = form.inputName.value;
-    const clientNumber = form.inputNumber.value;
     const dateOutParsed = date;
+
+
+      // Validación al enviar el formulario
+    if ($nameInput.checkValidity() && $numberInput.checkValidity()) {
+      // Aquí puedes manejar el envío del formulario si los valores son válidos
+      // Por ejemplo, realizar la petición al servidor como lo hacías antes
+      console.log("Formulario válido. Enviando datos...");
+    } else {
+      // Si hay algún error, se mostrará el mensaje personalizado correspondiente
+      $nameInput.reportValidity(); 
+      $numberInput.reportValidity();
+    }
+      // // Validar el nombre
+    // if (!namePattern.test(clientName)) {
+    //   span.innerHTML = 'El nombre debe contener solo letras, espacios y tener máximo 25 caracteres.';
+    //   span.style.color = 'red';
+    //   $modalFooter.appendChild(span);
+    //   return;
+    // }
+
+    // // Validar el número de teléfono
+    // if (!numberPattern.test(clientNumber)) {
+    //     span.innerHTML = 'El teléfono debe contener solo números y un máximo de 15 dígitos. Puede comenzar con +.';
+    //     span.style.color = 'red';
+    //     $modalFooter.appendChild(span);
+    //     return;
+    // }
 
     // Creamos el turno.
     const turn = {

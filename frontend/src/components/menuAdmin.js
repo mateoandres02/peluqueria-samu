@@ -4,9 +4,18 @@ const menuFunction = (user) => {
 
     const menu = `
         <aside class="sidebar">
-            <div class="profile">
-                <img src="../../public/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
-                <span class="profile-name">${user}</span>
+            <div class="sidebar-nav">
+                <div class="btnHamburger">
+                    <button class="hamburger hamburger--collapse" type="button">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+                <div class="profile">
+                    <img src="../../public/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <span class="profile-name">${user}</span>
+                </div>
             </div>
             <nav class="menu">
                 <ul>
@@ -39,12 +48,12 @@ const menuFunction = (user) => {
                             Generar Tabla Turnos
                         </a>
                     </li>
-                    <li class="button-logout-container">
-                        <button id="logout">
-                            Cerrar Sesion
-                        </button>
-                    </li>
                 </ul>
+                <div class="button-logout-container">
+                    <button id="logout">
+                        Cerrar Sesion
+                    </button>
+                </div>
             </nav>
         </aside>
     `;
@@ -53,5 +62,23 @@ const menuFunction = (user) => {
 
 }
 
-export default menuFunction;
+const closeMenu = () => {
+    const $btn = document.querySelector('.btnHamburger button');
+
+    // Eliminar cualquier listener existente
+    $btn.removeEventListener('click', toggleHamburger);
+
+    // Añadir el listener de click
+    $btn.addEventListener('click', toggleHamburger);
+}
+
+const toggleHamburger = (e) => {
+    const $btn = e.currentTarget;
+    $btn.classList.toggle('is-active');
+};
+
+export {
+    menuFunction,
+    closeMenu
+};
 

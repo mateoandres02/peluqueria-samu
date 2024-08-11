@@ -2,66 +2,133 @@
 
 .sidebar {
     width: 300px;
+    max-width: 300px;
+    height: 100vh;
+
     background-color: var(--sidebar-grey);
     color: var(--light-grey-letter);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+    display: grid;
+    grid-template-rows: 10% 75% 15%;
+    grid-template-areas: 
+        "profile"
+        "menu"
+        "logout";
 
     position: fixed;
     top: 0;
     left: 0;
-    height: 100vh;
 }
 
-.profile {
+.sidebar-nav {
     width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
+    height: 100%;
+    grid-area: "profile";
+    background-color: var(--bg-color-sidebar);
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.btnHamburger {
+    width: 20%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
-    padding: .5rem;
-    background-color: var(--bg-color-sidebar);
+}
+
+.btnHamburger button span *::after, 
+.btnHamburger button span *::before, 
+.btnHamburger button span * {
+    background-color: var(--light-grey-letter) !important;
+}
+
+.btnHamburger button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    outline: none;
+}
+
+.profile {
+    width: 80%;
+    height: 100%;
+    padding: 0rem 1rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .profile-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 1rem;
 }
 
 .profile-name {
     display: block;
     font-weight: bold;
     font-size: 1.3rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .menu {
+    grid-area: "menu";
+
     width: 100%;
+    height: 100%;
+    max-height: 800px;
+
+    margin: 0;
 }
 
 .menu ul {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 0rem;
+    height: 100%;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
 }
 
 .menu li {
     width: 100%;
+    height: 60px;
     margin: 10px 0;
 
+    font-weight: 500;
+    font-size: 1.2rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .menu a {
-    height: 5rem;
+    height: 100%;
+    width: 100%;
+    padding: 10px 10px;
+
     color: var(--light-grey-letter);
     text-decoration: none;
+
     display: flex;
     align-items: center;
-    padding: 10px 10px;
-    font-size: 1.3rem;
+    
     transition: background-color 0.3s ease;
 }
 
@@ -71,14 +138,18 @@
 
 .icon {
     height: inherit;
-    width: 3rem;
+    width: 2.5rem;
     margin-right: 10px;
 }
 
-.logo {
-    color: black;
-    text-decoration: none;
-    text-align: center;
+.button-logout-container {
+    grid-area: "logout";
+    
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #logout {
@@ -87,11 +158,14 @@
     border: unset;
     border-radius: 15px;
     padding: 15px 30px;
-    font-size: larger;
     background-color: #1d1d1d;
+
+    font-size: larger;
     color: white;
     font-weight: bold;
+
     cursor: pointer;
+
     transition: background-color 0.2s ease, color 0.3s ease;
 }
 
@@ -99,12 +173,6 @@
     background-color: var(--button-color);
     color: var(--dark-blue);
 } 
-
-.button-logout-container{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
 
 /* Media queries CELULAR*/
 

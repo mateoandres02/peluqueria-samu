@@ -6,7 +6,7 @@ const modalElement = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar cliente</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar turno</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -37,11 +37,11 @@ const modalElement = `
 `;
 
 const modalTurnContent = `
-  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalTurnContentLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Informacion de Turno</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalTurnContentLabel">Informacion del Turno</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>

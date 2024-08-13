@@ -293,6 +293,8 @@ const deleteEmployee = (btnsDelete) => {
           const response = await fetch(`http://localhost:3001/users/${key}`);
           const data = await response.json();
 
+          console.log(data);
+
           // Confirmamos la eliminación del registro.
           const $confirm = confirm(`¿Estás seguro que quieres eliminar al empleado ${data.Nombre}?`);
 
@@ -301,6 +303,8 @@ const deleteEmployee = (btnsDelete) => {
               const response = await fetch(`http://localhost:3001/users/${key}`, {
                   method: 'DELETE'
               });
+
+              console.log(response)
 
               if (response.ok) {
                   // Una vez eliminado el registro, recargamos la página.

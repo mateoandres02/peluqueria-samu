@@ -45,20 +45,20 @@ export default async function calendarRender (modalElement, data) {
 
   // Renderizamos los turnos
   const turns = await getTurnsByUserActive(data);
-  
+
   const arrayTurns = turns.map(turn => {
-    const dateEnd = turnDateEnd(turn.Date);
+    const dateEnd = turnDateEnd(turn.turns.Date);
 
     return {
-      id: turn.Id,
-      title: turn.Nombre,
-      start: turn.Date,
+      id: turn.turns.Id,
+      title: turn.turns.Nombre,
+      start: turn.turns.Date,
       end: dateEnd,
       extendedProps: {
-        telefono: turn.Telefono
+        telefono: turn.turns.Telefono
       }
     };
-
+    
   });
 
   let calendarEl = d.getElementById("calendar");
@@ -173,8 +173,6 @@ export default async function calendarRender (modalElement, data) {
     // Trabajamos la funcionalidad de modal
     // Se trata de pasar una función anónima como callback en lugar de pasar la referencia directa a la función.
     dateClick: function(info) {
-
-      console.log(info)
 
       // Preguntamos si el usuario está autenticado.
       checkAuthentication();

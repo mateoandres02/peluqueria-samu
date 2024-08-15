@@ -17,7 +17,7 @@ const app = express();
 // Middlewares.
 app.use(express.json());
 app.use(cors({
-    origin: "https://peluqueria-invasion.vercel.app/",
+    origin: "https://peluqueria-invasion.vercel.app",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     allowedHeaders: "Content-Type,Authorization"

@@ -84,7 +84,7 @@ const usersData = async () => {
 
   try {
     
-    const response = await fetch("http://localhost:3001/users");
+    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
     
     if (!response.ok) {
       alert('Hubo algun error en obtener los usuarios.');
@@ -176,12 +176,12 @@ const submitEmployee = (form, modal, modalFooter) => {
       };
 
       // Configuramos variables para hacer una request a post.
-      let url = 'http://localhost:3001/register';
+      let url = 'https://peluqueria-invasion-backend.vercel.app/register';
       let method = 'POST';
 
       // Preguntamos si el modo es update para hacer una correcta request.
       if (mode === 'update') {
-          url = `http://localhost:3001/users/${id}`;
+          url = `https://peluqueria-invasion-backend.vercel.app/users/${id}`;
           method = 'PUT';
       };
 
@@ -252,7 +252,7 @@ const updateEmployee = (btnsPut, modal) => {
           const key = e.currentTarget.getAttribute('key');
 
           // Hacemos una request para modificar el user con el id que coincida con la key del boton apretado
-          const response = await fetch(`http://localhost:3001/users/${key}`);
+          const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`);
           const data = await response.json();
 
           // Configuramos mensajes de la modal.
@@ -290,7 +290,7 @@ const deleteEmployee = (btnsDelete) => {
           const key = e.currentTarget.closest('tr').getAttribute('key');
 
           // Hacemos una request para obtener información del registro a eliminar.
-          const response = await fetch(`http://localhost:3001/users/${key}`);
+          const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`);
           const data = await response.json();
 
           console.log(data);
@@ -300,7 +300,7 @@ const deleteEmployee = (btnsDelete) => {
 
           // Si la confirmación es true, eliminamos el registro.
           if ($confirm) {
-              const response = await fetch(`http://localhost:3001/users/${key}`, {
+              const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
                   method: 'DELETE'
               });
 

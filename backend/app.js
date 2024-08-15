@@ -17,10 +17,14 @@ const app = express();
 // Middlewares.
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
+    origin: "https://peluqueria-invasion-front.vercel.app/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    allowedHeaders: "Content-Type,Authorization"
 }));
 app.use(cookieParser());
+
+app.options('*', cors());
 
 // Iniciamos la base de datos.
 dbStart();

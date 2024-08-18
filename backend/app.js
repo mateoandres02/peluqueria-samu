@@ -16,15 +16,28 @@ const app = express();
 
 // Middlewares.
 app.use(express.json());
-app.use(cors({
-    origin: "https://peluqueria-invasion.vercel.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    allowedHeaders: "Content-Type,Authorization"
-}));
 app.use(cookieParser());
 
-app.options('*', cors());
+// Cors
+const allowedOrigins = ['https://peluqueria-invasion-front.vercel.app/', 
+                       'http://localhost:5173/'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Verificar si el origen está en la lista de permitidos
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Permitir el envío de cookies y credenciales
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
+  allowedHeaders: 'Content-Type,Authorization', // Encabezados permitidos
+};
+
+// Usa CORS con las opciones configuradas
+app.use(cors(corsOptions));
 
 // Iniciamos la base de datos.
 dbStart();
@@ -42,9 +55,7 @@ app.use(routesUser);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {
-    console.log(`
-        Servidor iniciado en http://localhost:${config.port}
-    `);
+    console.log('Servidor iniciado en http://localhost:3000');
 });
 
 export default app;

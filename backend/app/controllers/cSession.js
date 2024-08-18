@@ -17,6 +17,8 @@ const login = async (req, res) => {
         // Logueamos el usuario y lo validamos.
         const user = await UserRepository.login({ Nombre, Contrasena, Rol });
 
+        console.log(user)
+
         // Generamos el token de acceso.
         const token = jwt.sign(
             {
@@ -32,11 +34,12 @@ const login = async (req, res) => {
 
         // Guardamos el token de acceso en una cookie.
         res.cookie('access_token', token, {
-            httpOnly: true, // Asegura que la cookie no sea accesible desde JavaScript en el navegador
-            // secure: true, // Asegura que la cookie solo se envíe a través de HTTPS
-            // secure: process.env.NODE_ENV === 'production', // Asegura que la cookie se pueda probar en producción.
-            sameSite: 'strict', // Previene que la cookie sea enviada en solicitudes cross-site
-            maxAge: 10 * 60 * 60 * 1000 // 10 horas.
+            httpOnly: true, // Solo accesible por el servidor
+            secure: true, // Asegúrate de que solo se envíe sobre HTTPS
+            sameSite: 'None', // Asegúrate de que se envíe en solicitudes cruzadas
+            // domain: 'https://peluqueria-invasion-front.vercel.app', // Dominio del backend
+            path: '/', // Asegúrate de que la cookie esté disponible para todas las rutas
+            maxAge: 1000 * 60 * 60 * 10 
         });
         
         // enviamos la información del usuario logueado y la información de los tokens
@@ -75,7 +78,14 @@ const register = async (req, res) => {
 
 const logout = (req, res) => {
     // Limpiamos el token de las cookies.
-    res.clearCookie('access_token');
+    // res.clearCookie('access_token');
+    res.clearCookie('access_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        path: '/',
+        // domain: 'tu-dominio.com' // Igual que antes, no lo incluyas si no es necesario
+    });
     res.json({ message: 'Logout Successful.'});
 };
 

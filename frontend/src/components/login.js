@@ -1,13 +1,13 @@
 const mensajeError = document.getElementsByClassName("error")[0];
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
-    
+
     event.preventDefault();
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
+    const response = await fetch('https://peluqueria-invasion-back.vercel.app/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json', 
@@ -15,14 +15,14 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         body: JSON.stringify({ Nombre: username, Contrasena: password }),
         credentials: 'include',
     });
-    
+
     if (response.ok) {
+        history.replaceState(null, '', '/');
         window.location.href = '/';
     } 
-    
+
     if (!response.ok) {
         return mensajeError.classList.toggle("escondido", false);
     }
 
 });
-  

@@ -1,17 +1,17 @@
 import jwt from 'jsonwebtoken';
 import { config } from "../config/config.js";
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
 
     // Obtenemos el token desde las cookies.
-    const token = req.cookies.access_token;
+    const token = await req.cookies.access_token;
 
     if (!token) {
         return res.status(401).json({
             message: 'Acceso denegado. Token no proporcionado.'
         });
     };
-    
+
     jwt.verify(token, config.secretJwtKey, (err, user) => {
         if (err) {
             console.log('err', err);
@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
         req.user = user;
         next();
     });
-    
+
 };
 
 

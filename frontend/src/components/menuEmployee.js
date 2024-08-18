@@ -13,7 +13,7 @@ const menu = (data) => {
                     </button>
                 </div>
                 <div class="profile">
-                    <img src="../../public/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <img src="../../assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
                     <span class="profile-name">${data}</span>
                 </div>
             </div>
@@ -21,7 +21,7 @@ const menu = (data) => {
                 <ul>
                     <li>
                         <a href="#admin-calendar">
-                            <img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">
+                            <img src="/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">
                             Administrar Calendario
                         </a>
                     </li>

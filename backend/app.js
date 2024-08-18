@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Cors
-const allowedOrigins = ['https://peluqueria-invasion-front.vercel.app/', 
+const allowedOrigins = ['https://peluqueria-invasion.vercel.app/', 
                        'http://localhost:5173/'];
 
 const corsOptions = {

@@ -7,7 +7,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('https://peluqueria-invasion-back.vercel.app/login', {
+    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json', 

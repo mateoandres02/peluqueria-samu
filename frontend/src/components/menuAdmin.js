@@ -13,7 +13,7 @@ const menuFunction = (user) => {
                     </button>
                 </div>
                 <div class="profile">
-                    <img src="../../public/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <img src="../../assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
                     <span class="profile-name">${user}</span>
                 </div>
             </div>
@@ -21,7 +21,7 @@ const menuFunction = (user) => {
                 <ul>
                     <li>
                         <a href="#admin-calendar">
-                            <img src="../../public/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario
+                            <img src="/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario
                         </a>
                     </li>
                     <li>

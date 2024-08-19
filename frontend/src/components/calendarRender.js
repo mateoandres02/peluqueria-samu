@@ -7,7 +7,8 @@ const d = document;
 let body = document.body;
 
 const getTurnsByUserActive = async (data) => {
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
+  // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
+  const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
 
   const turns = await response.json();
 

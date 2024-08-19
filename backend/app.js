@@ -55,7 +55,7 @@ app.use(routesUser);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {
-    console.log('Servidor iniciado en http://localhost:3000');
+    console.log('Servidor iniciado en http://localhost:3001');
 });
 
 export default app;

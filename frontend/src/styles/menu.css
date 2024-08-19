@@ -31,34 +31,9 @@
     align-items: center;
 }
 
-.btnHamburger {
-    width: 20%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.btnHamburger button span *::after, 
-.btnHamburger button span *::before, 
-.btnHamburger button span * {
-    background-color: var(--light-grey-letter) !important;
-}
-
-.btnHamburger button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border: none;
-    outline: none;
-}
-
 .profile {
-    width: 80%;
+    /* width: 80%; era para el btn de hamburguesa */
+    width: 100%;
     height: 100%;
     padding: 0rem 1rem;
 
@@ -174,10 +149,14 @@
     color: var(--dark-blue);
 } 
 
-/* Media queries CELULAR*/
+/* Media queries */
 
-/*
-@media only screen and (max-width: 600px) {
-  /* estilos para pantallas menores o iguales a 600px 
+@media (640px > width) {
+    .sidebar {
+        display: none;
+    }
 }
-*/
+
+@media (1080px > width) {
+
+}

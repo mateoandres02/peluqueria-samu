@@ -2,16 +2,17 @@ import '/src/styles/menu.css';
 
 const menu = (data) => {
 
+    // <div class="btnHamburger">
+    //     <button class="hamburger hamburger--collapse" type="button">
+    //         <span class="hamburger-box">
+    //             <span class="hamburger-inner"></span>
+    //         </span>
+    //     </button>
+    // </div>
+    
     const menu = `
         <aside class="sidebar">
             <div class="sidebar-nav">
-                <div class="btnHamburger">
-                    <button class="hamburger hamburger--collapse" type="button">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </button>
-                </div>
                 <div class="profile">
                     <img src="../../assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
                     <span class="profile-name">${data}</span>
@@ -51,23 +52,23 @@ const menu = (data) => {
 
 }
 
-const closeMenu = () => {
-    const $btn = document.querySelector('.btnHamburger button');
+// const closeMenu = () => {
+//     const $btn = document.querySelector('.btnHamburger button');
 
-    // Eliminar cualquier listener existente
-    $btn.removeEventListener('click', toggleHamburger);
+//     // Eliminar cualquier listener existente
+//     $btn.removeEventListener('click', toggleHamburger);
 
-    // Añadir el listener de click
-    $btn.addEventListener('click', toggleHamburger);
-}
+//     // Añadir el listener de click
+//     $btn.addEventListener('click', toggleHamburger);
+// }
 
-const toggleHamburger = (e) => {
-    const $btn = e.currentTarget;
-    $btn.classList.toggle('is-active');
-};
+// const toggleHamburger = (e) => {
+//     const $btn = e.currentTarget;
+//     $btn.classList.toggle('is-active');
+// };
 
 export {
     menu,
-    closeMenu
+    // closeMenu
 };
 

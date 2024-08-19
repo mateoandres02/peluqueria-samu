@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 // Cors
 const allowedOrigins = ['https://peluqueria-invasion.vercel.app', 
-                       'http://localhost:5173'];
+                        'http://localhost:5173'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -55,7 +55,7 @@ app.use(routesUser);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {
-    console.log('Servidor iniciado en http://localhost:3001');
+    console.log(`Servidor iniciado en http://localhost:${config.port}`);
 });
 
 export default app;

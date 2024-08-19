@@ -1,5 +1,7 @@
 import esLocale from "@fullcalendar/core/locales/es";
-import { modal, modalTurnContent, modalTurnContentDisplay, modalConfirm, modalConfirmDisplay } from "./modal.js";
+import { modal } from "./modalPostTurn.js";
+import { modalTurnContent, modalTurnContentDisplay } from "./modalGetTurn.js"
+import { modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn.js"
 import checkAuthentication from "./auth.js";
 
 const d = document;
@@ -108,21 +110,19 @@ export default async function calendarRender (modalElement, data) {
     events: arrayTurns,
 
     eventClick: function(info){
+      
       body.insertAdjacentHTML('beforeend', modalTurnContent);
-      body.insertAdjacentHTML('beforeend', modalConfirm);
 
       modalTurnContentDisplay(info);
 
-      // document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
-      //   this.remove();
-      // });
       const modales = document.querySelectorAll('.modal');
-      
+
       modales.forEach(modal => {
         modal.addEventListener('hidden.bs.modal', function () {
           this.remove();
         });
-      })
+      });
+      
     },
 
     // Botones customizables

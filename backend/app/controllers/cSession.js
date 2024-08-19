@@ -17,8 +17,6 @@ const login = async (req, res) => {
         // Logueamos el usuario y lo validamos.
         const user = await UserRepository.login({ Nombre, Contrasena, Rol });
 
-        console.log(user)
-
         // Generamos el token de acceso.
         const token = jwt.sign(
             {

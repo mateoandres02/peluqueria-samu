@@ -1,6 +1,8 @@
 import calendarRender from './calendarRender.js';
 import calendario from "./calendario.js";
-import { menuFunction, closeMenu } from "./menuAdmin.js";
+// import { menuFunction, closeMenu } from "./menuAdmin.js"; closeMenu es para el boton de hamburguesa.
+import { menuFunction } from "./menuAdmin.js";
+import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modal.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
@@ -14,6 +16,7 @@ const indexView = async (data) => {
     
     app.innerHTML = '';
     app.innerHTML += menuFunction(userActive);
+    app.innerHTML += btnHamburger;
     
     switch (urlActive) {
         case '#admin-calendar':

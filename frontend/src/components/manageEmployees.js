@@ -7,7 +7,7 @@ const postEmployee = `
     <h3>Administración de Empleados</h3>
     <p class="postEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y contraseña.</p>
     <button type="button" class="postEmployee-btn">
-      <img src="../../public/assets/icons/person-fill-add.svg">
+      <img src="/assets/icons/person-fill-add.svg">
       Agregar <br> Empleado
     </button>
   </div>

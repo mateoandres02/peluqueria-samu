@@ -12,9 +12,6 @@ export default async function checkAuthentication() {
             const data = await response.json(); 
             window.location.href = '/login';
         } else {
-
-            alert('la respuesta fue ok')
-
             // Leemos el cuerpo de la respuesta, en el cual recibimos el usuario logueado.
             const data = await response.json(); 
 

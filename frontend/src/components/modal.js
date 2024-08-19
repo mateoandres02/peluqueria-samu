@@ -80,7 +80,7 @@ const modalConfirm = `
           <h2>Deseas eliminar el turno?</h2>
         </div>
         <div class="modal-body">
-          <button id="deleteTurn" class="btn btn-success">Eliminar</button>
+          <button id="confirmDeleteTurn" class="btn btn-success">Eliminar</button>
           <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
@@ -91,11 +91,34 @@ const modalConfirm = `
 function modalConfirmDisplay() {
   const $modalConfirm = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
 
-  const $confirm = document.getElementById('deleteTurn');
-  // const $cancel = document.getElementById('deleteTurn');
-
   $modalConfirm.show();
+}
+
+function clickDelete(info){
+  const $deleteTurn = document.getElementById("confirmDeleteTurn")
   
+  $deleteTurn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    console.log(info)
+
+    // Obtenemos el publicId del turno creado
+    const publicId = info.event._def.publicId;
+
+    const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+        method: 'DELETE'  
+      });
+
+    if (response.ok) {
+        // Una vez eliminado el registro, recargamos la página.
+        window.location.reload();
+    } else {
+      alert('Error al eliminar el turno.');
+    };
+
+    // const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
+    // bootstrapModal.hide();
+  })
 }
 
 function modalTurnContentDisplay(info) {
@@ -148,20 +171,16 @@ function modalTurnContentDisplay(info) {
   $modal.show();
 
   // Botones de modal footer
-  const $btnCancel = document.getElementById("deleteTurn");
+  const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp")
   const body = document.body
 
-  $btnCancel.addEventListener('click', async (e) => {
+  $btnDelete.addEventListener('click', async (e) => {
     e.preventDefault();
-    alert("sad")
-    // body.insertAdjacentHTML('beforeend', modalConfirm);
-
-    // modalConfirmDisplay();
-    // const publicId = info.event._def.publicId;
-    // document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
-    //   this.remove();
-    // });
+    modalConfirmDisplay();
+    // Corroboro que clickie el boton delete
+    clickDelete(info)
+    
   })
   // Programamos la funcionalidad de cancelar el registro del turno.
   // $btnCancel.addEventListener('click', async (e) => {
@@ -366,5 +385,7 @@ export {
   modal,
   modalElement,
   modalTurnContent,
-  modalTurnContentDisplay
+  modalTurnContentDisplay,
+  modalConfirm,
+  modalConfirmDisplay
 }

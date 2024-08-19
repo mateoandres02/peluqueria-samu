@@ -13,7 +13,7 @@ const menuFunction = (user) => {
                     </button>
                 </div>
                 <div class="profile">
-                    <img src="../../assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <img src="/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
                     <span class="profile-name">${user}</span>
                 </div>
             </div>
@@ -26,25 +26,25 @@ const menuFunction = (user) => {
                     </li>
                     <li>
                         <a href="#cash-register">
-                            <img src="../../public/assets/icons/cash-register.svg" alt="Ver caja" class="icon">
+                            <img src="./assets/icons/cash-register.svg" alt="Ver caja" class="icon">
                             Seguimiento de caja
                         </a>
                     </li>
                     <li>
                         <a href="#share-calendar">
-                            <img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">
+                            <img src="/assets/icons/share.svg" alt="Compartir calendario" class="icon">
                             Compartir calendario
                         </a>
                     </li>
                     <li>
                         <a href="#manage-employees">
-                            <img src="../../public/assets/icons/edit-user.svg" alt="Administrar empleados" class="icon">
+                            <img src="/assets/icons/edit-user.svg" alt="Administrar empleados" class="icon">
                             Administrar empleados
                         </a>
                     </li>
                     <li>
                         <a href="#generate-table">
-                            <img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">
+                            <img src="/assets/icons/table.svg" alt="Generar tabla" class="icon">
                             Generar Tabla Turnos
                         </a>
                     </li>

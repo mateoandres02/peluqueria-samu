@@ -13,7 +13,7 @@ const menu = (data) => {
                     </button>
                 </div>
                 <div class="profile">
-                    <img src="../../assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <img src="/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
                     <span class="profile-name">${data}</span>
                 </div>
             </div>
@@ -27,13 +27,13 @@ const menu = (data) => {
                     </li>
                     <li>
                         <a href="#share-calendar">
-                            <img src="../../public/assets/icons/share.svg" alt="Compartir calendario" class="icon">
+                            <img src="/assets/icons/share.svg" alt="Compartir calendario" class="icon">
                             Compartir calendario
                         </a>
                     </li>
                     <li>
                         <a href="#generate-table">
-                            <img src="../../public/assets/icons/table.svg" alt="Generar tabla" class="icon">
+                            <img src="/assets/icons/table.svg" alt="Generar tabla" class="icon">
                             Generar Tabla Turnos
                         </a>
                     </li>

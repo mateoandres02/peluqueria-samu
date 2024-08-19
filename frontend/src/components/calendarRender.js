@@ -1,5 +1,5 @@
 import esLocale from "@fullcalendar/core/locales/es";
-import { modal, modalTurnContent, modalTurnContentDisplay } from "./modal.js";
+import { modal, modalTurnContent, modalTurnContentDisplay, modalConfirm, modalConfirmDisplay } from "./modal.js";
 import checkAuthentication from "./auth.js";
 
 const d = document;
@@ -105,38 +105,24 @@ export default async function calendarRender (modalElement, data) {
       right: 'prev,next'
     },
 
-    // Eventos
-    // events: [
-    //   {
-    //     id:"1",
-    //     title: "Evento 1",
-    //     start: "2024-08-01T10:00:00",
-    //     extendedProps: {
-    //       telefono: "3517594888"
-    //     },
-    //     description: "lectura"
-    //   },
-    //   {
-    //     id:"2",
-    //     title: "Evento 2",
-    //     start: "2024-08-01T16:30:00",
-    //     end: "2024-08-01T17:00:00",
-    //     extendedProps: {
-    //       telefono: "3517594888"
-    //     },
-    //     description: "lectura"
-    //   }
-    // ],
     events: arrayTurns,
 
     eventClick: function(info){
       body.insertAdjacentHTML('beforeend', modalTurnContent);
+      body.insertAdjacentHTML('beforeend', modalConfirm);
 
       modalTurnContentDisplay(info);
 
-      document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
-        this.remove();
-      });
+      // document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
+      //   this.remove();
+      // });
+      const modales = document.querySelectorAll('.modal');
+      
+      modales.forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function () {
+          this.remove();
+        });
+      })
     },
 
     // Botones customizables

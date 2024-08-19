@@ -3,7 +3,7 @@ import calendario from "./calendario.js";
 // import { menu, closeMenu } from "./menuEmployee.js"; closeMenu es para el boton de hamburguesa.
 import { menu } from "./menuEmployee.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
-import { modalElement } from "./modal.js";
+import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
 
 const indexView = async (data) => {

@@ -5,6 +5,20 @@ import { eq } from 'drizzle-orm';
 
 const getAllTurns = async (req, res) => {
     try {
+        const data = await db.select({
+            turns: turns,
+        }).from(turns);
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || "Ocurrió algún error recuperando los turnos."
+        });
+    }
+}
+
+const getAllTurnsByBarber = async (req, res) => {
+    try {
         const id = req.params.idUserActive;
 
         // Realiza la consulta a la base de datos
@@ -107,7 +121,7 @@ const deleteTurn = async (req, res) => {
         const id = req.params.id;
 
         const response = await db.delete(turns)
-            .where(turns.Id.eq(id))
+            .where(eq(turns.Id, id))
             .returning();
 
         if (response.length) {
@@ -128,6 +142,7 @@ const deleteTurn = async (req, res) => {
 
 const actionsTurns = {
     getAllTurns,
+    getAllTurnsByBarber,
     getByIdTurn,
     postTurn,
     updateTurn,

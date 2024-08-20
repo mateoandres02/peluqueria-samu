@@ -28,6 +28,10 @@
     padding: .25rem 0rem 1rem;
 }
 
+.modal-header h1>i {
+    padding-right: 15px;
+}
+
 .modal-body {
     padding: 1rem;
 }
@@ -35,6 +39,12 @@
 .modal-body h2 {
     font-size: 1.2rem
 }
+
+.modal-body h2>i {
+    padding-right: 10px;
+    margin-left: 1px;
+}
+
 
 .modal-body h2 {
     margin-bottom: .5rem;
@@ -60,6 +70,15 @@
   flex-direction: row-reverse;
 
   border-top: 1px solid var(--line-grey);
+}
+
+.modal-footer-delete {
+  border-top: 1px solid var(--line-grey);
+  padding: 15px 10px 0 10px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
 }
 
 .modal-close {
@@ -100,6 +119,10 @@
 label {
     display: block;
     margin-bottom: .25rem;
+}
+
+label > i {
+    padding-right: 5px;
 }
 
 .input {

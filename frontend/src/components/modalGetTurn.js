@@ -7,17 +7,17 @@ const modalTurnContent = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Informacion de Turno</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-info-circle"></i>Informacion de Turno</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
         </div>
         <div class="modal-body">
-          <h2 id="infoName">Nombre y Apellido: <span id="spanName"></span> </h2>
-          <h2 id="infoTel">Teléfono: <span id="spanTel"></span></h2>
-          <h2 id="infoDay">Día: <span id="spanDay"></span></h2>
-          <h2 id="infoStartTime">Inicio de Turno: <span id="spanStartTime"></span></h2>
-          <h2 id="infoEndTime">Fin de Turno: <span id="spanEndTime"></span></h2>
+          <h2 id="infoName"><i class="bi bi-person-lines-fill"></i>Nombre y Apellido: <span id="spanName"></span> </h2>
+          <h2 id="infoTel"><i class="bi bi-telephone"></i>Teléfono: <span id="spanTel"></span></h2>
+          <h2 id="infoDay"><i class="bi bi-calendar-event"></i>Día: <span id="spanDay"></span></h2>
+          <h2 id="infoStartTime"><i class="bi bi-clock"></i>Inicio de Turno: <span id="spanStartTime"></span></h2>
+          <h2 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h2>
           <div class="modal-footer modal-footer-calendar">
             <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>

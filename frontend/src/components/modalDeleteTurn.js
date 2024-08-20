@@ -6,7 +6,7 @@ const modalConfirm = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Advertencia</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-question-octagon"></i>Advertencia</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -14,7 +14,7 @@ const modalConfirm = `
         <div class="modal-body">
           <h2>Deseas eliminar el turno?</h2>
         </div>
-        <div class="modal-body">
+        <div class="modal-footer-delete">
           <button id="confirmDeleteTurn" class="btn btn-success">Eliminar</button>
           <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
         </div>

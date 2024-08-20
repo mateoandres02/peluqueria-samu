@@ -6,23 +6,23 @@ const modalElement = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel">Registrar cliente</h1>
+          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h1>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
         </div>
         <div class="modal-body">
           <form id="eventForm" >
-            <label for="input-name">Nombre</label>
+            <label for="input-name"><i class="bi bi-person-lines-fill"></i>Nombre</label>
             <input type="text" name="inputName" id="input-name" class="input" required pattern="^[a-zA-Z\\s]{1,25}$">
 
-            <label for="input-number">Teléfono</label>
+            <label for="input-number"><i class="bi bi-telephone"></i>Teléfono</label>
             <input type="number" name="inputNumber" id="input-number" class="input" required pattern="^\\+?\\d{1,15}$">
 
-            <label for="eventDate">Fecha</label>
+            <label for="eventDate"><i class="bi bi-calendar-event"></i>Fecha</label>
             <input type="text" name="eventDate" id="eventDate" class="input" readonly>
 
-            <label for="event-datetime">Horario</label>
+            <label for="event-datetime"> <i class="bi bi-clock"></i>Horario</label>
             <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm" readonly>
 
             <div class="modal-footer">
@@ -177,8 +177,8 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     const response = await fetch(url, options);
 
     if (response.ok) {
-      span.innerHTML = 'Turno creado correctamente'
-      span.style.color = 'green';
+      span.innerHTML = 'Turno creado correctamente!'
+      span.style.color = '#02C028';
 
       setTimeout(() => {
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);

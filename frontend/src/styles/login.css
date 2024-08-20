@@ -47,7 +47,7 @@ body {
   width: 100%;
   /* margin: 0; */
 
-  background-image: url('/public/assets/waves.svg');
+  background-image: url('/assets/waves.svg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -141,7 +141,7 @@ button:hover {
 }
 
 .error {
-  color: rgb(255, 81, 81);
+  color: #ff5151;
   margin: 1.5rem 0rem 0rem 0rem;
   text-align: center;
 }

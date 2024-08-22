@@ -165,8 +165,8 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     }
 
     // Manejamos el post de la información ingresada por el usuario al back.
-    // const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
-    const url = 'http://localhost:3001/turns';
+    const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
+    // const url = 'http://localhost:3001/turns';
 
     const options = {
       method: 'POST',

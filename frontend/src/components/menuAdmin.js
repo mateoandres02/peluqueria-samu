@@ -2,14 +2,6 @@ import '/src/styles/menu.css';
 
 const menuFunction = (user) => {
 
-    // <div class="btnHamburger">
-    //     <button class="hamburger hamburger--collapse" type="button">
-    //         <span class="hamburger-box">
-    //             <span class="hamburger-inner"></span>
-    //         </span>
-    //     </button>
-    // </div>
-
     const menu = `
         <aside class="sidebar">
             <div class="sidebar-nav">
@@ -27,7 +19,7 @@ const menuFunction = (user) => {
                     </li>
                     <li>
                         <a href="#cash-register">
-                            <img src="./assets/icons/cash-register.svg" alt="Ver caja" class="icon">
+                            <img src="/assets/icons/cash-register.svg" alt="Ver caja" class="icon">
                             Seguimiento de caja
                         </a>
                     </li>
@@ -63,23 +55,7 @@ const menuFunction = (user) => {
 
 }
 
-// const closeMenu = () => {
-//     const $btn = document.querySelector('.btnHamburger button');
-
-//     // Eliminar cualquier listener existente
-//     $btn.removeEventListener('click', toggleHamburger);
-
-//     // Añadir el listener de click
-//     $btn.addEventListener('click', toggleHamburger);
-// }
-
-// const toggleHamburger = (e) => {
-//     const $btn = e.currentTarget;
-//     $btn.classList.toggle('is-active');
-// };
-
 export {
-    menuFunction,
-    // closeMenu
+    menuFunction
 };
 

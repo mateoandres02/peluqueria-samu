@@ -46,7 +46,7 @@ function clickDelete(info){
       // const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
       //     method: 'DELETE'  
       // });
-      const response = await fetch(`http://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
+      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
         method: 'DELETE'  
       });
   

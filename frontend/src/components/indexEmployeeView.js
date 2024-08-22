@@ -1,6 +1,5 @@
 import calendarRender from './calendarRender.js';
 import calendario from "./calendario.js";
-// import { menu, closeMenu } from "./menuEmployee.js"; closeMenu es para el boton de hamburguesa.
 import { menu } from "./menuEmployee.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";

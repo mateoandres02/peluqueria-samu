@@ -1,7 +1,6 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { modal } from "./modalPostTurn.js";
 import { modalTurnContent, modalTurnContentDisplay } from "./modalGetTurn.js"
-import { modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn.js"
 import checkAuthentication from "./auth.js";
 
 const d = document;
@@ -9,8 +8,8 @@ const d = document;
 let body = document.body;
 
 const getTurnsByUserActive = async (data) => {
-  // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
-  const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
+  // const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
 
   const turns = await response.json();
 
@@ -84,7 +83,8 @@ export default async function calendarRender (modalElement, data) {
 
     // establece rango horario desde las 8 hasta las 11
     slotMinTime: '08:00:00',
-    editable: true,
+    
+    editable: false,
 
     dayMaxEventRows: true,
 

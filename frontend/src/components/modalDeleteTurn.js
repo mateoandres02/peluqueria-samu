@@ -1,4 +1,3 @@
-import parseDate from "./date";
 import '../styles/modal.css';
 
 const modalConfirm = `
@@ -39,13 +38,16 @@ function clickDelete(info){
     $deleteTurn.addEventListener("click", async (e) => {
       e.preventDefault();
   
-      console.log(info)
+      // console.log(info)
   
       // Obtenemos el publicId del turno creado
       const publicId = info.event._def.publicId;
   
-      const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
-          method: 'DELETE'  
+      // const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+      //     method: 'DELETE'  
+      // });
+      const response = await fetch(`http://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
+        method: 'DELETE'  
       });
   
       if (response.ok) {

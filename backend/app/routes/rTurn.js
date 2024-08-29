@@ -1,5 +1,5 @@
 import { Router } from "express";
-import cTurn from '../controllers/cTurn-drizzle.js';
+import cTurn from '../controllers/cTurn.js';
 
 const router = Router();
 

@@ -23,44 +23,40 @@ const modalConfirm = `
 `;
 
 function modalConfirmDisplay() {
+  const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
 
-    const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
-  
-    const modalConfirm = bootstrap.Modal.getInstance($modal._element);
-  
-    modalConfirm.show();
+  const modalConfirm = bootstrap.Modal.getInstance($modal._element);
 
+  modalConfirm.show();
 }
   
 function clickDelete(info){
-    const $deleteTurn = document.getElementById("confirmDeleteTurn")
-    
-    $deleteTurn.addEventListener("click", async (e) => {
-      e.preventDefault();
+  const $deleteTurn = document.getElementById("confirmDeleteTurn");
   
-      // console.log(info)
-  
-      // Obtenemos el publicId del turno creado
-      const publicId = info.event._def.publicId;
-  
-      // const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
-      //     method: 'DELETE'  
-      // });
-      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
-        method: 'DELETE'  
-      });
-  
-      if (response.ok) {
-        window.location.reload();
-      } else {
-        alert('Error al eliminar el turno.');
-      };
-  
-    })
+  $deleteTurn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    // Obtenemos el publicId del turno creado
+    const publicId = info.event._def.publicId;
+
+    // const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+    //     method: 'DELETE'  
+    // });
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
+      method: 'DELETE'  
+    });
+
+    if (response.ok) {
+      window.location.reload();
+    } else {
+      alert('Error al eliminar el turno.');
+    };
+
+  })
 }
 
 export {
-    modalConfirm,
-    modalConfirmDisplay,
-    clickDelete
+  modalConfirm,
+  modalConfirmDisplay,
+  clickDelete
 }

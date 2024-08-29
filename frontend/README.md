@@ -1,2 +1,3 @@
-# peluqueria-samu
- A web application for booking appointments for a hair salon
+# Peluquería Invasión
+
+## A web application for booking appointments for a hair salon

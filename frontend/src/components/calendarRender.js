@@ -2,77 +2,29 @@ import esLocale from "@fullcalendar/core/locales/es";
 import { modal } from "./modalPostTurn.js";
 import { modalTurnContent, modalTurnContentDisplay } from "./modalGetTurn.js"
 import checkAuthentication from "./auth.js";
+import { getTurnsByUserActive, renderTurns } from "./turns.js";
 
 const d = document;
-
 let body = document.body;
 
-const getTurnsByUserActive = async (data) => {
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
-  // const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
-
-  const turns = await response.json();
-
-  return turns;
-}
-
-const turnDateEnd = (date) => {
-  const [datePart, timePart] = date.split('T');
-
-  const [hour, minute, ] = timePart.split(":");
-
-  let dateHourEnd = hour;
-  let dateMinutesEnd = '';
-
-  if (minute === '00') {
-    dateMinutesEnd = '30';
-  } else if (minute === '30') {
-    dateHourEnd = parseInt(dateHourEnd) + 1;
-    dateMinutesEnd = '00';
-  }
-
-  if (dateHourEnd === 9) {
-    dateHourEnd = '09'
-  }
-
-  const dateEnd = `${dateHourEnd}:${dateMinutesEnd}`;
-
-  const completeDateEnd = `${datePart}T${dateEnd}`;
-
-  return completeDateEnd;
-}
-
-// El parámetro data contiene la información del usuario logueado.
+// param: data -> user active
+// param: modalElement -> element html
 export default async function calendarRender (modalElement, data) {
 
-  // Renderizamos los turnos
+  // Obtenemos los turnos del user activo.
   const turns = await getTurnsByUserActive(data);
 
-  const arrayTurns = turns.map(turn => {
-    const dateEnd = turnDateEnd(turn.turns.Date);
+  // Mapeamos esos turnos en un arreglo para cargarlo en la propiedad events.
+  let arrayTurns = await renderTurns(turns);
 
-    return {
-      id: turn.turns.Id,
-      title: turn.turns.Nombre,
-      start: turn.turns.Date,
-      end: dateEnd,
-      extendedProps: {
-        telefono: turn.turns.Telefono
-      }
-    };
-    
-  });
-
+  // Calendario.
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
-    // Vista inicial
     initialView: "timeGridWeek",
-
-    // establece la zona horaria (no se si funciona correctamente)
     timeZone: 'America/Argentina/Cordoba',
 
-    // establece el rango horario cada media hora
+    // Establece el rango horario cada media hora
     slotLabelFormat: {
       hour: 'numeric',
       minute: '2-digit',
@@ -81,9 +33,10 @@ export default async function calendarRender (modalElement, data) {
     slotLabelInterval: '00:30:00',
     slotDuration: '00:30:00',
 
-    // establece rango horario desde las 8 hasta las 11
+    // Establece rango horario desde las 8 hasta las 23
     slotMinTime: '08:00:00',
     
+    // Evitamos el manejo manual de horarios de los turnos.
     editable: false,
 
     dayMaxEventRows: true,
@@ -107,9 +60,10 @@ export default async function calendarRender (modalElement, data) {
       right: 'prev,next'
     },
 
+    // Cargamos los turnos del usuario activo.
     events: arrayTurns,
 
-    eventClick: function(info){
+    eventClick: function(info) {
       
       body.insertAdjacentHTML('beforeend', modalTurnContent);
 

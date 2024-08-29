@@ -5,10 +5,10 @@ import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
 
+// param: data -> user active.
 const indexView = async (data) => {
 
     const userActive = data.user.Nombre;
-
     const urlActive = window.location.hash;
     
     app.innerHTML = '';
@@ -18,11 +18,8 @@ const indexView = async (data) => {
     switch (urlActive) {
         
         case '#admin-calendar':
-
             app.innerHTML += calendario;
-            
             calendarRender(modalElement, data);
-            
             break;
 
         case '#share-calendar':
@@ -34,11 +31,8 @@ const indexView = async (data) => {
             break;
     
         default:
-
             app.innerHTML += calendario;
-            
             calendarRender(modalElement, data);
-
             break;
 
     };

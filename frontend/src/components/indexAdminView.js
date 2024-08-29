@@ -6,11 +6,10 @@ import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 
-// el parámetro data contiene la información del usuario activo en la sesion.
+// param: data -> user active.
 const indexView = async (data) => {
     
     const userActive = data.user.Nombre;
-
     const urlActive = window.location.hash;
     
     app.innerHTML = '';
@@ -19,11 +18,8 @@ const indexView = async (data) => {
     
     switch (urlActive) {
         case '#admin-calendar':
-
             app.innerHTML += calendario;
-            
             calendarRender(modalElement, data);
-            
             break;
         
         case '#cash-register':
@@ -103,13 +99,9 @@ const indexView = async (data) => {
             break;
     
         default:
-
             app.innerHTML += calendario;
-            
             calendarRender(modalElement, data);
-
             break;
-
     };
 
     closeMenu();

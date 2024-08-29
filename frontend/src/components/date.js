@@ -1,36 +1,44 @@
 function parseDate(date) {
-    // Dividir la fecha original por el guion
-    // const dateArray = date.split("-");
-    // const year = dateArray[0];
-    // const month = dateArray[1];
-    // const day = dateArray[2];
-
-    // const parsedDate = `${day}-${month}-${year}`;
-    // return parsedDate;
-
-    // Dividir la fecha y la hora
     const [datePart, timePart] = date.split('T');
-
-    // Separar los componentes de la fecha
     const [, month, day] = datePart.split('-');
-    // console.log(timePart)
-
-    // Separar los componentes de la hora
     const [hour, minute, ] = timePart.split(":");
 
-    //Formatear las variables
     const dayWithoutYear = `${month}-${day}`;
     const timeWithoutSeconds = `${hour}:${minute}`;
 
-    //Mostrar fecha completa
-    const completeDate = date
-    // console.log(timeWithoutSecond)
+    const completeDate = date;
 
     return {
         dayWithoutYear,
         timeWithoutSeconds,
         completeDate
     }
+};
+
+const turnDateEnd = (date) => {
+    const [datePart, timePart] = date.split('T');
+  
+    const [hour, minute, ] = timePart.split(":");
+  
+    let dateHourEnd = hour;
+    let dateMinutesEnd = '';
+  
+    if (minute === '00') {
+      dateMinutesEnd = '30';
+    } else if (minute === '30') {
+      dateHourEnd = parseInt(dateHourEnd) + 1;
+      dateMinutesEnd = '00';
+    }
+  
+    if (dateHourEnd === 9) {
+      dateHourEnd = '09'
+    }
+  
+    const dateEnd = `${dateHourEnd}:${dateMinutesEnd}`;
+  
+    const completeDateEnd = `${datePart}T${dateEnd}`;
+  
+    return completeDateEnd;
 }
 
-export default parseDate;
+export { parseDate, turnDateEnd };

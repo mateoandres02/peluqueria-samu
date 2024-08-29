@@ -23,8 +23,8 @@ app.get('/verify-token', verifyToken, (req, res) => {
   res.send({ user });
 });
 
-app.use(verifyToken, routesTurn);
-app.use(verifyToken, routesUser);
+app.use(routesTurn);
+app.use(routesUser);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {

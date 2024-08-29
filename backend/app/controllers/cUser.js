@@ -1,123 +1,90 @@
-import db from "../database/setup.js";
-import { Op } from "sequelize";
-import { UserRepository, Validation } from "../models/mUserRepository.js";
+import { db } from "../database/db.js";
+import mUsers from "../models/mUser.js";
 import bcrypt from "bcrypt";
 import { config } from "../config/config.js";
+import { sql, eq } from 'drizzle-orm';
+import { UserRepository, Validation } from "../models/mUserRepository.js";
 
-const users = db.users;
+const users = mUsers;
 
-// getall
+const getAllUsers = async (req, res) => {
+    try {
+        const nombre = req.query.Nombre || "";
+        const condicion = `%${nombre}%`;
 
-const getAllUsers = (req, res) => {
-    
-    const nombre = req.query.Nombre;
+        const data = await db.select().from(users)
+            .where(sql`Nombre LIKE ${condicion}`);
 
-    let condicion = [];
-
-    nombre && condicion.push({ Nombre: { [Op.like]: `%${nombre}%` } });
-    
-    users.findAll({
-        where: condicion,
-    })
-    .then(data => {
         res.send(data);
-    })
-    .catch(err => {
+        
+    } catch (error) {
         res.status(500).send({
-            message: err.message || "Ocurrió algún error recuperando a todos los usuarios."
+            message: error.message || "Ocurrió algún error recuperando a todos los usuarios."
         });
-    });
-
-    // users.findAll()
-    // .then(data => {
-    //     res.send(data);
-    // })
-    // .catch(err => {
-    //     res.status(500).send({
-    //         message: err.message || "Ocurrió algún error recuperando a todos los usuarios."
-    //     });
-    // });
-
+    }
 };
 
-// getbyid
+const getByIdUser = async (req, res) => {
 
-const getByIdUser = (req, res) => {
-    const id = req.params.id;
+    try {
+        const id = req.params.id;
 
-    users.findByPk(id)
-    .then(data => {
-        if (data) {
-            res.status(200).send(data);
+        const data = await db.select().from(users).where(eq(users.Id, id)).all();
+
+        if (data.length) {
+            res.status(200).send(data[0]);
         } else {
             res.status(404).send({
-                message: `No se ha encontrado el registro de el usuario con id = ${id}`
+                message: `No se ha encontrado el registro del usuario con id = ${id}`
             });
-        }
-    })
-    .catch(e => {
+        };
+
+    } catch (err) {
         res.status(500).send({
-            message: e.message || `Ocurrió un error al recuperar el registro del usuario con id = ${id}`
+            message: err.message || `Ocurrió un error al recuperar el registro del usuario con id = ${id}`
         });
-    });
+    }
     
 }
 
-// post
-
 const postUser = async (req, res) => {
-    if (!req.body.Nombre || 
-        !req.body.Contrasena ||
-        !req.body.Rol) {
-            
-        res.status(400).send({
-            message: "¡No hay contenido para el post!"
-        });
 
-        return;
-    };
+    try {
 
-    const user = {
-        Nombre: req.body.Nombre,
-        Contrasena: req.body.Contrasena,
-        Rol: req.body.Rol
-    };
+        const { Nombre, Contrasena, Rol } = req.body;
 
-    const response = await UserRepository.create(user);
-
-    console.log(response.dataValues)
-
-    if (response.ok) {
-        users.create(user)
-        .then(data => {
-            res.status(201).send(data);
-        })
-        .catch(e => {
-            res.status(500).send({
-                message: e.message || "Ocurrió algun error creando un registro para los usuarios."
+        if (!Nombre || !Contrasena || !Rol) {
+            return res.status(400).send({
+                message: "¡No hay contenido para el post!"
             });
+        }
+
+        const user = {
+            Nombre,
+            Contrasena,
+            Rol
+        };
+
+        const response = await UserRepository.create(user);
+
+        if (response.ok) {
+            const userCreate = await db.insert(users).values(user).returning();
+            res.status(201).send(userCreate[0]);
+        } else {
+            res.status(401).send({message: 'Ocurrió un error al crear el usuario.'})
+        }
+
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || "Ocurrió algun error creando un registro para los usuarios."
         });
-    } else {
-        res.status(401).send({message: 'ocurrió un error al crear el usuario.'})
-    }
+    };
 
-    // users.UserRepository.create(user)
-    // .then(data => {
-    //     res.status(201).send(data);
-    // })
-    // .catch(e => {
-    //     res.status(500).send({
-    //         message: e.message || "Ocurrió algun error creando un registro para los usuarios."
-    //     });
-    // });
-
-    // users.UserRepository.create(user)
 }
-
-// update
 
 const updateUser = async (req, res) => {
     try {
+
         const id = req.params.id;
 
         const user = req.body;
@@ -134,60 +101,42 @@ const updateUser = async (req, res) => {
             Rol: user.Rol
         }
 
-        users.update(newUser, {
-            where: { Id: id }
-        })
-        .then(num => {
-            if (num == 1) {
-                // Significa que la actualización se hizo correctamente.
-                return users.findByPk(id);
-            } else {
-                res.status(400).json({
-                    error: `No se pudo actualizar el registro del usuario con id = ${id}`
-                });
-            }
-        })
-        .then(data => {
-            if (data) {
-                res.json(data);
-            }
-        })
-        .catch(e => {
-            res.status(500).json({
-                error: e.message || "Ocurrió un error al actualizar el registro del usuario con id = " + id
+        const response = await db.update(users).set(newUser).where(eq(users.Id, id)).returning();
+
+        if (response.length) {
+            res.json(response[0]);
+        } else {
+            res.status(400).json({
+                error: `No se pudo actualizar el registro del usuario con id = ${id}`
             });
-        });
+        }
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-    
 }
 
-// delete
+const deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-const deleteUser = (req, res) => {
-    const id = req.params.id;
+        const response = await db.delete(users).where(eq(users.Id, id)).returning();
 
-    users.destroy({
-        where: { Id: id }
-    })
-    .then(num => {
-        if (num == 1) {
-            res.status(204).send({
+        if (response.length > 0) {
+            res.status(200).send({
                 message: "¡El registro se eliminó exitosamente!"
             });
         } else {
-            res.send({
-                message: `No se pudo borrar el registro con id = ${id}`
+            res.status(404).send({
+                message: `No se pudo borrar el registro con id = ${id}. Registro no encontrado.`
             });
         }
-    })
-    .catch(err => {
+    } catch (err) {
         res.status(500).send({
-            message: err.message || "No se pudo borrar el registro con id = " + id
+            message: err.message || `No se pudo borrar el registro con id = ${id}.`
         });
-    });
-}
+    }
+};
 
 const actionsUsers = {
     getAllUsers,

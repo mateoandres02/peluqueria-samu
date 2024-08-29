@@ -1,160 +1,151 @@
-import db from "../database/setup.js";
-import { Op } from "sequelize";
+import { db } from "../database/db.js";
+import turns from "../models/mTurn.js";
+import users from "../models/mUser.js";
+import { eq } from 'drizzle-orm';
 
-const turns = db.turns;
-const users = db.users;
+const getAllTurns = async (req, res) => {
+    try {
+        const data = await db.select({
+            turns: turns,
+        }).from(turns);
 
-// getall
-
-const getAllTurns = (req, res) => {
-
-    const id = req.params.idUserActive;
-
-    turns.findAll({
-        where: { NroUsuario: id },
-        include: [
-            { model: users, attributes: ['Nombre'], as: 'peluquero' },
-        ]
-    })
-    .then(data => {
         res.send(data);
-    })
-    .catch(err => {
+    } catch (error) {
         res.status(500).send({
-            message: err.message || "Ocurrió algún error recuperando a todos los turnos."
+            message: error.message || "Ocurrió algún error recuperando los turnos."
         });
-    });
+    }
+}
 
+const getAllTurnsByBarber = async (req, res) => {
+    try {
+        const id = req.params.idUserActive;
+
+        const data = await db.select({
+            turns: turns, // Selecciona todas las columnas de la tabla turns
+            peluquero: users.Nombre // Selecciona la columna Nombre de la tabla users
+        })
+        .from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario)) // Une la tabla turns con la tabla users en base al ID del usuario
+        .where(eq(turns.NroUsuario, id)); // Filtra por el ID del usuario logueado
+
+        res.send(data);
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || `Ocurrió algún error recuperando los turnos del peluquero con id ${id}.`
+        });
+    }
 };
 
-// getbyid
+const getByIdTurn = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-const getByIdTurn = (req, res) => {
-    const id = req.params.id;
+        const data = await db.select({
+            turns: turns, // Selecciona todas las columnas de turns
+            peluquero: users.Nombre // Selecciona la columna Nombre de users
+        })
+        .from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))  // Aquí se utiliza eq() para la condición
+        .where(eq(turns.Id, id))  // Aquí también se utiliza eq() para la condición
+        .limit(1);
 
-    turns.findByPk(id,
-        {
-            include: [
-                { model: users, attributes: ['Nombre'], as: 'peluquero' },
-            ]
-        }
-    )
-    .then(data => {
-        if (data) {
-            res.status(200).send(data);
+        if (data.length) {
+            res.status(200).send(data[0]);
         } else {
             res.status(404).send({
                 message: `No se ha encontrado el registro del turno con id = ${id}`
             });
         }
-    })
-    .catch(e => {
+    } catch (err) {
         res.status(500).send({
-            message: e.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
+            message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
         });
-    });
+    }
 };
 
-// post
+const postTurn = async (req, res) => {
+    try {
+        const { Nombre, Telefono, Date, NroUsuario } = req.body;
 
-const postTurn = (req, res) => {
-    if (!req.body.Nombre ||
-        !req.body.Telefono || 
-        !req.body.Date || 
-        !req.body.NroUsuario) {
-            
-        res.status(400).send({
-            message: "¡No hay contenido para el post!"
-        });
+        if (!Nombre || !Telefono || !Date || !NroUsuario) {
+            return res.status(400).send({
+                message: "¡No hay contenido para el post!"
+            });
+        }
 
-        return;
-    };
+        const newTurn = {
+            Nombre,
+            Telefono,
+            Date,
+            NroUsuario
+        };
 
-    const turn = {
-        Nombre: req.body.Nombre,
-        Telefono: req.body.Telefono,
-        Date: req.body.Date,
-        NroUsuario: req.body.NroUsuario
-    };
+        const response = await db.insert(turns).values(newTurn).returning();
 
-    turns.create(turn)
-    .then(data => {
-        res.status(201).send(data);
-    })
-    .catch(e => {
+        res.status(201).send(response[0]);
+    } catch (e) {
         res.status(500).send({
-            message: e.message || "Ocurrió algun error creando un registro para los turnos."
+            message: e.message || "Ocurrió algún error creando un registro para los turnos."
         });
-    });
+    }
+};
 
-}
+const updateTurn = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-// update
+        const response = await db.update(turns)
+            .set(req.body)
+            .where(turns.Id.eq(id))
+            .returning();
 
-const updateTurn = (req, res) => {
-    const id = req.params.id;
-
-    turns.update(req.body, {
-        where: { Id: id }
-    })
-    .then(num => {
-        if (num == 1) {
-
-            // Significa que la actualización se hizo correctamente.
-
-            return turns.findByPk(id);
-
+        if (response.length) {
+            const updatedTurn = await db.select().from(turns).where(turns.Id.eq(id)).limit(1);
+            res.send(updatedTurn[0]);
         } else {
             res.status(404).send({
                 message: `No se pudo actualizar el registro del turno con id = ${id}`
             });
         }
-    })
-    .then(data => {
-        if (data) {
-            res.send(data);
-        }
-    })
-    .catch(e => {
+    } catch (e) {
         res.status(500).send({
             message: e.message || "Ocurrió un error al actualizar el registro del turno con id = " + id
         });
-    });
-}
+    }
+};
 
-// delete
+const deleteTurn = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-const deleteTurn = (req, res) => {
-    const id = req.params.id;
+        const response = await db.delete(turns)
+            .where(eq(turns.Id, id))
+            .returning();
 
-    turns.destroy({
-        where: { Id: id }
-    })
-    .then(num => {
-        if (num == 1) {
+        if (response.length) {
             res.status(204).send({
                 message: "¡El registro se eliminó exitosamente!"
             });
         } else {
-            res.send({
+            res.status(404).send({
                 message: `No se pudo borrar el registro con id = ${id}`
             });
         }
-    })
-    .catch(err => {
+    } catch (err) {
         res.status(500).send({
             message: err.message || "No se pudo borrar el registro con id = " + id
         });
-    });
-    
-}
+    }
+};
 
 const actionsTurns = {
     getAllTurns,
+    getAllTurnsByBarber,
     getByIdTurn,
     postTurn,
     updateTurn,
     deleteTurn
-}
+};
 
 export default actionsTurns;

@@ -1,39 +1,14 @@
-import { DataTypes } from "sequelize";
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import users from "./mUser.js";
 
-const turnsAttributes = {
-    Id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoincrement: true,
-    },
-    Nombre: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    Telefono: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    Date: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    NroUsuario: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Usuarios',
-            key: 'Id'
-        }
+const turns = sqliteTable('Turnos', 
+    {
+        Id: integer('Id').primaryKey({ autoIncrement: true }),
+        Nombre: text('Nombre').notNull(),
+        Telefono: integer('Telefono', { mode: 'number' }).notNull(),
+        Date: text('Date').notNull(),
+        NroUsuario: integer('NroUsuario', { mode: 'number' }).references(() => users.Id)
     }
-};
+);
 
-const turnsOptions = {
-    timestamps: false
-}
-
-const turnsModel = {
-    turnsAttributes,
-    turnsOptions
-}
-
-export default turnsModel;
+export default turns;

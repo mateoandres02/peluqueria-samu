@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
 
-// Validar y exportar las configuraciones
 export const config = {
     port: process.env.PORT || 3001,
     saltRounds: process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS, 10) : 10,

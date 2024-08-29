@@ -1,5 +1,5 @@
 import { Router } from "express";
-import cUser from '../controllers/cUser-drizzle.js';
+import cUser from '../controllers/cUser.js';
 
 const router = Router();
 

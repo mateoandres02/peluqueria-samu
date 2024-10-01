@@ -7,7 +7,9 @@ const getAllTurns = async (req, res) => {
     try {
         const data = await db.select({
             turns: turns,
-        }).from(turns);
+            peluquero: users.Nombre
+        }).from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario));
 
         res.send(data);
     } catch (error) {

@@ -30,9 +30,8 @@ const indexView = async (data) => {
 
             cashViewContainer.insertAdjacentHTML('beforeend', infoSectionCashView)
 
-            const tableCash = await cashData(userActive);
+            const tableCash = await cashData();
 
-            // console.log(tableCash)
             if (tableCash) {
                 cashViewContainer.insertAdjacentHTML('beforeend', tableCash);
             };

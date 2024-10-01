@@ -1,5 +1,4 @@
 import '/src/styles/cashRegister.css';
-import { getUserActive } from './indexAdminView.js';
 
 // aca va a ir la tabla para visualizar los datos
 let cashView = `
@@ -11,10 +10,10 @@ const infoSectionCashView = `
     <h3>Seguimiento de Caja</h3>
     <p>Visualiza metricas obtenidas relacionadas a la caja registradora.</p>
   </div>
-`
-// getUserActive()
+`;
+
 // console.log("usuario Activo", usuarioActivo)
-const rows = (dataUsers, userActive) => {
+const rows = (dataUsers) => {
   
   let row = '';
 
@@ -26,7 +25,7 @@ const rows = (dataUsers, userActive) => {
         <tr key=${user.turns.Id}>
           <td scope="row">${user.turns.Date}</td>
           <td>${user.turns.Nombre}</td>
-          <td>${user.turns.Barbero}</td>
+          <td>${user.peluquero}</td>
           <td></td>
           <td></td>
         </tr>
@@ -38,19 +37,18 @@ const rows = (dataUsers, userActive) => {
 
 };
 
-const cashData = async (userActive) => {
+const cashData = async () => {
 
   try {
     
     // const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
     const response = await fetch("http://localhost:3001/turns");
     // const responseTurns = await fetch("https://localhost:3001/turns");
-    console.log(response)
+
     if (!response.ok) {
       alert('Hubo algun error en obtener los usuarios.');
     } else {
       const dataUsers = await response.json();
-      // console.log(dataUsers)
       
       if (dataUsers.length > 1) {
         let tableCash = `
@@ -66,7 +64,7 @@ const cashData = async (userActive) => {
                 </tr>
               </thead>
               <tbody>
-                 ${rows(dataUsers, userActive)}
+                 ${rows(dataUsers)}
               </tbody>
             </table>
           </div>

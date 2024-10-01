@@ -1,5 +1,5 @@
 // cambie el nombre de renderIndexEmployee por el nombre original indexView en la importacion
-import { indexView }  from "./indexAdminView.js";
+import indexView from "./indexAdminView.js";
 import renderIndexEmployee from "./indexEmployeeView.js";
 
 export default async function checkAuthentication() {

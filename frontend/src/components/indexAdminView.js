@@ -3,7 +3,6 @@ import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
-import { cashView, infoSectionCashView, cashData } from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 
@@ -24,24 +23,10 @@ const indexView = async (data) => {
             break;
         
         case '#cash-register':
-            app.innerHTML += cashView;
-
-            let cashViewContainer = document.querySelector('.contenedorCashView');
-
-            cashViewContainer.insertAdjacentHTML('beforeend', infoSectionCashView)
-
-            const tableCash = await cashData(userActive);
-
-            // console.log(tableCash)
-            if (tableCash) {
-                cashViewContainer.insertAdjacentHTML('beforeend', tableCash);
-            };
 
             break;
 
-        case '#history-register':
-
-            console.log("toque historial de registro")
+        case '#share-calendar':
 
             break;
         

@@ -24,9 +24,9 @@ const menuFunction = (user) => {
                         </a>
                     </li>
                     <li>
-                        <a href="#share-calendar">
-                            <img src="/assets/icons/share.svg" alt="Compartir calendario" class="icon">
-                            Compartir calendario
+                        <a href="#history-register">
+                            <img src="/assets/icons/share.svg" alt="registro de turnos" class="icon">
+                            Registro de Turnos
                         </a>
                     </li>
                     <li>

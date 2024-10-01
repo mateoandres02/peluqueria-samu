@@ -1,0 +1,23 @@
+.contenedorCashView {
+  width: 100%;
+  min-height: 100%;
+  margin-left: 315px;
+  border: thin solid red;
+}
+
+.infoSectionCashView {
+  padding: 1rem;
+  width: 80%;
+  max-width: 800px;
+}
+
+.infoSectionCashView h3 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.infoSectionCashView p {
+  font-weight: 600;
+  font-size: 1.2rem;
+}

@@ -98,7 +98,7 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     const namePattern = /^[a-zA-Z\s]{1,25}$/;
   
     if (!namePattern.test(input.value)) {
-      input.setCustomValidity("solo letras y espacios hasta 25 caracteres.");
+      input.setCustomValidity("Solo letras y espacios hasta 25 caracteres.");
     } else {
       input.setCustomValidity(""); // Restablece la validez del input si coincide con el patrón
     }
@@ -110,7 +110,7 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     const numberPattern = /^\+?\d{1,15}$/;
   
     if (!numberPattern.test(input.value)) {
-      input.setCustomValidity("Solo numeros hasta 15 digitos.");
+      input.setCustomValidity("Solo números hasta 15 digitos.");
     } else {
       input.setCustomValidity(""); // Restablece la validez del input si coincide con el patrón
     }
@@ -165,8 +165,8 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     }
 
     // Manejamos el post de la información ingresada por el usuario al back.
-    const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
-    // const url = 'http://localhost:3001/turns';
+    // const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
+    const url = 'http://localhost:3001/turns';
 
     const options = {
       method: 'POST',

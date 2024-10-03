@@ -5,9 +5,8 @@ import cutServices from "../models/mCutService.js";
 
 const getAllCutServices = async (req, res) => {
   try {
-    // tengo que continuar aca
     const data = await db.select({
-        tipoServicio: cutServices,
+        servicio: cutServices,
     }).from(cutServices)
 
     res.send(data);
@@ -28,7 +27,6 @@ const postCutService = async (req, res) => {
       })
     }
 
-    // preguntar a chino porque no el else
     const newCutService = {
       Nombre,
       Precio

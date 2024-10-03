@@ -13,44 +13,101 @@ const infoSectionCashView = `
 `;
 
 // console.log("usuario Activo", usuarioActivo)
-const rows = (dataUsers) => {
+const rows = (dataUsers, cutServices) => {
   
   let row = '';
 
   dataUsers.forEach((user, index) => {
-    console.log(user)
+    // console.log(user)
     if (index > 0) {
-    
+      let selectOptions = cutServices.map(service => `<option value="${service.servicio.Nombre}">${service.servicio.Nombre}</option>`).join('');
       row += `
         <tr key=${user.turns.Id}>
           <td scope="row">${user.turns.Date}</td>
           <td>${user.turns.Nombre}</td>
           <td>${user.peluquero}</td>
-          <td></td>
-          <td></td>
+          <td>
+            <select class="form-select cut-service-select" data-id="${user.turns.Id}" aria-label="Tipo de corte">
+              <option selected>Seleccionar tipo de servicio</option>
+              ${selectOptions}
+            </select>
+          </td>
+          <td class="precio-corte" id="precio-${user.turns.Id}"></td>
         </tr>
       `;
-    }
-    })
+     }
+    });
 
   return row;
 
 };
+
+// ANTERIOR
+const handleSelectChange = (cutServices) => {
+  document.querySelectorAll('.cut-service-select').forEach(select => {
+    select.addEventListener('change', (e) => {
+      const selectedServiceName = e.target.value;
+      // console.log(selectedServiceName)
+      const rowId = e.target.dataset.id;
+
+      if (selectedServiceName === "Seleccionar tipo de servicio") {
+        const priceCell = document.getElementById(`precio-${rowId}`);
+        if (priceCell) {
+          priceCell.textContent = '';
+        }
+        return;
+      }
+
+      const selectedService = cutServices.find(service => service.servicio.Nombre === selectedServiceName);
+
+      if (selectedService) {
+        const priceCell = document.getElementById(`precio-${rowId}`);
+        priceCell.textContent = `$${selectedService.servicio.Precio}`;
+      }
+    });
+  });
+};
+
+// const handleSelectChange = (cutServices) => {
+//   document.querySelectorAll('.cut-service-select').forEach(select => {
+//     select.addEventListener('change', (event) => {
+//       const selectedServiceName = event.target.value;
+//       const rowId = event.target.dataset.id;
+
+//       console.log(`Selected Service: ${selectedServiceName}, Row ID: ${rowId}`); // Verifica que rowId es correcto
+
+//       const selectedService = cutServices.find(service => service.servicio.Nombre === selectedServiceName);
+
+//       if (selectedService) {
+//         const priceCell = document.getElementById(`precio-${rowId}`);
+//         console.log(`Price cell:`, priceCell); // Verifica que priceCell no es null
+
+//         if (priceCell) {
+//           priceCell.textContent = `$${selectedService.servicio.Precio}`;
+//         } else {
+//           console.error(`No se encontró el elemento con id precio-${rowId}`);
+//         }
+//       }
+//     });
+//   });
+// };
 
 const cashData = async () => {
 
   try {
     
     // const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
-    const response = await fetch("http://localhost:3001/turns");
     // const responseTurns = await fetch("https://localhost:3001/turns");
+    const responseTurns = await fetch("http://localhost:3001/turns");
+    const responseCutServices = await fetch("http://localhost:3001/cutservices");
 
-    if (!response.ok) {
-      alert('Hubo algun error en obtener los usuarios.');
+    if (!responseTurns.ok || !responseCutServices.ok) {
+      alert('Hubo algun error en obtener los usuarios o los servicios de corte.');
     } else {
-      const dataUsers = await response.json();
+      const dataUsers = await responseTurns.json();
+      const cutServices = await responseCutServices.json();
       
-      if (dataUsers.length > 1) {
+      if (dataUsers.length > 1 && cutServices.length > 0) {
         let tableCash = `
           <div class="table-container">
             <table class="table-light">
@@ -64,16 +121,20 @@ const cashData = async () => {
                 </tr>
               </thead>
               <tbody>
-                 ${rows(dataUsers)}
+                 ${rows(dataUsers, cutServices)}
               </tbody>
             </table>
           </div>
         `;
 
-        return tableCash;
+        document.querySelector('.contenedorCashView').innerHTML = tableCash
+        // return tableCash;
+
+        handleSelectChange(cutServices);
 
       } else {
-        return '<p class="empty">No hay datos registrados en la tabla.</p>'
+        // return '<p class="empty">No hay datos registrados en la tabla.</p>'
+        document.querySelector('.contenedorCashView').innerHTML = '<p class="empty">No hay datos registrados en la tabla.</p>';
       }
     };
   } catch (error) {

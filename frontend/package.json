@@ -17,6 +17,7 @@
     "@fullcalendar/interaction": "^6.1.13",
     "@fullcalendar/list": "^6.1.13",
     "@fullcalendar/timegrid": "^6.1.13",
-    "fullcalendar": "^6.1.13"
+    "fullcalendar": "^6.1.13",
+    "peluqueria-samu-oficial": "file:"
   }
 }

@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
-const cutServices = sqliteTable('TipoServicio', 
+const cutServices = sqliteTable('Servicio', 
   {
       Id: integer('Id').primaryKey({ autoIncrement: true }),
       Nombre: text('Nombre').notNull(),

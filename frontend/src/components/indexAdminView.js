@@ -7,6 +7,7 @@ import { cashView, infoSectionCashView, cashData } from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 
+
 // param: data -> user active.
 const indexView = async (data) => {
     

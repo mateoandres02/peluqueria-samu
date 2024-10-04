@@ -1,11 +1,13 @@
 import { db } from "../database/db.js";
 import mUsers from "../models/mUser.js";
+import mTurns from "../models/mTurn.js"
 import bcrypt from "bcrypt";
 import { config } from "../config/config.js";
 import { sql, eq } from 'drizzle-orm';
 import { UserRepository, Validation } from "../models/mUserRepository.js";
 
 const users = mUsers;
+const turns = mTurns;
 
 const getAllUsers = async (req, res) => {
     try {
@@ -119,6 +121,8 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const id = req.params.id;
+
+        await db.delete(turns).where(eq(turns.NroUsuario, id));
 
         const response = await db.delete(users).where(eq(users.Id, id)).returning();
 

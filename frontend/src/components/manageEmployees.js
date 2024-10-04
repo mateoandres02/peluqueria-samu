@@ -127,6 +127,10 @@ const showRegisterEmployeeModal = (btn) => {
 
       // Removemos el atributo del usuario que se va a actualizar, dado que estamos en modo de hacer un post, no un put.
       form.removeAttribute('data-id');
+
+      form.Contrasena.value = '';
+      form.Contrasena.placeholder = '';           
+      form.Nombre.value = '';     
   });
 
 };

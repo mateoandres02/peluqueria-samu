@@ -1,8 +1,11 @@
 const mensajeError = document.getElementsByClassName("error")[0];
+const $loader = document.querySelector('.login-loader-container');
 
 document.getElementById('login-form').addEventListener('submit', async (event) => {
 
     event.preventDefault();
+
+    $loader.style.display = "flex";
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -23,14 +26,22 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         body: JSON.stringify({ Nombre: username, Contrasena: password }),
         credentials: 'include',
     });
-
+    
     if (response.ok) {
-        history.replaceState(null, '', '/');
-        window.location.href = '/';
+        setTimeout(() => {
+            history.replaceState(null, '', '/');
+            window.location.href = '/';
+        }, 3000);
     } 
 
     if (!response.ok) {
-        return mensajeError.classList.toggle("escondido", false);
+        $loader.style.display = "none";
+
+        mensajeError.classList.toggle("escondido", false);
+
+        setTimeout(() => {
+            mensajeError.classList.toggle("escondido");
+        }, 2500);
     }
 
 });

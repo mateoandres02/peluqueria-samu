@@ -162,6 +162,7 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
       Telefono : clientNumber,
       Date: dateOutParsed,
       NroUsuario: idBarber,
+      Service: null
     }
 
     // Manejamos el post de la información ingresada por el usuario al back.

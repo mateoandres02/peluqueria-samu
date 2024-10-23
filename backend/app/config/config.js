@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-// Cargar las variables de entorno desde el archivo .env
+// Carga las variables de entorno desde el archivo .env
 dotenv.config();
 
 export const config = {

@@ -26,7 +26,7 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-const getByIdUser = async (req, res) => {
+const getUserById = async (req, res) => {
 
     try {
         const id = req.params.id;
@@ -144,7 +144,7 @@ const deleteUser = async (req, res) => {
 
 const actionsUsers = {
     getAllUsers,
-    getByIdUser,
+    getUserById,
     postUser,
     updateUser,
     deleteUser

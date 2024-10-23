@@ -1,15 +1,19 @@
 import { db } from "../database/db.js";
 import turns from "../models/mTurn.js";
 import users from "../models/mUser.js";
+import services from "../models/mCutService.js";
 import { eq } from 'drizzle-orm';
 
 const getAllTurns = async (req, res) => {
     try {
         const data = await db.select({
             turns: turns,
-            peluquero: users.Nombre
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio
         }).from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario));
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service));
 
         res.send(data);
     } catch (error) {
@@ -24,12 +28,12 @@ const getAllTurnsByBarber = async (req, res) => {
         const id = req.params.idUserActive;
 
         const data = await db.select({
-            turns: turns, // Selecciona todas las columnas de la tabla turns
-            peluquero: users.Nombre // Selecciona la columna Nombre de la tabla users
+            turns: turns,
+            peluquero: users.Nombre
         })
         .from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario)) // Une la tabla turns con la tabla users en base al ID del usuario
-        .where(eq(turns.NroUsuario, id)); // Filtra por el ID del usuario logueado
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .where(eq(turns.NroUsuario, id));
 
         res.send(data);
     } catch (err) {
@@ -39,18 +43,13 @@ const getAllTurnsByBarber = async (req, res) => {
     }
 };
 
-const getByIdTurn = async (req, res) => {
+const getTurnById = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const data = await db.select({
-            turns: turns, // Selecciona todas las columnas de turns
-            peluquero: users.Nombre // Selecciona la columna Nombre de users
-        })
+        const data = await db.select()
         .from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))  // Aquí se utiliza eq() para la condición
-        .where(eq(turns.Id, id))  // Aquí también se utiliza eq() para la condición
-        .limit(1);
+        .where(turns.Id == id);
 
         if (data.length) {
             res.status(200).send(data[0]);
@@ -68,7 +67,7 @@ const getByIdTurn = async (req, res) => {
 
 const postTurn = async (req, res) => {
     try {
-        const { Nombre, Telefono, Date, NroUsuario } = req.body;
+        const { Nombre, Telefono, Date, NroUsuario, Service } = req.body;
 
         if (!Nombre || !Telefono || !Date || !NroUsuario) {
             return res.status(400).send({
@@ -80,7 +79,8 @@ const postTurn = async (req, res) => {
             Nombre,
             Telefono,
             Date,
-            NroUsuario
+            NroUsuario,
+            Service
         };
 
         const response = await db.insert(turns).values(newTurn).returning();
@@ -99,11 +99,11 @@ const updateTurn = async (req, res) => {
 
         const response = await db.update(turns)
             .set(req.body)
-            .where(turns.Id.eq(id))
+            .where(eq(turns.Id, id))
             .returning();
 
         if (response.length) {
-            const updatedTurn = await db.select().from(turns).where(turns.Id.eq(id)).limit(1);
+            const updatedTurn = await db.select().from(turns).where(eq(turns.Id, id)).limit(1);
             res.send(updatedTurn[0]);
         } else {
             res.status(404).send({
@@ -144,7 +144,7 @@ const deleteTurn = async (req, res) => {
 const actionsTurns = {
     getAllTurns,
     getAllTurnsByBarber,
-    getByIdTurn,
+    getTurnById,
     postTurn,
     updateTurn,
     deleteTurn

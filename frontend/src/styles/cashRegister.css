@@ -1,4 +1,4 @@
-.contenedorCashView {
+.containerCashView {
   width: 100%;
   min-height: 100%;
   margin-left: 315px;
@@ -20,4 +20,29 @@
 .infoSectionCashView p {
   font-weight: 600;
   font-size: 1.2rem;
+}
+
+#tdService {
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+
+  padding: 0;
+  margin: 0;
+
+  /* border: 1px solid red; */
+}
+
+#tdService div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#tdService div .cut-service-select-notnull {
+  width: 10ch;
+}
+
+#tdService div .cut-service-select-null {
+  width: auto;
 }

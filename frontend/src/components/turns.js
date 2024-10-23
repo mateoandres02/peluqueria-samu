@@ -4,8 +4,8 @@ import { turnDateEnd } from "./date.js";
 
 // Obtenemos todos los turnos del usuario activo.
 const getTurnsByUserActive = async (data) => {
-  // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${data.user.Id}`);
-  const response = await fetch(`http://localhost:3001/turns/${data.user.Id}`);
+  // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
+  const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
   const turns = await response.json();
 
   return turns;

@@ -2,7 +2,7 @@ import { db } from "../database/db.js";
 import turns from "../models/mTurn.js";
 import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
-import { eq } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 
 const getAllTurns = async (req, res) => {
     try {
@@ -64,6 +64,34 @@ const getTurnById = async (req, res) => {
         });
     }
 };
+
+const getAllTurnsByDate = async (req, res) => {
+    try {
+        const date = req.params.date;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio
+        }).from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(like(turns.Date, `%${date}%`));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado turnos para ese día.`
+            });
+        }
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || "Ocurrió un error al recuperar los registros que correspondan a ese día"
+        })
+    }
+}
 
 const postTurn = async (req, res) => {
     try {
@@ -144,6 +172,7 @@ const deleteTurn = async (req, res) => {
 const actionsTurns = {
     getAllTurns,
     getAllTurnsByBarber,
+    getAllTurnsByDate,
     getTurnById,
     postTurn,
     updateTurn,

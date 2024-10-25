@@ -32,14 +32,10 @@ const tableTurns = `
         </tr>
       </thead>
       <tbody class="table-cash-body">
-        <tr>
-          <td colspan="6" style="text-align: center;">No se han encontrado turnos</td>
-        </tr>
       </tbody>
     </table>
   </div>
 `;
-
 
 const addDateFilterListener = (tableBodyTurnsCashRegister) => {
 
@@ -63,7 +59,6 @@ const addDateFilterListener = (tableBodyTurnsCashRegister) => {
 
 };
 
-
 const cashData = async (selectedDate = null, tableBodyTurnsCashRegister) => {
 
   try {
@@ -77,7 +72,7 @@ const cashData = async (selectedDate = null, tableBodyTurnsCashRegister) => {
     if (!responseTurns.ok || !responseCutServices.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align: center;">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
         </tr>
       `;
     } else {
@@ -110,7 +105,7 @@ const rows = (dataTurns, cutServices) => {
 
         let costField = user.precio ? user.precio : '0'; 
 
-        let date = user.turns.Date ? parseDate(user.turns.Date) : `no se proporciono fecha`;
+        let date = user.turns.Date ? parseDate(user.turns.Date) : '';
 
         row += `
           <tr key=${user.turns.Id}>

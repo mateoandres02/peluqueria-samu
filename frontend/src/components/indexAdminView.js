@@ -3,7 +3,7 @@ import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, cashData } from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener } from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 
@@ -29,8 +29,15 @@ const indexView = async (data) => {
 
             let cashViewContainer = document.querySelector('.containerCashView');
             cashViewContainer.insertAdjacentHTML('beforeend', infoSectionCashView);
+            cashViewContainer.insertAdjacentHTML('beforeend', tableTurns);
 
-            await cashData();
+            let $tableBodyTurnsCashRegister = document.querySelector('.table-cash-body');
+
+            let currentDate = document.querySelector('#filterDateInput').value;
+
+            await cashData(currentDate, $tableBodyTurnsCashRegister);
+
+            addDateFilterListener($tableBodyTurnsCashRegister);
 
             break;
 

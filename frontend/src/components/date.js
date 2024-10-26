@@ -1,18 +1,20 @@
 function parseDate(date) {
-    const [datePart, timePart] = date.split('T');
-    const [, month, day] = datePart.split('-');
-    const [hour, minute, ] = timePart.split(":");
+  const [datePart, timePart] = date.split('T');
+  const [year, month, day] = datePart.split('-');
+  const [hour, minute, ] = timePart.split(":");
 
-    const dayWithoutYear = `${month}-${day}`;
-    const timeWithoutSeconds = `${hour}:${minute}`;
+  const dayWithoutYear = `${month}-${day}`;
+  const dateWithoutTime = `${day}/${month}/${year}`
+  const timeWithoutSeconds = `${hour}:${minute}`;
 
-    const completeDate = date;
+  const completeDate = date;
 
-    return {
-        dayWithoutYear,
-        timeWithoutSeconds,
-        completeDate
-    }
+  return {
+    dayWithoutYear,
+    dateWithoutTime,
+    timeWithoutSeconds,
+    completeDate
+  }
 };
 
 const turnDateEnd = (date) => {

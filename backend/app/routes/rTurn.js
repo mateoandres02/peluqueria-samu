@@ -5,6 +5,7 @@ const router = Router();
 
 router.get("/turns", cTurn.getAllTurns);
 router.get("/turns/barber/:idUserActive", cTurn.getAllTurnsByBarber);
+router.get("/turns/:date", cTurn.getAllTurnsByDate);
 router.get("/turns/:id", cTurn.getTurnById);
 router.post("/turns", cTurn.postTurn);
 router.put("/turns/:id", cTurn.updateTurn);

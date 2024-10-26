@@ -1,7 +1,7 @@
 .containerCashView {
   width: 100%;
   min-height: 100%;
-  margin-left: 315px;
+  margin-left: 290px;
   border: thin solid red;
 }
 
@@ -22,15 +22,57 @@
   font-size: 1.2rem;
 }
 
-#tdService {
-  /* display: flex;
-  justify-content: space-between;
-  align-items: center; */
 
+.table-cash-container {
+  padding-bottom: 5rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 200px;
+
+  margin: 2rem auto 0 auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-cash-container table {
+  width: 100%;
+}
+
+.table-cash-container thead {
+  background-color: #f6f4fa;
+  color: #9f9ca3;
+  font-weight: 700;
+  position: sticky;
+  top: -1px;
+  z-index: 1;
+}
+
+.table-cash-container th {
+  text-align: center;
+}
+
+.table-cash-container th, .table-cash-container td {
+  padding: 10px;
+}
+
+.table-cash-container td {
+  margin: auto 0;
+  font-weight: 600;
+  font-size: .9rem;
+  color: #353439;
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+#tdService {
   padding: 0;
   margin: 0;
-
-  /* border: 1px solid red; */
 }
 
 #tdService div {
@@ -39,10 +81,24 @@
   align-items: center;
 }
 
-#tdService div .cut-service-select-notnull {
-  width: 10ch;
+.cut-service-select-notnull {
+  width: auto;
 }
 
-#tdService div .cut-service-select-null {
-  width: auto;
+.cashRegisterFilter {
+  width: 100%;
+  /* border: 1px solid red; */
+  margin-bottom: 1rem;
+}
+
+.cashRegisterFilter span {
+  margin-right: 1rem;
+}
+
+.cashRegisterFilter input {
+  padding: .5rem;
+  border-top: 0px;
+  border-right: 0px;
+  border-left: 0px;
+  outline: none;
 }

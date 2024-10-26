@@ -71,6 +71,8 @@ body {
   border-radius: 1rem;
   padding: 2rem;
   background-color: var(--bg-color-sidebar);
+  
+  transform: scale(.85);
 
   color: var(--light-grey-letter);
 }

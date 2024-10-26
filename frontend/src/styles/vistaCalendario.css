@@ -1,12 +1,12 @@
 /* Component properties */
 
 .contenedorCalendario {
-  width: 80%;
+  width: 100%;
   height: 100vh;
 
   padding: .5rem;
 
-  margin-left: 315px;
+  margin-left: 290px;
 }
 
 /* .fc-day-mon {

@@ -2,7 +2,7 @@ import { db } from "../database/db.js";
 import turns from "../models/mTurn.js";
 import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
-import { eq, like } from 'drizzle-orm';
+import { eq, like, and } from 'drizzle-orm';
 
 const getAllTurns = async (req, res) => {
     try {
@@ -29,10 +29,13 @@ const getAllTurnsByBarber = async (req, res) => {
 
         const data = await db.select({
             turns: turns,
-            peluquero: users.Nombre
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
         .where(eq(turns.NroUsuario, id));
 
         res.send(data);
@@ -90,6 +93,30 @@ const getAllTurnsByDate = async (req, res) => {
         res.status(500).send({
             message: e.message || "Ocurrió un error al recuperar los registros que correspondan a ese día"
         })
+    }
+}
+
+const getAllTurnsByDateAndBarber = async (req, res) => {
+    try {
+        const date = req.params.date;
+        const idUserActive = req.params.idUserActive;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio
+        }).from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(and(like(turns.Date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
+
+        res.send(data);
+
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con id ${idUserActive}.`
+        });
     }
 }
 
@@ -173,6 +200,7 @@ const actionsTurns = {
     getAllTurns,
     getAllTurnsByBarber,
     getAllTurnsByDate,
+    getAllTurnsByDateAndBarber,
     getTurnById,
     postTurn,
     updateTurn,

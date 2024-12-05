@@ -36,9 +36,9 @@ const menuFunction = (user) => {
                         </a>
                     </li>
                     <li>
-                        <a href="#generate-table">
+                        <a href="#config-params">
                             <img src="/assets/icons/table.svg" alt="Generar tabla" class="icon">
-                            Generar Tabla Turnos
+                            Configurar parametros
                         </a>
                     </li>
                 </ul>

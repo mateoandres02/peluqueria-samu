@@ -2,7 +2,7 @@ import { parseDate } from './date';
 import '/src/styles/cashRegister.css';
 
 const containerCashView = `<div class="containerCashView"></div>`;
-
+//<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
 const infoSectionCashView = `
   <div class="infoSectionCashView">
     <h3>Seguimiento de Caja</h3>
@@ -10,13 +10,22 @@ const infoSectionCashView = `
     <div class="cashRegisterFilterContainer">
         <div class="cashRegisterFilter">
           <span>Filtrar por fecha</span>
-        <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
+          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toISOString().split('T')[0]}">
       </div>
       <div class="filterBarberCashTracking">
         <span>Filtrar por barbero</span>
         <select id="barberSelect" class="form-select">
           <option value="null">Seleccionar...</option>
         </select>
+      </div>
+    </div>
+
+    <div class="totalEarned">
+      <div>
+        <button class="btn btn-primary" >Calcular Total</button>
+      </div>
+      <div class="infoTotalEarned">
+        <h5 id="totalEarnedDisplay">Total ganado: <b>$0.00</b></h5>
       </div>
     </div>
   </div>
@@ -40,6 +49,30 @@ const tableTurns = `
     </table>
   </div>
 `;
+
+const paymentSection = `
+  <div class="paymentSection">
+    <div class="payment-panel">
+      <h4>Pagos</h4>
+      <div>
+        <button class="btn btn-primary pay-button" id="pay-button">Calcular Pagos</button>
+      </div>
+    </div>
+    <div class="table-cash-container">
+    <table class="table-cash-light">
+      <thead class="table-cash-head">
+        <tr>
+          <th scope="col">BARBERO</th>
+          <th scope="col">TOTAL GANADO</th>
+          <th scope="col">CORRESPONDIENTE</th>
+        </tr>
+      </thead>
+      <tbody class="table-pay-body">
+      </tbody>
+    </table>
+  </div>
+  </div>
+`
 
 const loadBarberSelect = async (barberSelect) => {
   const barbers = await fetch('http://localhost:3001/users');
@@ -94,7 +127,12 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       tableBodyTurnsCashRegister.innerHTML = `${rows(dataTurns, cutServices)}`;
     }
 
+    //showTotal(selectedDate, tableBodyTurnsCashRegister);
+    usarCalcular(selectedDate)
+
     handleSelectChange(cutServices);
+
+    getPayForBarber(selectedDate);
 
   } catch (error) {
     console.log(error);
@@ -103,14 +141,15 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 };
 
 const rows = (dataTurns, cutServices) => {
-  
+  console.log("dataTurns", dataTurns);
+  console.log("cutServices", cutServices);
   let row = '';
   dataTurns.forEach((user, index) => {
 
     if (index > -1) {
-      let selectOptions = cutServices.map(service => `<option value="${service.servicio.Nombre}">${service.servicio.Nombre}</option>`).join('');
+      let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
 
-      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span>Sin selección</span>`;
+      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
 
       let costField = user.precio ? user.precio : '0'; 
 
@@ -154,15 +193,15 @@ const handleSelectChange = (cutServices) => {
         return;
       }
 
-      const selectedService = cutServices.find(service => service.servicio.Nombre === selectedServiceName);
+      const selectedService = cutServices.find(service => service.Nombre === selectedServiceName);
 
       if (selectedService) {
         const priceCell = document.getElementById(`precio-${rowId}`);
-        priceCell.textContent = `$ ${selectedService.servicio.Precio}`;
+        priceCell.textContent = `$ ${selectedService.Precio}`;
       }
 
       const turn = {
-        Service: selectedService.servicio.Id
+        Service: selectedService.Id
       };
 
       await fetch(`http://localhost:3001/turns/${rowId}`, 
@@ -173,6 +212,7 @@ const handleSelectChange = (cutServices) => {
         }
       );
 
+      window.location.reload();
     });
   });
 };
@@ -225,10 +265,129 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
   });
 }
 
+const showTotal = async (dateValue, tableBodyTurnsCashRegister) => {
+  try {
+    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+    const dataTurns = await responseTurns.json();
+
+    // Filtrar los turnos que tienen servicio
+    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+
+    // Calcular la suma de los costos
+    const totalCost = filteredTurns.reduce((acc, turn) => {
+      return acc + (turn.precio || 0); // Asegurarse de que el precio sea un número
+    }, 0);
+
+    // Mostrar el total en la interfaz
+    const totalDisplay = document.querySelector('#totalDisplay'); // Asegúrate de tener un elemento para mostrar el total
+    totalDisplay.textContent = `Total de cortes para el ${dateValue}: $${totalCost.toFixed(2)}`;
+
+  } catch (error) {
+    console.log('Error al calcular el total:', error);
+  }
+};
+
+
+
+const getEarnedForBarber = async (dateValue) => {
+  try {
+    // Hacer la solicitud para obtener los turnos de la fecha seleccionada
+    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+    const dataTurns = await responseTurns.json();
+
+    // Filtrar los turnos que tienen servicio
+    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+
+    // Crear un objeto para almacenar las ganancias por peluquero
+    const totalForBarber = {};
+
+    // Sumar las ganancias por cada peluquero
+    filteredTurns.forEach(turn => {
+      const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
+      const price = turn.precio || 0; // Asegurarse de que el precio sea un número
+
+      if (!totalForBarber[barber]) {
+        totalForBarber[barber] = 0; // Inicializar si no existe
+      }
+
+      totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
+      
+    });
+
+     // Limpiar la tabla de pagos antes de agregar nuevos datos
+     const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
+     paymentTableBody.innerHTML = ''; // Limpiar la tabla
+ 
+
+    for (const barber in totalForBarber) {
+      const totalEarned = totalForBarber[barber];
+      const paymentBarber = totalEarned * 0.5;
+      console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${barber}</td>
+        <td>$${totalEarned.toFixed(2)}</td>
+        <td>$${paymentBarber.toFixed(2)}</td>
+      `;
+
+      paymentTableBody.appendChild(row);
+    }
+
+
+  } catch (error) {
+    console.log('Error al calcular las ganancias por peluquero:', error);
+  }
+}
+
+const usarCalcular =  (dateValue) => {
+  const $boton = document.querySelector('.btn-primary')
+
+  
+  $boton.addEventListener('click', async () => {
+    console.log("boton tocado", $boton) 
+    console.log("la fecha seleccionada es", dateValue)
+
+    try {
+      const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+      const dataTurns = await responseTurns.json();
+
+      const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+
+      const totalEarned = filteredTurns.reduce((acc, turn) => {
+        return acc + (turn.precio || 0);
+      }, 0)
+
+      const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
+      totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
+      //console.log(`Total de los cortes para el dia ${dateValue}: $${totalEarned.toFixed(2)}`);
+
+    } catch (error) {
+      console.log("Error al calcular el total: ", error)
+    }
+  })
+}
+
+const getPayForBarber = (dateValue) => {
+  const $payButton = document.querySelector('.pay-button');
+
+  if ($payButton) { // Verifica que el botón exista
+    $payButton.addEventListener('click', async () => {
+      try {
+        console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
+        await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
+      } catch (error) {
+        console.error('Error al calcular los pagos:', error);
+      }
+    });
+  } else {
+    console.error('El botón de calcular pagos no se encontró en el DOM.');
+  }
+}
 export {
   containerCashView,
   infoSectionCashView,
   tableTurns,
+  paymentSection,
   cashData,
   addDateFilterListener,
   loadBarberSelect,

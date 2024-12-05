@@ -3,9 +3,10 @@ import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener } from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection } from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
+import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService } from './configParams.js';
 
 
 // param: data -> user active.
@@ -43,6 +44,8 @@ const indexView = async (data) => {
             addDateFilterListener($tableBodyTurnsCashRegister, $dateInput);
 
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
+
+            $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
 
             break;
 
@@ -117,6 +120,58 @@ const indexView = async (data) => {
             break;
 
         case '#generate-table':
+            
+
+            break;
+
+        case '#config-params':
+
+            app.innerHTML += configParamsView;
+
+            let configParamsContainer = document.querySelector('.configParamsView');
+
+            console.log(configParamsContainer)
+
+            // Agregamos el componente para registrar un empleado.
+            configParamsContainer.insertAdjacentHTML('beforeend', configParamsInitialView);
+
+            const tableServices = await serviceData()
+
+            if (tableServices) {
+                configParamsContainer.insertAdjacentHTML('beforeend', tableServices);
+            }
+
+            configParamsContainer.insertAdjacentHTML('beforeend', modalServices);
+
+            const $btnPostService = document.querySelector('.postService-btn');
+
+            $btnPostService.setAttribute('data-bs-toggle', 'modal');
+
+            $btnPostService.setAttribute('data-bs-target', '#postService');
+
+            const $modalService = new bootstrap.Modal(document.getElementById('postService'));
+
+            console.log($modalService)
+            showRegisterServiceModal($btnPostService);
+
+            const $formPostService = document.querySelector('#formPOSTService');
+
+            const $modalFooterService = document.querySelector('.modal-footer');
+
+            //obtener y mostrar
+            submitService($formPostService, $modalService, $modalFooterService);
+
+            const $btnCancelService = document.querySelector('.btnCancel');
+
+            cancelSubmitFormService($btnCancelService, $formPostService, $modalService);
+
+            const $btnsPutService = document.querySelectorAll('.modify i');
+
+            updateService($btnsPutService, $modalService);
+
+            const $btnsDeleteService = document.querySelectorAll('.delete i');
+
+            deleteService($btnsDeleteService)
 
             break;
     

@@ -148,6 +148,12 @@ const submitEmployee = (form, modal, modalFooter) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
+    // Desabilitamos el boton de submit para evitar multiples envios.
+    const submitButton = form.querySelector('.btnPost');
+    //submitButton.disabled = true;
+    //submitButton.style.cursor = 'not-allowed';
+    submitButton.setAttribute('disabled', 'true');
+
     // Obtenemos el modo en el que está el formulario.
     const mode = form.getAttribute('data-mode');
 
@@ -208,6 +214,13 @@ const submitEmployee = (form, modal, modalFooter) => {
 
       // Agregamos el elemento con el mensaje al footer de la modal.
       modalFooter.appendChild(span);
+      if (span.textContent === "El usuario ya existe.") {
+        setTimeout(() => {
+          const bootstrapModal = bootstrap.Modal.getInstance(modal._element);
+          bootstrapModal.hide();
+          window.location.reload();
+        }, 1500);
+      }
     })
     .catch((e) => {
       // Error 500.

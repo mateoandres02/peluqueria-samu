@@ -9,14 +9,38 @@ const getAllCutServices = async (req, res) => {
         servicio: cutServices,
     }).from(cutServices)
 
-    res.send(data);
-} catch (e) {
-    res.status(500).send({
-        message: e.message || "Ocurrió algún error recuperando los tipos de servicios de corte."
-    });
-}
+    const formattedData = data.map(item => item.servicio);
+
+    res.send(formattedData)
+  } catch (e) {
+      res.status(500).send({
+          message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
+      });
+    }
 }
 
+const getServiceById = async (req, res) => {
+
+  try {
+      const id = req.params.id;
+
+      const data = await db.select().from(cutServices).where(eq(cutServices.Id, id)).all();
+
+      if (data.length) {
+          res.status(200).send(data[0]);
+      } else {
+          res.status(404).send({
+              message: `No se ha encontrado el registro del servicio con id = ${id}`
+          });
+      };
+
+  } catch (err) {
+      res.status(500).send({
+          message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
+      });
+  }
+  
+}
 const postCutService = async (req, res) => {
   try {
     const { Nombre, Precio } = req.body;
@@ -45,16 +69,23 @@ const postCutService = async (req, res) => {
 const updateCutService = async (req, res) => {
   try {
     const id = req.params.id;
+    const { Nombre, Precio } = req.body;
+
+    if (!Nombre || !Precio) {
+      return res.status(400).send({
+        message: "Nombre y Precio son requeridos."
+      });
+    }
 
     const response = await db.update(cutServices)
-      .set(req.body)
-      .where(cutServices.Id.eq(id))
+      .set({ Nombre, Precio })
+      .where(eq(cutServices.Id,id))
       .returning();
 
-    if (response.length) {
-      const updatedCutService = await db.select().from(cutServices).where(cutServices.Id.eq(id)).limit(1);
-      
-      res.send(updatedCutService[0]);
+    //if (response.length) {
+      //const updatedCutService = await db.select().from(cutServices).where(cutServices.Id.eq(id)).limit(1);
+    if (response.length) {     
+      res.send(response[0]);
     } else {
       res.status(404).send({
         message: `No se pudo actualizar el registro del turno con id = ${id}`
@@ -73,8 +104,11 @@ const deleteCutService = async (req, res) => {
     const id = req.params.id;
 
     const response = await db.delete(cutServices)
-      .where(cutServices.Id.eq(id))
+      .where(eq(cutServices.Id,id))
       .returning();
+      console.log(`Intentando eliminar el servicio con ID: ${id}`);
+
+      console.log('Respuesta de la eliminación:', response);
 
     if (response.length) {
       res.status(204).send({
@@ -91,9 +125,34 @@ const deleteCutService = async (req, res) => {
     });
   }
 }
+/*
+const deleteCutService = async (req, res) => {
+  try {
+    const id = req.params.id;
 
+    await db.delete(cutServices).where(eq(cutServices.Id, id));
+
+    const response = await db.delete(cutServices).where(eq(cutServices.Id, id)).returning();
+
+    if (response.length > 0) {
+      res.status(200).send({
+          message: "¡El registro se eliminó exitosamente!"
+      });
+  } else {
+      res.status(404).send({
+          message: `No se pudo borrar el registro con id = ${id}. Registro no encontrado.`
+      });
+  }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || `No se pudo borrar el registro con id = ${id}.`
+  });
+  }
+};
+*/
 const actionsCutServices = {
   getAllCutServices,
+  getServiceById,
   postCutService,
   updateCutService,
   deleteCutService

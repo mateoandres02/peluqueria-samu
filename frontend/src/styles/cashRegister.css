@@ -7,7 +7,7 @@
 .infoSectionCashView {
   padding: 1rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 1050px;
 }
 
 .infoSectionCashView h3 {
@@ -69,7 +69,7 @@
 }
 
 .table-cash-container {
-  padding-bottom: 5rem;
+  padding-bottom: rem;
   margin-top: 0rem;
   width: 100%;
   max-width: 1000px;
@@ -128,4 +128,46 @@
 
 .cut-service-select-notnull {
   width: auto;
+}
+
+.span-red{
+  color: red;
+}
+
+.totalEarned {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+}
+
+.infoTotalEarned {
+  margin-left: 2rem;
+}
+
+.paymentSection h4 {
+  font-size: 1.8rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 1050px;
+  font-weight: 600;
+}
+
+.payment-panel {
+  width: 30%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  height: 15vh;
+}
+
+.btn {
+  padding: 0.5rem 1rem; /* Ajusta estos valores según sea necesario */
+}
+
+.pay-button{
+  width: 80%;
 }

@@ -12,7 +12,7 @@ const modalElement = `
           </button>
         </div>
         <div class="modal-body">
-          <form id="eventForm" >
+          <form id="eventForm">
             <label for="input-name"><i class="bi bi-person-lines-fill"></i>Nombre</label>
             <input type="text" name="inputName" id="input-name" class="input" required pattern="^[a-zA-Z\\s]{1,25}$">
 
@@ -24,6 +24,11 @@ const modalElement = `
 
             <label for="event-datetime"> <i class="bi bi-clock"></i>Horario</label>
             <input type="datetime" name="dateTime" id="event-datetime" class="input" placeholder="hh:mm" readonly>
+
+            <div class="form-switch">
+              <label for="regular-customer">¿Cliente fijo?</label>
+              <input class="form-check-input" type="checkbox" role="switch" id="regular-customer" value="false">
+            </div>
 
             <div class="modal-footer">
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
@@ -47,6 +52,7 @@ function modal(info, calendar, data) {
   // Obtenemos los inputs del formulario.
   const $inputEventDate = d.getElementById("eventDate");
   const $inputEventTime = d.getElementById("event-datetime");
+  const $inputRegularCostumer = document.getElementById("regular-customer");
 
   // Parseamos los datos de la fechas y el horario.
   const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
@@ -73,6 +79,16 @@ function modal(info, calendar, data) {
 
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
+  });
+
+  $inputRegularCostumer.addEventListener('change', (e) => {
+    if ($inputRegularCostumer.getAttribute('checked')) {
+      $inputRegularCostumer.removeAttribute('checked')
+      $inputRegularCostumer.value = false;
+    } else {
+      $inputRegularCostumer.setAttribute('checked', 'true')
+      $inputRegularCostumer.value = true
+    }
   });
 
   // Instanciamos la función que maneja el envio del formulario para registrar el turno.
@@ -122,45 +138,31 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     
     const $nameInput = document.getElementById('input-name');
     const $numberInput = document.getElementById('input-number');
+    const $inputRegularCostumer = document.getElementById("regular-customer");
+
+    console.log($inputRegularCostumer.value);
 
     // Obtenemos los datos ingresados por el usuario.
     const clientName = form.inputName.value.trim();
     const clientNumber = form.inputNumber.value.trim();
     const idBarber = dataUserActive.user.Id;
     const dateOutParsed = date;
-
+    const regularCustomer = $inputRegularCostumer.value;
 
     // Validación al enviar el formulario
     if ($nameInput.checkValidity() && $numberInput.checkValidity()) {
-      // Aquí puedes manejar el envío del formulario si los valores son válidos
-      // Por ejemplo, realizar la petición al servidor como lo hacías antes
       console.log("Formulario válido. Enviando datos...");
     } else {
-      // Si hay algún error, se mostrará el mensaje personalizado correspondiente
       $nameInput.reportValidity(); 
       $numberInput.reportValidity();
     }
-      // // Validar el nombre
-    // if (!namePattern.test(clientName)) {
-    //   span.innerHTML = 'El nombre debe contener solo letras, espacios y tener máximo 25 caracteres.';
-    //   span.style.color = 'red';
-    //   $modalFooter.appendChild(span);
-    //   return;
-    // }
-
-    // // Validar el número de teléfono
-    // if (!numberPattern.test(clientNumber)) {
-    //     span.innerHTML = 'El teléfono debe contener solo números y un máximo de 15 dígitos. Puede comenzar con +.';
-    //     span.style.color = 'red';
-    //     $modalFooter.appendChild(span);
-    //     return;
-    // }
 
     // Creamos el turno.
     const turn = {
       Nombre : clientName,
       Telefono : clientNumber,
       Date: dateOutParsed,
+      Regular: regularCustomer,
       NroUsuario: idBarber,
       Service: null
     }
@@ -192,7 +194,9 @@ async function handleSubmit(form, date, dataUserActive, $modal) {
     }
 
     // Agregamos el elemento con el mensaje al footer de la modal.
-    $modalFooter.appendChild(span);
+    if (!$modalFooter.contains(span)) {
+      $modalFooter.appendChild(span);
+    }    
     
   });
 

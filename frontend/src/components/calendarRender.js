@@ -3,6 +3,7 @@ import { modal } from "./modalPostTurn.js";
 import { modalTurnContent, modalTurnContentDisplay } from "./modalGetTurn.js"
 import checkAuthentication from "./auth.js";
 import { getTurnsByUserActive, renderTurns } from "./turns.js";
+import rrulePlugin from '@fullcalendar/rrule';
 
 const d = document;
 let body = document.body;
@@ -172,7 +173,9 @@ export default async function calendarRender (modalElement, data) {
     // titleFormat: { year: "numeric", month: "short", day: "numeric"},
 
     // Configura el idioma
-    locale: esLocale
+    locale: esLocale,
+
+    plugins: [rrulePlugin]
   
   });
 

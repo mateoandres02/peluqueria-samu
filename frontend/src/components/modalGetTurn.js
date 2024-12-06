@@ -18,6 +18,7 @@ const modalTurnContent = `
           <h2 id="infoDay"><i class="bi bi-calendar-event"></i>Día: <span id="spanDay"></span></h2>
           <h2 id="infoStartTime"><i class="bi bi-clock"></i>Inicio de Turno: <span id="spanStartTime"></span></h2>
           <h2 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h2>
+          <h2 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h2>
           <div class="modal-footer modal-footer-calendar">
             <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>
@@ -46,12 +47,13 @@ function modalTurnContentDisplay(info) {
   const $spanDay = d.getElementById("spanDay");
   const $spanStartTime = d.getElementById("spanStartTime");
   const $spanEndTime = d.getElementById("spanEndTime");
+  const $spanRegularCustomer = d.getElementById("spanRegularCustomer");
   
   // Obtenemos la fecha parseada de el start
   const { dayWithoutYear, timeWithoutSeconds:timeWithoutSecondsStart } = parseDate(info.event.startStr);
 
   // Obtenemos la fecha parseada de el end
-  const { timeWithoutSeconds:timeWithoutSecondsEnd  } = parseDate(info.event.endStr);
+  const { timeWithoutSeconds:timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
 
   // Obtenemos los valores de cada input
   const name = info.event._def.title;
@@ -59,6 +61,10 @@ function modalTurnContentDisplay(info) {
   const day = dayWithoutYear;
   const startTime = timeWithoutSecondsStart;
   const endTime = timeWithoutSecondsEnd;
+  let regular = info.event._def.extendedProps.regular;
+
+  if (regular === 'true') regular = 'Sí';
+  if (regular === 'false') regular = 'No';
   
   // Reseteamos valores cada vez que se vuelve a abrir la modal
   $spanName.innerHTML = "";
@@ -66,6 +72,7 @@ function modalTurnContentDisplay(info) {
   $spanDay.innerHTML = "";
   $spanStartTime.innerHTML = "";
   $spanEndTime.innerHTML = "";
+  $spanRegularCustomer.innerHTML = "";
 
   // Ingresamos los datos correspondientes a cada elemento
   $spanName.innerHTML += `${name}`;
@@ -73,6 +80,7 @@ function modalTurnContentDisplay(info) {
   $spanDay.innerHTML += `${day}`;
   $spanStartTime.innerHTML += `${startTime}`;
   $spanEndTime.innerHTML += `${endTime}`;
+  $spanRegularCustomer.innerHTML += `${regular}`;
 
   // Mostramos la modal.
   $modal.show();

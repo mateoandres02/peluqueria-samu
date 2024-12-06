@@ -8,6 +8,7 @@ const turns = sqliteTable('Turnos',
         Nombre: text('Nombre').notNull(),
         Telefono: integer('Telefono', { mode: 'number' }).notNull(),
         Date: text('Date').notNull(),
+        Regular: text('Regular').notNull(),
         NroUsuario: integer('NroUsuario', { mode: 'number' }).references(() => users.Id),
         Service: integer('Service', { mode: "number" }).references(() => services.Id)
     }

@@ -45,7 +45,6 @@
     margin-left: 1px;
 }
 
-
 .modal-body h2 {
     margin-bottom: .5rem;
 
@@ -60,16 +59,6 @@
 
 .modal-body span {
     font-weight: 800;
-}
-
-.modal-footer {
-  padding: 10px;
-  text-align: right;
-
-  display: flex;
-  flex-direction: row-reverse;
-
-  border-top: 1px solid var(--line-grey);
 }
 
 .modal-footer-delete {
@@ -105,10 +94,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: row-reverse;
+
+    text-align: right;
 
     width: 100%;
-    padding: 1rem 1rem 0rem 1rem!important;
+    padding: 1rem 1rem 0rem 1rem !important;
     margin-top: 0rem;
+    border-top: 1px solid var(--line-grey);
 }
 
 .modal-footer-calendar {
@@ -153,6 +146,19 @@ input[type="number"] {
 
 .input[type="datetime"] {
     margin-bottom: 1.5rem;
+}
+
+.form-switch {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    position: relative;
+    margin-bottom: .5rem;
+}
+
+.form-check-input {
+    position: absolute;
+    left: 16.5ch;
 }
 
 /* Media queries CELULAR*/

@@ -8,7 +8,6 @@ import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService } from './configParams.js';
 
-
 // param: data -> user active.
 const indexView = async (data) => {
     
@@ -21,11 +20,14 @@ const indexView = async (data) => {
     
     switch (urlActive) {
         case '#admin-calendar':
+
             app.innerHTML += calendario;
             calendarRender(modalElement, data);
+
             break;
         
         case '#cash-register':
+            
             app.innerHTML += containerCashView;
 
             let $containerCashView = document.querySelector('.containerCashView');

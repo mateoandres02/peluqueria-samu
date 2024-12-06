@@ -122,7 +122,7 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
 
 const postTurn = async (req, res) => {
     try {
-        const { Nombre, Telefono, Date, NroUsuario, Service } = req.body;
+        const { Nombre, Telefono, Date, Regular, NroUsuario, Service } = req.body;
 
         if (!Nombre || !Telefono || !Date || !NroUsuario) {
             return res.status(400).send({
@@ -134,6 +134,7 @@ const postTurn = async (req, res) => {
             Nombre,
             Telefono,
             Date,
+            Regular,
             NroUsuario,
             Service
         };

@@ -145,14 +145,11 @@ const submitEmployee = (form, modal, modalFooter) => {
   span.style.marginBottom = '0rem';
   span.style.paddingBottom = '0rem';
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async(e) => {
     e.preventDefault();
 
     // Desabilitamos el boton de submit para evitar multiples envios.
     const submitButton = form.querySelector('.btnPost');
-    //submitButton.disabled = true;
-    //submitButton.style.cursor = 'not-allowed';
-    submitButton.setAttribute('disabled', 'true');
 
     // Obtenemos el modo en el que está el formulario.
     const mode = form.getAttribute('data-mode');
@@ -164,6 +161,26 @@ const submitEmployee = (form, modal, modalFooter) => {
     const username = form.Nombre.value;
     const password = form.Contrasena.value;
     const role = form.Rol.value;
+
+    // Validación para el modo 'update'
+    if (mode === 'update') {
+      const response = await fetch("http://localhost:3001/users");
+      const allUsers = await response.json();
+
+      // Verificar si el nuevo nombre ya existe en los servicios
+      const isDuplicate = allUsers.some(user => user.Nombre === username && user.Id !== id);
+
+      if (isDuplicate) {
+        span.innerHTML = 'El usuario ya existe';
+        span.style.color = 'red';
+        modalFooter.appendChild(span);
+        setTimeout(() => {
+          modalFooter.removeChild(span);
+        }, 2500);
+        return;
+      }
+    }
+    submitButton.setAttribute('disabled', 'true');
 
     // Creamos un objeto de ese usaurio.
     const user = {
@@ -214,13 +231,11 @@ const submitEmployee = (form, modal, modalFooter) => {
 
       // Agregamos el elemento con el mensaje al footer de la modal.
       modalFooter.appendChild(span);
-      if (span.textContent === "El usuario ya existe.") {
-        setTimeout(() => {
-          const bootstrapModal = bootstrap.Modal.getInstance(modal._element);
-          bootstrapModal.hide();
-          window.location.reload();
-        }, 1500);
-      }
+
+      setTimeout(() => {
+        modalFooter.removeChild(span); 
+        submitButton.removeAttribute('disabled');
+      }, 1500);
     })
     .catch((e) => {
       // Error 500.

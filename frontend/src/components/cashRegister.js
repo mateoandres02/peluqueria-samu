@@ -83,62 +83,7 @@ const loadBarberSelect = async (barberSelect) => {
   });
 }
 
-const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
 
-  try {
-
-    const responseCutServices = await fetch("http://localhost:3001/cutservices");
-
-    const dateParam = selectedDate ? `${selectedDate}` : null;
-    const barberParam = barberId ? `${barberId}` : null;
-
-    let responseTurns;
-
-    if (barberParam !== null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-    } else if (barberParam === null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-    } else if (barberParam !== null && dateParam === null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-    }
-
-    if (!responseTurns.ok) {
-      tableBodyTurnsCashRegister.innerHTML = `
-        <tr>
-          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
-        </tr>
-      `;
-      return;
-    }
-    
-    const cutServices = await responseCutServices.json();
-    const dataTurns = await responseTurns.json();
-
-    if (dataTurns.length <= 0) {
-      tableBodyTurnsCashRegister.innerHTML = `
-        <tr>
-          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
-        </tr>
-      `;
-      return;
-    }
-
-    if (tableBodyTurnsCashRegister !== undefined) {
-      tableBodyTurnsCashRegister.innerHTML = `${rows(dataTurns, cutServices)}`;
-    }
-
-    //showTotal(selectedDate, tableBodyTurnsCashRegister);
-    usarCalcular(selectedDate)
-
-    handleSelectChange(cutServices);
-
-    getPayForBarber(selectedDate);
-
-  } catch (error) {
-    console.log(error);
-  }
-
-};
 
 const rows = (dataTurns, cutServices) => {
   console.log("dataTurns", dataTurns);
@@ -178,11 +123,13 @@ const rows = (dataTurns, cutServices) => {
   return row;
 };
 
-const handleSelectChange = (cutServices) => {
+const handleSelectChange = (cutServices, dateValue) => {
 
   document.querySelectorAll('.cut-service-select').forEach(select => {
     select.addEventListener('change', async (e) => {
       const selectedServiceName = e.target.value;
+      let valueCalendar = dateValue;
+      const today = new Date().toISOString().split('T')[0];
       const rowId = e.target.dataset.id;
 
       if (selectedServiceName === "Seleccionar tipo de servicio") {
@@ -212,36 +159,11 @@ const handleSelectChange = (cutServices) => {
         }
       );
 
-      window.location.reload();
+      if (valueCalendar === today) {
+        window.location.reload();
+      }
     });
   });
-};
-
-const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
-
-  // Se elimina el listener porque sino se van acumulando, haciendo varias peticiones a la base de datos cada vez
-  // que se cambia la fecha.
-  dateInput.removeEventListener('change', handleDateChange); 
-  dateInput.addEventListener('change', handleDateChange);
-
-  const barbers = await fetch('http://localhost:3001/users');
-  const dataBarbers = await barbers.json();
-
-  async function handleDateChange(e) {
-    let selectedDate = e.target.value;
-
-    const barberInput = document.querySelector('#barberSelect');
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
-    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
-
-    if (!filteredBarber.length > 0) {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, null)
-    } else {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, selectedBarber);
-    }
-
-  };
-
 };
 
 const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect) => {
@@ -265,107 +187,108 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
   });
 }
 
-const showTotal = async (dateValue, tableBodyTurnsCashRegister) => {
-  try {
-    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-    const dataTurns = await responseTurns.json();
+// const getEarnedForBarber = async (dateValue) => {
+//   try {
+//     // Hacer la solicitud para obtener los turnos de la fecha seleccionada
+//     const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+//     const dataTurns = await responseTurns.json();
 
-    // Filtrar los turnos que tienen servicio
-    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+//     // Filtrar los turnos que tienen servicio
+//     const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
 
-    // Calcular la suma de los costos
-    const totalCost = filteredTurns.reduce((acc, turn) => {
-      return acc + (turn.precio || 0); // Asegurarse de que el precio sea un número
+//     // Crear un objeto para almacenar las ganancias por peluquero
+//     const totalForBarber = {};
+
+//     // Sumar las ganancias por cada peluquero
+//     filteredTurns.forEach(turn => {
+//       const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
+//       const price = turn.precio || 0; // Asegurarse de que el precio sea un número
+
+//       if (!totalForBarber[barber]) {
+//         totalForBarber[barber] = 0; // Inicializar si no existe
+//       }
+
+//       totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
+      
+//     });
+
+//      // Limpiar la tabla de pagos antes de agregar nuevos datos
+//      const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
+//      paymentTableBody.innerHTML = ''; // Limpiar la tabla
+
+//     for (const barber in totalForBarber) {
+//       const totalEarned = totalForBarber[barber];
+//       const paymentBarber = totalEarned * 0.5;
+//       console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
+//       const row = document.createElement('tr');
+//       row.innerHTML = `
+//         <td>${barber}</td>
+//         <td>$${totalEarned.toFixed(2)}</td>
+//         <td>$${paymentBarber.toFixed(2)}</td>
+//       `;
+//       paymentTableBody.appendChild(row);
+//     }
+//   } catch (error) {
+//     console.log('Error al calcular las ganancias por peluquero:', error);
+//   }
+// }
+
+
+let totalEarned = 0;
+let dataBarbers = [];
+
+const usarCalcular = (dataTurns) => {
+  const $boton = document.querySelector('.btn-primary');
+  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay'); // Asegúrate de que este ID sea correcto
+
+  // Definir la función calculateTotal
+  async function calculateTotal() {
+    // Resetear el total antes de calcular
+    totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el contador a cero
+    totalEarned = 0; // Reiniciar totalEarned
+
+    console.log("boton tocado", $boton);
+    
+    // Calcular el total solo con los datos actuales
+    totalEarned = dataTurns.reduce((acc, turn) => {
+      return acc + (turn.precio || 0);
     }, 0);
 
-    // Mostrar el total en la interfaz
-    const totalDisplay = document.querySelector('#totalDisplay'); // Asegúrate de tener un elemento para mostrar el total
-    totalDisplay.textContent = `Total de cortes para el ${dateValue}: $${totalCost.toFixed(2)}`;
-
-  } catch (error) {
-    console.log('Error al calcular el total:', error);
+    // Actualizar el display del total
+    totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
+    console.log(`Total ganado RARO: $${totalEarned.toFixed(2)}`);
   }
+
+  // Eliminar el listener anterior para evitar acumulación
+  $boton.removeEventListener('click', calculateTotal); // Asegúrate de que esta función esté definida
+
+  // Agregar el nuevo listener
+  $boton.addEventListener('click', calculateTotal);
 };
+  // $boton.addEventListener('click', async () => {
+  //   console.log("boton tocado", $boton) 
+  //   console.log("la fecha seleccionada es", dateValue)
+  //   try {
+  //     totalEarnedDisplay.innerHTML = `Total ganado: <b>$${zero}</b>`;
+  //     console.log(dateValue)
+  //     const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+  //     const dataTurns = await responseTurns.json();
 
+  //     const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
 
+  //     totalEarned = filteredTurns.reduce((acc, turn) => {
+  //       return acc + (turn.precio || 0);
+  //     }, 0)
 
-const getEarnedForBarber = async (dateValue) => {
-  try {
-    // Hacer la solicitud para obtener los turnos de la fecha seleccionada
-    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-    const dataTurns = await responseTurns.json();
+  //     totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
+  //     console.log(`total ganado RARO: $${totalEarned.toFixed(2)}`);
+  //     //console.log(`Total de los cortes para el dia ${dateValue}: $${totalEarned.toFixed(2)}`);
 
-    // Filtrar los turnos que tienen servicio
-    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
-
-    // Crear un objeto para almacenar las ganancias por peluquero
-    const totalForBarber = {};
-
-    // Sumar las ganancias por cada peluquero
-    filteredTurns.forEach(turn => {
-      const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
-      const price = turn.precio || 0; // Asegurarse de que el precio sea un número
-
-      if (!totalForBarber[barber]) {
-        totalForBarber[barber] = 0; // Inicializar si no existe
-      }
-
-      totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
-      
-    });
-
-     // Limpiar la tabla de pagos antes de agregar nuevos datos
-     const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
-     paymentTableBody.innerHTML = ''; // Limpiar la tabla
- 
-
-    for (const barber in totalForBarber) {
-      const totalEarned = totalForBarber[barber];
-      const paymentBarber = totalEarned * 0.5;
-      console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${barber}</td>
-        <td>$${totalEarned.toFixed(2)}</td>
-        <td>$${paymentBarber.toFixed(2)}</td>
-      `;
-
-      paymentTableBody.appendChild(row);
-    }
-
-
-  } catch (error) {
-    console.log('Error al calcular las ganancias por peluquero:', error);
-  }
-}
-
-const usarCalcular =  (dateValue) => {
-  const $boton = document.querySelector('.btn-primary')
-
-  
-  $boton.addEventListener('click', async () => {
-    console.log("boton tocado", $boton) 
-    console.log("la fecha seleccionada es", dateValue)
-
-    try {
-      const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-      const dataTurns = await responseTurns.json();
-
-      const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
-
-      const totalEarned = filteredTurns.reduce((acc, turn) => {
-        return acc + (turn.precio || 0);
-      }, 0)
-
-      const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-      totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
-      //console.log(`Total de los cortes para el dia ${dateValue}: $${totalEarned.toFixed(2)}`);
-
-    } catch (error) {
-      console.log("Error al calcular el total: ", error)
-    }
-  })
-}
+  //   } catch (error) {
+  //     console.log("Error al calcular el total: ", error)
+  //   }
+  // })
+  // }
 
 const getPayForBarber = (dateValue) => {
   const $payButton = document.querySelector('.pay-button');
@@ -383,6 +306,94 @@ const getPayForBarber = (dateValue) => {
     console.error('El botón de calcular pagos no se encontró en el DOM.');
   }
 }
+
+const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
+  // Obtener los barberos una vez y almacenarlos en dataBarbers
+  const barbers = await fetch('http://localhost:3001/users');
+  dataBarbers = await barbers.json();
+
+  // Se elimina el listener porque sino se van acumulando, haciendo varias peticiones a la base de datos cada vez
+  dateInput.removeEventListener('change', handleDateChange); 
+  dateInput.addEventListener('change', handleDateChange);
+
+  async function handleDateChange(e) {
+    let selectedDate = e.target.value;
+
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+
+    // Comparar la fecha seleccionada con la fecha de hoy
+    if (selectedDate !== today) {
+      console.log("Hola"); // Mensaje si las fechas son diferentes
+    }
+
+    // Limpiar la tabla y el display del total
+    totalEarned = 0; // Resetea el contador
+    totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el display del total
+    tableBodyTurnsCashRegister.innerHTML = ''; // Limpia el contenido de la tabla
+
+    const barberInput = document.querySelector('#barberSelect');
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
+    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
+
+    // Obtener los nuevos datos para la nueva fecha
+    await cashData(tableBodyTurnsCashRegister, selectedDate, selectedBarber);
+  };
+};
+
+const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
+  try {
+    const responseCutServices = await fetch("http://localhost:3001/cutservices");
+    const cutServices = await responseCutServices.json();
+
+    const dateParam = selectedDate ? `${selectedDate}` : null;
+    const barberParam = barberId ? `${barberId}` : null;
+
+    let responseTurns;
+
+    if (barberParam !== null && dateParam !== null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+    } else if (barberParam === null && dateParam !== null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+    } else if (barberParam !== null && dateParam === null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+    }
+
+    if (!responseTurns.ok) {
+      tableBodyTurnsCashRegister.innerHTML = `
+        <tr>
+          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    const dataTurns = await responseTurns.json();
+
+    if (dataTurns.length <= 0) {
+      tableBodyTurnsCashRegister.innerHTML = `
+        <tr>
+          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Llamar a usarCalcular con los datos actuales
+    usarCalcular(dataTurns); // Asegúrate de pasar los datos correctos
+
+    // Mostrar los datos en la tabla
+    if (tableBodyTurnsCashRegister !== undefined) {
+      tableBodyTurnsCashRegister.innerHTML = `${rows(dataTurns, cutServices)}`;
+    }
+
+    handleSelectChange(cutServices, selectedDate);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 export {
   containerCashView,
   infoSectionCashView,

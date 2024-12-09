@@ -128,6 +128,7 @@ const showRegisterServiceModal = (btn) => {
 
 const submitService = (form, modal, modalFooter) => {
   const span = document.createElement('span');
+  const submitServiceButton = document.querySelector('.btnPost');
   span.innerHTML = 'Error al crear el servicio.';
   span.style.textAlign = 'center';
   span.style.width = '100%';
@@ -139,11 +140,30 @@ const submitService = (form, modal, modalFooter) => {
     e.preventDefault();
 
     const mode = form.getAttribute('data-mode');
-
     const id = form.getAttribute('data-id');
-
     const nombre = form.Nombre.value;
     const precio = form.Precio.value;
+
+    // Validación para el modo 'update'
+    if (mode === 'update') {
+      const response = await fetch("http://localhost:3001/cutservices");
+      const allServices = await response.json();
+
+      // Verificar si el nuevo nombre ya existe en los servicios
+      const isDuplicate = allServices.some(service => service.Nombre.toLowerCase() === nombre.toLowerCase() && service.Id !== id);
+
+      if (isDuplicate) {
+        span.innerHTML = '¡El servicio de corte ya existe!';
+        span.style.color = 'red';
+        modalFooter.appendChild(span);
+        setTimeout(() => {
+          modalFooter.removeChild(span);
+        }, 2500);
+        return;
+      }
+    }
+
+    submitServiceButton.setAttribute('disabled', 'true');
 
     const service = {
       "Nombre": nombre,
@@ -168,12 +188,12 @@ const submitService = (form, modal, modalFooter) => {
     })
     .then(response => response.json())
     .then(data => {
-      if (data.error !== undefined) {
-        span.innerHTML = `{data.error}` || 'Nombre de Servicio o Precio incorrectos.';
+      if (data.error !== undefined || data.message !== undefined) {
+        span.innerHTML = `${data.message}` || 'Nombre de Servicio o Precio incorrectos.';
         span.style.color = 'red';
       } else {
         span.innerHTML = mode === 'create' ? '¡Servicio creado correctamente!' : '¡Servicio actualizado correctamente!';
-        span.style.color = 'green';
+        span.style.color = '#5cb85c';
 
         setTimeout(() => {
           const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
@@ -183,6 +203,10 @@ const submitService = (form, modal, modalFooter) => {
       };
 
       modalFooter.appendChild(span);
+      setTimeout(() => {
+        modalFooter.removeChild(span); 
+        submitServiceButton.removeAttribute('disabled');
+      }, 1500);
     })
     .catch((e) => {
       console.log('Error del servidor:', e);

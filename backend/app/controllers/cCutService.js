@@ -45,10 +45,18 @@ const postCutService = async (req, res) => {
   try {
     const { Nombre, Precio } = req.body;
 
-    if ( !Nombre || !Precio ) {
+    if (!Nombre || !Precio) {
       return res.status(400).send({
         message: "¡No hay contenido para el post!"
-      })
+      });
+    }
+
+    const nombreBD = await db.select().from(cutServices).where(eq(cutServices.Nombre, Nombre)).limit(1);
+
+    if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() === Nombre.toLowerCase()) {
+      return res.status(400).send({
+        message: "¡El servicio de corte ya existe!"
+      });
     }
 
     const newCutService = {

@@ -47,7 +47,7 @@ const indexView = async (data) => {
 
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
 
-            $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
+            //$containerCashView.insertAdjacentHTML('beforeend', paymentSection);
 
             break;
 

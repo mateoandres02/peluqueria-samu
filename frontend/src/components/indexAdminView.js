@@ -3,7 +3,7 @@ import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
 import { btnHamburger, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection } from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, getEarnedForBarber } from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService } from './configParams.js';
@@ -45,7 +45,23 @@ const indexView = async (data) => {
 
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
 
-            //$containerCashView.insertAdjacentHTML('beforeend', paymentSection);
+            $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
+
+            // Mueve esta parte aquí para asegurarte de que el botón ya esté en el DOM
+            const $payButton = document.querySelector('.pay-button');
+            if ($payButton) {
+                $payButton.addEventListener('click', async () => {
+                    try {
+                        console.log('Calculando pagos...');
+                        await getEarnedForBarber($currentDate);
+                    } catch (error) {
+                        console.error('Error al calcular los pagos:', error);
+                    }
+                });
+            } else {
+                console.error('El botón de calcular pagos no se encontró en el DOM.');
+            }
+
 
             break;
 

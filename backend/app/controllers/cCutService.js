@@ -1,6 +1,7 @@
 import { db } from "../database/db.js";
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import cutServices from "../models/mCutService.js";
+import turns from "../models/mTurn.js";
 
 
 const getAllCutServices = async (req, res) => {
@@ -50,13 +51,9 @@ const postCutService = async (req, res) => {
         message: "¡No hay contenido para el post!"
       });
     }
-
-    const nombreBD = await db.select().from(cutServices).where(eq(cutServices.Nombre, Nombre)).limit(1);
-
-    if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() === Nombre.toLowerCase()) {
-      return res.status(400).send({
-        message: "¡El servicio de corte ya existe!"
-      });
+    const nombreBD = await db.select().from(cutServices).where(sql`lower(${cutServices.Nombre}) = lower(${Nombre})`).limit(1);
+    if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() == Nombre.toLowerCase()) {
+      return res.status(400).send({message: "¡El nombre del servicio ya existe!"});
     }
 
     const newCutService = {
@@ -110,6 +107,11 @@ const updateCutService = async (req, res) => {
 const deleteCutService = async (req, res) => {
   try {
     const id = req.params.id;
+
+    const turn = {
+      Service: null
+    }
+    await db.update(turns).set(turn).where(eq(turns.Service, id)).returning();
 
     const response = await db.delete(cutServices)
       .where(eq(cutServices.Id,id))

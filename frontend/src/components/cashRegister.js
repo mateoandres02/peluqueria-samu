@@ -3,6 +3,12 @@ import '/src/styles/cashRegister.css';
 
 const containerCashView = `<div class="containerCashView"></div>`;
 //<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
+const currentDate = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split('/').reverse().join('-');
+
+const today = new Date();
+today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+const formattedDate = today.toISOString().split('T')[0];
+
 const infoSectionCashView = `
   <div class="infoSectionCashView">
     <h3>Seguimiento de Caja</h3>
@@ -10,7 +16,7 @@ const infoSectionCashView = `
     <div class="cashRegisterFilterContainer">
         <div class="cashRegisterFilter">
           <span>Filtrar por fecha</span>
-          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toISOString().split('T')[0]}">
+          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${formattedDate}">
       </div>
       <div class="filterBarberCashTracking">
         <span>Filtrar por barbero</span>
@@ -187,53 +193,6 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
   });
 }
 
-// const getEarnedForBarber = async (dateValue) => {
-//   try {
-//     // Hacer la solicitud para obtener los turnos de la fecha seleccionada
-//     const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-//     const dataTurns = await responseTurns.json();
-
-//     // Filtrar los turnos que tienen servicio
-//     const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
-
-//     // Crear un objeto para almacenar las ganancias por peluquero
-//     const totalForBarber = {};
-
-//     // Sumar las ganancias por cada peluquero
-//     filteredTurns.forEach(turn => {
-//       const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
-//       const price = turn.precio || 0; // Asegurarse de que el precio sea un número
-
-//       if (!totalForBarber[barber]) {
-//         totalForBarber[barber] = 0; // Inicializar si no existe
-//       }
-
-//       totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
-      
-//     });
-
-//      // Limpiar la tabla de pagos antes de agregar nuevos datos
-//      const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
-//      paymentTableBody.innerHTML = ''; // Limpiar la tabla
-
-//     for (const barber in totalForBarber) {
-//       const totalEarned = totalForBarber[barber];
-//       const paymentBarber = totalEarned * 0.5;
-//       console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
-//       const row = document.createElement('tr');
-//       row.innerHTML = `
-//         <td>${barber}</td>
-//         <td>$${totalEarned.toFixed(2)}</td>
-//         <td>$${paymentBarber.toFixed(2)}</td>
-//       `;
-//       paymentTableBody.appendChild(row);
-//     }
-//   } catch (error) {
-//     console.log('Error al calcular las ganancias por peluquero:', error);
-//   }
-// }
-
-
 let totalEarned = 0;
 let dataBarbers = [];
 
@@ -265,47 +224,6 @@ const usarCalcular = (dataTurns) => {
   // Agregar el nuevo listener
   $boton.addEventListener('click', calculateTotal);
 };
-  // $boton.addEventListener('click', async () => {
-  //   console.log("boton tocado", $boton) 
-  //   console.log("la fecha seleccionada es", dateValue)
-  //   try {
-  //     totalEarnedDisplay.innerHTML = `Total ganado: <b>$${zero}</b>`;
-  //     console.log(dateValue)
-  //     const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-  //     const dataTurns = await responseTurns.json();
-
-  //     const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
-
-  //     totalEarned = filteredTurns.reduce((acc, turn) => {
-  //       return acc + (turn.precio || 0);
-  //     }, 0)
-
-  //     totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
-  //     console.log(`total ganado RARO: $${totalEarned.toFixed(2)}`);
-  //     //console.log(`Total de los cortes para el dia ${dateValue}: $${totalEarned.toFixed(2)}`);
-
-  //   } catch (error) {
-  //     console.log("Error al calcular el total: ", error)
-  //   }
-  // })
-  // }
-
-const getPayForBarber = (dateValue) => {
-  const $payButton = document.querySelector('.pay-button');
-
-  if ($payButton) { // Verifica que el botón exista
-    $payButton.addEventListener('click', async () => {
-      try {
-        console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
-        await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
-      } catch (error) {
-        console.error('Error al calcular los pagos:', error);
-      }
-    });
-  } else {
-    console.error('El botón de calcular pagos no se encontró en el DOM.');
-  }
-}
 
 const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   // Obtener los barberos una vez y almacenarlos en dataBarbers
@@ -382,6 +300,8 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     // Llamar a usarCalcular con los datos actuales
     usarCalcular(dataTurns); // Asegúrate de pasar los datos correctos
 
+    getPayForBarber(selectedDate);
+
     // Mostrar los datos en la tabla
     if (tableBodyTurnsCashRegister !== undefined) {
       tableBodyTurnsCashRegister.innerHTML = `${rows(dataTurns, cutServices)}`;
@@ -393,6 +313,77 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
   }
 };
 
+// PARTE DE PAGO A EMPLEADOS////////
+const getEarnedForBarber = async (dateValue) => {
+  try {
+    // Hacer la solicitud para obtener los turnos de la fecha seleccionada
+    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
+    const dataTurns = await responseTurns.json();
+
+    // Filtrar los turnos que tienen servicio
+    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+
+    // Crear un objeto para almacenar las ganancias por peluquero
+    const totalForBarber = {};
+
+    // Sumar las ganancias por cada peluquero
+    filteredTurns.forEach(turn => {
+      const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
+      const price = turn.precio || 0; // Asegurarse de que el precio sea un número
+      const nameService = turn.servicio;
+
+      if (!totalForBarber[barber]) {
+        totalForBarber[barber] = 0; // Inicializar si no existe
+      }
+
+      if (nameService === 'Corte' || nameService === 'corte') {
+        totalForBarber[barber] += price * 0.5; // Sumar la mitad del precio al peluquero correspondiente
+      }
+      totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
+    });
+
+     // Limpiar la tabla de pagos antes de agregar nuevos datos
+    const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
+    paymentTableBody.innerHTML = ''; // Limpiar la tabla
+    console.log("TURNOS FILTRADOS",filteredTurns)
+    for (const barber in totalForBarber) {
+      const totalEarned = totalForBarber[barber];
+
+      const paymentBarber = totalEarned * 0.5;
+      if (barber === 'Alvaro' || barber === 'alvaro') {
+
+      }
+      console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${barber}</td>
+        <td>$${totalEarned.toFixed(2)}</td>
+        <td>$${paymentBarber.toFixed(2)}</td>
+      `;
+      paymentTableBody.appendChild(row);
+    }
+  } catch (error) {
+    console.log('Error al calcular las ganancias por peluquero:', error);
+  }
+}
+
+const getPayForBarber = (dateValue) => {
+  const $payButton = document.querySelector('.pay-button');
+
+  //ACA SE EJECUTA LA FUNCION AL CLICKEAR EL BOTON
+  if ($payButton) { // Verifica que el botón exista
+    $payButton.addEventListener('click', async () => {
+      try {
+        console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
+        await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
+      } catch (error) {
+        console.error('Error al calcular los pagos:', error);
+      }
+    });
+  } else {
+    console.error('El botón de calcular pagos no se encontró en el DOM.');
+  }
+}
 
 export {
   containerCashView,
@@ -402,5 +393,6 @@ export {
   cashData,
   addDateFilterListener,
   loadBarberSelect,
-  addBarberFilterListener
+  addBarberFilterListener,
+  getEarnedForBarber
 };

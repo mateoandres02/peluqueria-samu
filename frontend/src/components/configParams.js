@@ -144,24 +144,24 @@ const submitService = (form, modal, modalFooter) => {
     const nombre = form.Nombre.value;
     const precio = form.Precio.value;
 
-    // Validación para el modo 'update'
-    if (mode === 'update') {
-      const response = await fetch("http://localhost:3001/cutservices");
-      const allServices = await response.json();
+    
+    //const response = await fetch("http://localhost:3001/cutservices");
+    //const allServices = await response.json();
 
-      // Verificar si el nuevo nombre ya existe en los servicios
-      const isDuplicate = allServices.some(service => service.Nombre.toLowerCase() === nombre.toLowerCase() && service.Id !== id);
-
-      if (isDuplicate) {
-        span.innerHTML = '¡El servicio de corte ya existe!';
-        span.style.color = 'red';
-        modalFooter.appendChild(span);
-        setTimeout(() => {
-          modalFooter.removeChild(span);
-        }, 2500);
-        return;
-      }
-    }
+    //const isDuplicate = allServices.some(service => service.Nombre.toLowerCase() === nombre.toLowerCase() && service.Id !== id);
+    //if (isDuplicate) {
+    //     span.innerHTML = '¡El servicio de corte ya existeeeee!';
+    //     span.style.color = 'red';
+    //     modalFooter.appendChild(span);
+    //     setTimeout(() => {
+    //     modalFooter.removeChild(span);
+    //    }, 2500);
+    //     return;
+    //}
+    // Validación para el modo 'update' 
+    //if (mode === 'update') {
+    //  
+    //}
 
     submitServiceButton.setAttribute('disabled', 'true');
 

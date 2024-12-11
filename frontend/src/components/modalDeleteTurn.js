@@ -55,7 +55,8 @@ function deleteTurn(info){
     // });
 
     if (response.ok) {
-      document.querySelector(document.body).focus();
+      const focusableElement = document.querySelector('.fc-button-active') || document.body;
+      focusableElement.focus();
       window.location.reload();
     } else {
       alert('Error al eliminar el turno.');

@@ -201,34 +201,6 @@ const deleteTurn = async (req, res) => {
     }
 };
 
-const deleteTurnByIdAndHour = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const date = req.params.hour;
-
-        // agregué temporalmente para no tener problemas de claves foráneas al eliminar el turno recurrente
-        await db.delete(turns_days).where(eq(turns_days.id_turno, id));
-
-        const response = await db.delete(turns)
-            .where(eq(turns.Id, id))
-            .returning();
-
-        if (response.length) {
-            res.status(204).send({
-                message: "¡El registro se eliminó exitosamente!"
-            });
-        } else {
-            res.status(404).send({
-                message: `No se pudo borrar el registro con id = ${id}`
-            });
-        }
-    } catch (err) {
-        res.status(500).send({
-            message: err.message || "No se pudo borrar el registro con id = " + id
-        });
-    }
-};
-
 const actionsTurns = {
     getAllTurns,
     getAllTurnsByBarber,
@@ -238,7 +210,6 @@ const actionsTurns = {
     postTurn,
     updateTurn,
     deleteTurn,
-    deleteTurnByIdAndHour
 };
 
 export default actionsTurns;

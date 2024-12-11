@@ -1,4 +1,4 @@
-import { sqliteTable, primaryKey, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, integer } from 'drizzle-orm/sqlite-core';
 import turns from "./mTurn.js";
 import days from "./mDaysWeek.js";
 

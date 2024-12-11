@@ -68,11 +68,15 @@ export default async function calendarRender (modalElement, data) {
     events: arrayTurns,
 
     eventClick: function(info) {
+      document.querySelectorAll('.fc-popover').forEach(popover => popover.remove());
+      
       body.insertAdjacentHTML('beforeend', modalTurnContent);
       modalGetTurn(info);
       const modales = document.querySelectorAll('.modal');
       modales.forEach(modal => {
         modal.addEventListener('hidden.bs.modal', function () {
+          const focusableElement = document.querySelector('.fc-button-active') || document.body;
+          focusableElement.focus();
           this.remove();
         });
       });

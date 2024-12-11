@@ -2,8 +2,8 @@ import { db } from "../database/db.js";
 import { eq } from 'drizzle-orm';
 import cutServices from "../models/mCutService.js";
 
-
 const getAllCutServices = async (req, res) => {
+
   try {
     const data = await db.select({
         servicio: cutServices,
@@ -13,31 +13,32 @@ const getAllCutServices = async (req, res) => {
 
     res.send(formattedData)
   } catch (e) {
-      res.status(500).send({
-          message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
-      });
-    }
+    res.status(500).send({
+        message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
+    });
+  }
+
 }
 
 const getServiceById = async (req, res) => {
 
   try {
-      const id = req.params.id;
+    const id = req.params.id;
 
-      const data = await db.select().from(cutServices).where(eq(cutServices.Id, id)).all();
+    const data = await db.select().from(cutServices).where(eq(cutServices.Id, id)).all();
 
-      if (data.length) {
-          res.status(200).send(data[0]);
-      } else {
-          res.status(404).send({
-              message: `No se ha encontrado el registro del servicio con id = ${id}`
-          });
-      };
+    if (data.length) {
+        res.status(200).send(data[0]);
+    } else {
+        res.status(404).send({
+            message: `No se ha encontrado el registro del servicio con id = ${id}`
+        });
+    };
 
   } catch (err) {
-      res.status(500).send({
-          message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
-      });
+    res.status(500).send({
+        message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
+    });
   }
   
 }
@@ -82,8 +83,6 @@ const updateCutService = async (req, res) => {
       .where(eq(cutServices.Id,id))
       .returning();
 
-    //if (response.length) {
-      //const updatedCutService = await db.select().from(cutServices).where(cutServices.Id.eq(id)).limit(1);
     if (response.length) {     
       res.send(response[0]);
     } else {
@@ -122,31 +121,7 @@ const deleteCutService = async (req, res) => {
     });
   }
 }
-/*
-const deleteCutService = async (req, res) => {
-  try {
-    const id = req.params.id;
 
-    await db.delete(cutServices).where(eq(cutServices.Id, id));
-
-    const response = await db.delete(cutServices).where(eq(cutServices.Id, id)).returning();
-
-    if (response.length > 0) {
-      res.status(200).send({
-          message: "¡El registro se eliminó exitosamente!"
-      });
-  } else {
-      res.status(404).send({
-          message: `No se pudo borrar el registro con id = ${id}. Registro no encontrado.`
-      });
-  }
-  } catch (err) {
-    res.status(500).send({
-      message: err.message || `No se pudo borrar el registro con id = ${id}.`
-  });
-  }
-};
-*/
 const actionsCutServices = {
   getAllCutServices,
   getServiceById,

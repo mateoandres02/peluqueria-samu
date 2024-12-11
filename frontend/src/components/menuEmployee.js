@@ -13,21 +13,15 @@ const menu = (data) => {
             <nav class="menu">
                 <ul>
                     <li>
-                        <a href="#admin-calendar">
+                        <a href="#calendario">
                             <img src="/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">
                             Administrar Calendario
                         </a>
                     </li>
                     <li>
-                        <a href="#share-calendar">
+                        <a href="#">
                             <img src="/assets/icons/share.svg" alt="Compartir calendario" class="icon">
                             Compartir calendario
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#generate-table">
-                            <img src="/assets/icons/table.svg" alt="Generar tabla" class="icon">
-                            Generar Tabla Turnos
                         </a>
                     </li>
                 </ul>

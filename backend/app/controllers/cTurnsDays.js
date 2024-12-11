@@ -1,48 +1,79 @@
 import { db } from "../database/db.js";
-import turns from "../models/mTurn.js";
-import users from "../models/mUser.js";
-import services from "../models/mCutService.js";
-import { eq, like, and } from 'drizzle-orm';
+import turns from "../models/mTurn.js"
 import turns_days from "../models/mTurnsDays.js";
+import days from "../models/mDaysWeek.js";
+import { eq, like, and } from 'drizzle-orm';
 
-const getAllTurns = async (req, res) => {
+const getAllTurnDays = async (req, res) => {
     try {
-        const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio
-        }).from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service));
+        const data = await db
+            .select({
+                turno: turns.Id,
+                dia: days.Nombre,
+            })
+            .from(turns_days)
+            .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(days, eq(days.id, turns_days.id_dia));
 
         res.send(data);
     } catch (error) {
         res.status(500).send({
-            message: error.message || "Ocurrió algún error recuperando los turnos."
+            message: error.message || "Ocurrió un error recuperando los turnos y días.",
         });
     }
-}
+};
 
-const getAllTurnsByBarber = async (req, res) => {
+const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
     try {
         const id = req.params.idUserActive;
-
-        const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio
+        
+        const data = await db
+        .select({
+            turno: turns.Id,
+            dia: days.dia,
         })
-        .from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
+        .from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(days, eq(days.id, turns_days.id_dia))
         .where(eq(turns.NroUsuario, id));
 
-        res.send(data);
+        // Organizar los días por turno
+        const turnsWithDays = data.reduce((acc, curr) => {
+            const { turno, dia } = curr;
+            if (!acc[turno]) {
+                acc[turno] = [];
+            }
+            acc[turno].push(dia);
+            return acc;
+        }, {});
+        
+        res.send(turnsWithDays);
+
     } catch (err) {
         res.status(500).send({
             message: err.message || `Ocurrió algún error recuperando los turnos del peluquero con id ${id}.`
+        });
+    }
+};
+
+const postTurnDay = async (req, res) => {
+    try {
+        const { id_turno, id_dia } = req.body;
+
+        if (!id_turno || id_dia == undefined) {
+            return res.status(400).send({
+                message: "¡Faltan datos para crear el registro!",
+            });
+        }
+
+        const newTurnDay = { id_turno, id_dia };
+
+        const response = await db.insert(turns_days).values(newTurnDay).returning();
+
+        res.status(201).send(response[0]);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || "Ocurrió un error creando un registro en Turnos_Dias.",
         });
     }
 };
@@ -178,37 +209,6 @@ const deleteTurn = async (req, res) => {
     try {
         const id = req.params.id;
 
-        // agregué temporalmente para no tener problemas de claves foráneas al eliminar el turno recurrente
-        await db.delete(turns_days).where(eq(turns_days.id_turno, id));
-
-        const response = await db.delete(turns)
-            .where(eq(turns.Id, id))
-            .returning();
-
-        if (response.length) {
-            res.status(204).send({
-                message: "¡El registro se eliminó exitosamente!"
-            });
-        } else {
-            res.status(404).send({
-                message: `No se pudo borrar el registro con id = ${id}`
-            });
-        }
-    } catch (err) {
-        res.status(500).send({
-            message: err.message || "No se pudo borrar el registro con id = " + id
-        });
-    }
-};
-
-const deleteTurnByIdAndHour = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const date = req.params.hour;
-
-        // agregué temporalmente para no tener problemas de claves foráneas al eliminar el turno recurrente
-        await db.delete(turns_days).where(eq(turns_days.id_turno, id));
-
         const response = await db.delete(turns)
             .where(eq(turns.Id, id))
             .returning();
@@ -230,15 +230,14 @@ const deleteTurnByIdAndHour = async (req, res) => {
 };
 
 const actionsTurns = {
-    getAllTurns,
-    getAllTurnsByBarber,
-    getAllTurnsByDate,
-    getAllTurnsByDateAndBarber,
-    getTurnById,
-    postTurn,
-    updateTurn,
-    deleteTurn,
-    deleteTurnByIdAndHour
+    // getAllTurns,
+    // getAllTurnsByBarber,
+    // getAllTurnsByDate,
+    getAllRecurrentTurnsDaysByBarber,
+    // getTurnById,
+    postTurnDay,
+    // updateTurn,
+    // deleteTurn
 };
 
 export default actionsTurns;

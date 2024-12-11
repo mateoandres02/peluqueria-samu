@@ -7,7 +7,7 @@
     left: 0;
     top: 0;
 
-    overflow-y: hidden;
+    overflow-y: auto !important;
 }
 
 .modal-content {
@@ -153,12 +153,33 @@ input[type="number"] {
     padding: 0;
     display: flex;
     position: relative;
-    margin-bottom: .5rem;
 }
 
-.form-check-input {
+.form-check-input-regular {
     position: absolute;
     left: 16.5ch;
+}
+
+.form-checkboxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.form-checkboxes .form-checks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: .5rem;
+    padding: 0;
+}
+
+.form-check-input-day {
+    margin: .5rem;
+    padding: 0;
 }
 
 /* Media queries CELULAR*/

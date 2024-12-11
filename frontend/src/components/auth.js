@@ -1,6 +1,5 @@
-// cambie el nombre de renderIndexEmployee por el nombre original indexView en la importacion
-import indexView from "./indexAdminView.js";
-import renderIndexEmployee from "./indexEmployeeView.js";
+import renderIndexAdminView from "./indexAdminView.js";
+import renderIndexEmployeeView from "./indexEmployeeView.js";
 
 export default async function checkAuthentication() {
     try {
@@ -9,7 +8,6 @@ export default async function checkAuthentication() {
         const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
 
         if (!response.ok || response.status === 401) {
-            const data = await response.json(); 
             window.location.href = '/login';
         } else {
           
@@ -17,9 +15,9 @@ export default async function checkAuthentication() {
             const data = await response.json(); 
 
             if (data.user.Rol === "Empleado") {
-                await renderIndexEmployee(data);
+                await renderIndexEmployeeView(data);
             } else if (data.user.Rol === "Admin") {
-                await indexView(data);
+                await renderIndexAdminView(data);
             }
 
         } 

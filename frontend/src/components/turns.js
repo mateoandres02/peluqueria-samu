@@ -1,9 +1,27 @@
 import { turnDateEnd } from "./date.js";
 
-// Renderizamos los turnos del usuario activo.
 
-// Obtenemos todos los turnos del usuario activo.
+const getRecurrentTurnsByUserActive = async (data) => {
+
+  /*
+  ** Obtenemos los turnos recurrentes del usuario activo 
+  * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
+  */
+
+  // const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
+  const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
+  const recurrentTurns = await responseRecurrentsTurns.json();
+
+  return recurrentTurns;
+}
+
 const getTurnsByUserActive = async (data) => {
+
+  /*
+  ** Obtenemos los turnos normales del usuario activo 
+  * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
+  */
+
   // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
   const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
   const turns = await response.json();
@@ -12,61 +30,89 @@ const getTurnsByUserActive = async (data) => {
 }
 
 const getEndOfMonth = (startDate) => {
-  // con esta función obtenemos el ultimo dia del mes, para que si el cliente es regular, la gestión de turnos recurrentes dure solo el mes actual en el que se genera el turno.
-  // esto lo necesitamos para no hacer inserciones masivas en la base de datos.
+
+  /**
+   * Obtenemos el ultimo dia del mes para que no se haga una inserción masiva de registros en la base de datos con los turnos recurrentes.
+   * param: startDate -> es la fecha inicial del turno.
+   */
+
   const date = new Date(startDate);
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 };
 
-const renderTurns = async (turns) => {
+const renderTurns = async (turns, recurrentTurns) => {
 
-  // Mapeamos los turnos en un arreglo
+  /*
+  ** Mapeamos los turnos en un array para poder renderizarlos en el calendario a través de la propiedad events de la librería full calendar.
+  * param: turns -> array de turnos normales del usuario activo.
+  * param: recurrentTurns -> array de turnos recurrentes del usuario activo.
+  */
+
   const arrayTurns = turns.map(turn => {
 
     const dateEnd = turnDateEnd(turn.turns.Date);
 
-    if (turn.turns.Regular === "true") {
+    let days = [];
+
+    if (turn.turns.Regular === 'true') {
+      // Obtenemos solo los días correspondientes a este turno
+      // turnoRecurrente es un array de dias, dias en donde ese turno se repite.
+      const turnoRecurrente = recurrentTurns[turn.turns.Id]; // Usamos el ID del turno para obtener sus días.
+      
+      if (turnoRecurrente) {
+        turnoRecurrente.forEach(day => {
+          // En el array de days pusheamos los dias pertenecientes a ese turno.
+          if (!days.includes(day)) {
+            days.push(day);
+          }
+        });
+      }
+
       const rruleConfig = {
-        freq: 'weekly', // esta propiedad es la frecuencia de repetición. daily, weekly, monthly
-        interval: 1, // el intervalo sería cada 1 semana en este caso
-        dtstart: turn.turns.Date, // es la date inicial, es la que ponemos cuando se crea el turno.
-        until: getEndOfMonth(turn.turns.Date), // el until sería la fecha final de la recurrencia. pongo el ultimo dia del mes para que no se generen inserciones en la base de datos masivamente.
-        byweekday: ['mo', 'fr']  // esto hay que cambiarlo por una selección manual de samu
+        freq: 'weekly', // Frecuencia de repetición
+        interval: 1, // Cada 1 semana
+        dtstart: turn.turns.Date, // Fecha inicial
+        until: getEndOfMonth(turn.turns.Date), // Fecha final (último día del mes)
+        byweekday: days  // Días de repetición para este turno
       };
 
       return {
         id: turn.turns.Id,
         title: turn.turns.Nombre,
-        start: turn.turns.Date,
-        duration: '00:30:00', // es la duración de cada turno, pongo media hora porque es la que estaba plasmada desde un principio.
-        color: 'gray', 
+        start: new Date(turn.turns.Date).toISOString(),
+        duration: '00:30:00', // Duración
+        color: 'gray',
+        className: 'fixed-turn-event',
         extendedProps: {
           telefono: turn.turns.Telefono,
           regular: turn.turns.Regular,
-          end: dateEnd
+          end: new Date(dateEnd).toISOString(),
         },
         rrule: rruleConfig,
       };
     }
-  
+
     return {
       id: turn.turns.Id,
       title: turn.turns.Nombre,
       start: turn.turns.Date,
       end: dateEnd,
+      className: 'normal-turn',
       extendedProps: {
         telefono: turn.turns.Telefono,
         regular: turn.turns.Regular,
         end: dateEnd
       }
+
     };
-    
   });
 
   return arrayTurns;
-}
+};
+
 
 export {
+  getRecurrentTurnsByUserActive,
   getTurnsByUserActive,
   renderTurns
 }

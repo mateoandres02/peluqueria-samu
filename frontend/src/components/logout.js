@@ -10,7 +10,6 @@ export const logout = async () => {
         });
     
         if (response.ok) {
-            // Reemplazar el estado actual en el historial para prevenir la navegación hacia atrás y hacia delante.
             history.replaceState(null, '', '/login.html');
             history.pushState(null, '', '/login.html');
             window.location.href = '/login.html';

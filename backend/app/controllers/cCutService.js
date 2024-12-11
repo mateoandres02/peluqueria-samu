@@ -106,9 +106,6 @@ const deleteCutService = async (req, res) => {
     const response = await db.delete(cutServices)
       .where(eq(cutServices.Id,id))
       .returning();
-      console.log(`Intentando eliminar el servicio con ID: ${id}`);
-
-      console.log('Respuesta de la eliminación:', response);
 
     if (response.length) {
       res.status(204).send({

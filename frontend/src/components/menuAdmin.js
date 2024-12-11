@@ -13,31 +13,31 @@ const menuFunction = (user) => {
             <nav class="menu">
                 <ul>
                     <li>
-                        <a href="#admin-calendar">
+                        <a href="#calendario">
                             <img src="/assets/icons/calendar.svg" alt="Administrar calendario" class="icon">Administrar Calendario
                         </a>
                     </li>
                     <li>
-                        <a href="#cash-register">
-                            <img src="/assets/icons/cash-register.svg" alt="Ver caja" class="icon">
+                        <a href="#caja">
+                            <img src="/assets/icons/cash-register.svg" alt="Caja registradora" class="icon">
                             Seguimiento de caja
                         </a>
                     </li>
                     <li>
-                        <a href="#history-register">
-                            <img src="/assets/icons/share.svg" alt="registro de turnos" class="icon">
+                        <a href="#historial-de-registro">
+                            <img src="/assets/icons/share.svg" alt="Historial de registro" class="icon">
                             Registro de Turnos
                         </a>
                     </li>
                     <li>
-                        <a href="#manage-employees">
+                        <a href="#administrar-empleados">
                             <img src="/assets/icons/edit-user.svg" alt="Administrar empleados" class="icon">
                             Administrar empleados
                         </a>
                     </li>
                     <li>
-                        <a href="#config-params">
-                            <img src="/assets/icons/table.svg" alt="Generar tabla" class="icon">
+                        <a href="#configuracion">
+                            <img src="/assets/icons/table.svg" alt="Configuración" class="icon">
                             Configurar parametros
                         </a>
                     </li>

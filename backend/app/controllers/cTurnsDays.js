@@ -4,13 +4,10 @@ import turns_days from "../models/mTurnsDays.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and } from 'drizzle-orm';
 
-const getAllTurnDays = async (req, res) => {
+const getAllRecurrentTurns = async (req, res) => {
     try {
         const data = await db
-            .select({
-                turno: turns.Id,
-                dia: days.Nombre,
-            })
+            .select()
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
             .leftJoin(days, eq(days.id, turns_days.id_dia));
@@ -19,6 +16,30 @@ const getAllTurnDays = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             message: error.message || "Ocurrió un error recuperando los turnos y días.",
+        });
+    }
+};
+
+const getRecurrentTurnById = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        console.log(id)
+
+        const data = await db.select()
+        .from(turns_days)
+        .where(turns_days.Id == id);
+
+        if (data.length) {
+            res.status(200).send(data[0]);
+        } else {
+            res.status(404).send({
+                message: `No se ha encontrado el registro del turno con id = ${id}`
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
         });
     }
 };
@@ -74,28 +95,6 @@ const postTurnDay = async (req, res) => {
     } catch (error) {
         res.status(500).send({
             message: error.message || "Ocurrió un error creando un registro en Turnos_Dias.",
-        });
-    }
-};
-
-const getTurnById = async (req, res) => {
-    try {
-        const id = req.params.id;
-
-        const data = await db.select()
-        .from(turns)
-        .where(turns.Id == id);
-
-        if (data.length) {
-            res.status(200).send(data[0]);
-        } else {
-            res.status(404).send({
-                message: `No se ha encontrado el registro del turno con id = ${id}`
-            });
-        }
-    } catch (err) {
-        res.status(500).send({
-            message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
         });
     }
 };
@@ -230,11 +229,11 @@ const deleteTurn = async (req, res) => {
 };
 
 const actionsTurns = {
-    // getAllTurns,
+    getAllRecurrentTurns,
     // getAllTurnsByBarber,
     // getAllTurnsByDate,
     getAllRecurrentTurnsDaysByBarber,
-    // getTurnById,
+    getRecurrentTurnById,
     postTurnDay,
     // updateTurn,
     // deleteTurn

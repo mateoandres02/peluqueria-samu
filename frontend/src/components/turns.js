@@ -116,4 +116,3 @@ export {
   getTurnsByUserActive,
   renderTurns
 }
-

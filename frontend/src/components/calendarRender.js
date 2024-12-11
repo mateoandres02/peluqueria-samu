@@ -117,7 +117,7 @@ export default async function calendarRender (modalElement, data) {
       const fcColDayToday = document.querySelectorAll('.fc-timegrid-col');
       fcColDayToday.forEach(el => {
         if (el.classList.contains('fc-day-today')) {
-          el.style.backgroundColor = "#717388";
+          el.style.backgroundColor = "#fffcdc";
           el.style.height = "800px";
         }
       });
@@ -130,7 +130,7 @@ export default async function calendarRender (modalElement, data) {
   const fcColDayToday = d.querySelectorAll('.fc-timegrid-col');
   fcColDayToday.forEach(el => {
     if (el.classList.contains('fc-day-today')) {
-      el.style.backgroundColor = "#717388";
+      el.style.backgroundColor = "#fffcdc";
       el.style.height = "800px";
     }
   }) 

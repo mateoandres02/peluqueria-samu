@@ -23,20 +23,28 @@ const modalConfirm = `
 `;
 
 function modalConfirmDisplay() {
+
+  /**
+   * Mostramos la modal de confirmación de la acción para eliminar el turno.
+   */
+
   const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
-
   const modalConfirm = bootstrap.Modal.getInstance($modal._element);
-
   modalConfirm.show();
 }
   
-function clickDelete(info){
+function deleteTurn(info){
+
+  /**
+   * Gestionamos el delete del turno.
+   * param: info -> info proporcionada por fullcalendar de la celda seleccinada, por ende del turno seleccionado.
+   */
+  
   const $deleteTurn = document.getElementById("confirmDeleteTurn");
   
   $deleteTurn.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    // Obtenemos el publicId del turno creado
     const publicId = info.event._def.publicId;
 
     const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
@@ -47,6 +55,7 @@ function clickDelete(info){
     // });
 
     if (response.ok) {
+      document.querySelector(document.body).focus();
       window.location.reload();
     } else {
       alert('Error al eliminar el turno.');
@@ -58,5 +67,5 @@ function clickDelete(info){
 export {
   modalConfirm,
   modalConfirmDisplay,
-  clickDelete
+  deleteTurn
 }

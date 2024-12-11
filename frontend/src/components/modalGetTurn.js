@@ -1,6 +1,6 @@
 import { parseDate } from "./date";
 import '../styles/modal.css';
-import { clickDelete, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn";
+import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn";
 
 const modalTurnContent = `
   <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
@@ -33,15 +33,18 @@ const modalTurnContent = `
   </div>
 `;
 
-function modalTurnContentDisplay(info) {
-  const d = document;
+function modalGetTurn(info) {
+  
+  /**
+   * Obtenemos la información del turno y la mostramos en una modal.
+   * param: info -> trae info de la celda seleccionada del calendario, proporcionado por fullcalendar.
+   */
 
+  const d = document;
   let body = document.body;
 
-  // Inicializamos la modal
+  // Inicializamos la modal y obtenemos todos sus elementos.
   const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
-
-  // Obtenemos los elementos de la modal 
   const $spanName = d.getElementById("spanName");
   const $spanTel = d.getElementById("spanTel");
   const $spanDay = d.getElementById("spanDay");
@@ -49,13 +52,10 @@ function modalTurnContentDisplay(info) {
   const $spanEndTime = d.getElementById("spanEndTime");
   const $spanRegularCustomer = d.getElementById("spanRegularCustomer");
   
-  // Obtenemos la fecha parseada de el start
-  const { dayWithoutYear, timeWithoutSeconds:timeWithoutSecondsStart } = parseDate(info.event.startStr);
+  const { dayWithoutYear, timeWithoutSeconds: timeWithoutSecondsStart } = parseDate(info.event.startStr);
+  const { timeWithoutSeconds: timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
 
-  // Obtenemos la fecha parseada de el end
-  const { timeWithoutSeconds:timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
-
-  // Obtenemos los valores de cada input
+  // Obtenemos los valores de cada input de la modal.
   const name = info.event._def.title;
   const tel = info.event._def.extendedProps.telefono;
   const day = dayWithoutYear;
@@ -66,7 +66,6 @@ function modalTurnContentDisplay(info) {
   if (regular === 'true') regular = 'Sí';
   if (regular === 'false') regular = 'No';
   
-  // Reseteamos valores cada vez que se vuelve a abrir la modal
   $spanName.innerHTML = "";
   $spanTel.innerHTML = "";
   $spanDay.innerHTML = "";
@@ -74,7 +73,6 @@ function modalTurnContentDisplay(info) {
   $spanEndTime.innerHTML = "";
   $spanRegularCustomer.innerHTML = "";
 
-  // Ingresamos los datos correspondientes a cada elemento
   $spanName.innerHTML += `${name}`;
   $spanTel.innerHTML += `${tel}`;
   $spanDay.innerHTML += `${day}`;
@@ -82,21 +80,16 @@ function modalTurnContentDisplay(info) {
   $spanEndTime.innerHTML += `${endTime}`;
   $spanRegularCustomer.innerHTML += `${regular}`;
 
-  // Mostramos la modal.
   $modal.show();
 
-  // Botones de modal footer
   const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp");
 
   $btnDelete.addEventListener('click', async (e) => {
     e.preventDefault();
-
     body.insertAdjacentHTML('beforeend', modalConfirm);
-
     modalConfirmDisplay();
-
-    clickDelete(info);
+    deleteTurn(info);
 
     const modales = document.querySelectorAll('.modal');
 
@@ -121,5 +114,5 @@ function modalTurnContentDisplay(info) {
 
 export {
   modalTurnContent,
-  modalTurnContentDisplay
+  modalGetTurn
 }

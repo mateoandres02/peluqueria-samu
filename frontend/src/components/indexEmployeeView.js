@@ -17,16 +17,14 @@ const indexView = async (data) => {
 
     switch (urlActive) {
         
-        case '#admin-calendar':
+        case '#calendario':
+
             app.innerHTML += calendario;
             calendarRender(modalElement, data);
+            
             break;
 
-        case '#share-calendar':
-
-            break;
-
-        case '#generate-table':
+        case '#':
 
             break;
     

@@ -57,8 +57,6 @@ const indexView = async (data) => {
 
         case '#historial-de-registro':
 
-            console.log("toque historial de registro")
-
             break;
         
         case '#administrar-empleados':

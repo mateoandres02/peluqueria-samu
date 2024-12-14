@@ -7,11 +7,12 @@ function parseDate(date) {
 
   const [datePart, timePart] = date.split('T');
   const [year, month, day] = datePart.split('-');
-  const [hour, minute, ] = timePart.split(":");
+  const [hour, minute, seconds] = timePart.split(":");
 
   const dayWithoutYear = `${month}-${day}`;
   const dateWithoutTime = `${day}/${month}/${year}`
   const timeWithoutSeconds = `${hour}:${minute}`;
+  const timeOfTurn = `${hour}:${minute}:${seconds}`;
 
   const completeDate = date;
 
@@ -19,9 +20,15 @@ function parseDate(date) {
     dayWithoutYear,
     dateWithoutTime,
     timeWithoutSeconds,
+    timeOfTurn,
     completeDate
   }
 };
+
+const addHourOfStartDate = (dateWithoutTime, timeOfTurn) => {
+  const completeDate = `${dateWithoutTime}T${timeOfTurn}`;
+  return completeDate;
+}
 
 const turnDateEnd = (date) => {
 
@@ -56,4 +63,4 @@ const turnDateEnd = (date) => {
   
 }
 
-export { parseDate, turnDateEnd };
+export { parseDate, addHourOfStartDate, turnDateEnd };

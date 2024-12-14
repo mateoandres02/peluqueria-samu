@@ -1,8 +1,8 @@
-import { parseDate } from "./date";
+import { parseDate, addHourOfStartDate } from "./date";
 import '../styles/modal.css';
 
 const modalElement = `
-  <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel"  aria-hidden="true">
+  <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -32,31 +32,31 @@ const modalElement = `
 
             <div class="form-checkboxes">
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxMonday" value="0">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxMonday" value="1">
                 <label class="form-check-label" for="checkboxMonday">Lun</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxTuesday" value="1">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxTuesday" value="2">
                 <label class="form-check-label" for="checkboxTuesday">Mar</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxWednesday" value="2">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxWednesday" value="3">
                 <label class="form-check-label" for="checkboxWednesday">Mié</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxThursday" value="3">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxThursday" value="4">
                 <label class="form-check-label" for="checkboxThursday">Jue</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxFriday" value="4">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxFriday" value="5">
                 <label class="form-check-label" for="checkboxFriday">Vie</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxSaturday" value="5">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxSaturday" value="6">
                 <label class="form-check-label" for="checkboxSaturday">Sáb</label>
               </div>
               <div class="form-checks">
-                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxSunday" value="6">
+                <input class="form-check-input form-check-input-day" type="checkbox" id="checkboxSunday" value="0">
                 <label class="form-check-label" for="checkboxSunday">Dom</label>
               </div>
             </div>
@@ -72,25 +72,15 @@ const modalElement = `
   </div>
 `;
 
-function modalPostTurn(info, data) {
+const activatedCheckboxes = (info, checksActivated) => {
 
   /**
-   * Modal que contiene el formulario para hacer el post.
-   * param: info -> info de la celda seleccionada. info proporcionada por fullcalendar.
-   * param: data -> info del usuario logueado/activo.
+   * Seteamos como por defecto el checked del dia seleccionado en el calendario.
+   * Cargamos en checksActiated los checkboxes seleccionados.
+   * param: info -> info provista por fullcalendar.
+   * param: checksActivated -> array vacio para guardar los checkboxes de los dias seleccionados.
    */
 
-  const d = document;
-  const $modal = new bootstrap.Modal(d.getElementById('dateClickModal'));
-  const $inputEventDate = d.getElementById("eventDate");
-  const $inputEventTime = d.getElementById("event-datetime");
-  const $inputRegularCostumer = document.getElementById("regular-customer");
-
-  // Obtenemos los checks de los dias de recurrencia.
-  const $checkboxesDays = d.querySelector('.form-checkboxes');
-  $checkboxesDays.style.display = 'none';
-  let checksActivated = [];
-  // Seteamos como por defecto el checked del dia seleccionado en el calendario.
   const eventDate = new Date(info.dateStr);
   const dayOfWeek = eventDate.getDay();
 
@@ -113,20 +103,15 @@ function modalPostTurn(info, data) {
     dayCheckboxes[dayOfWeek].checked = true;
     checksActivated.push(parseInt(dayCheckboxes[dayOfWeek].value))
   }
+};
 
-  const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
+const actionBtnCancel = ($btnCancel, $modal) => {
 
-  const $formModal = d.getElementById("eventForm");
-  $formModal.inputName.value = '';
-  $formModal.inputNumber.value = '';
-  // Le cargamos los valores a los inputs de lectura.
-  $inputEventDate.value = dayWithoutYear;
-  $inputEventTime.value = timeWithoutSeconds;
-
-  $modal.show();
-
-  // Programamos la funcionalidad de cancelar el registro del turno.
-  const $btnCancel = document.querySelector('.btnCancel');
+  /**
+   * Acción del botón de cancelar de la modal.
+   * param: $btnCancel -> elemento html que contiene el boton de cancelar a tocar.
+   * param: $modal -> elemento html que contiene la modal a ocultar.
+   */
 
   $btnCancel.addEventListener('click', (e) => {
     e.preventDefault();
@@ -134,8 +119,39 @@ function modalPostTurn(info, data) {
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
   });
+}
 
-  // Trabajamos con el checkbox de si es cliente recurrente o no.
+const handleSelectionCheckboxes = (checksActivated) => {
+  
+  /**
+   * Manejamos la selección de los checkboxes de los dias de recurrencia y los guardamos en el array de checksActivated.
+   * param: checksActivated -> array vacío que guardará la selección de los dias de recurrencia.
+   */
+
+  const $checkboxesInputs = document.querySelectorAll('.form-checks input');
+
+  for (let i = 0; i < $checkboxesInputs.length; i++) {
+    $checkboxesInputs[i].addEventListener('change', (e) => {
+      let contains = checksActivated.find(day => parseInt(day) == parseInt(e.target.value));
+
+      if (!contains) {
+        checksActivated.push(parseInt(e.target.value))
+      } else {
+        checksActivated.pop(parseInt(e.target.value))
+      }
+    })
+  }
+};
+
+const activateSectionCheckboxes = ($inputRegularCostumer, $checkboxesDays, checksActivated) => {
+  
+  /**
+   * Activamos la sección de los checkboxes para poder elegir los dias de recurrencia.
+   * param: $inputRegularCustomer -> contiene el elemento html del checkbox principal que si se habilita, se activa la sección de los checkboxes de los días de recurrencia.
+   * param: $checkboxesDays -> elemento html de la sección de los checkboxes de los dias de recurrencia.
+   * param: checksActivated -> array vacío para guardar los dias de recurrencia seleccionados.
+   */
+
   $inputRegularCostumer.addEventListener('change', (e) => {
     if ($inputRegularCostumer.getAttribute('checked')) {
       $inputRegularCostumer.removeAttribute('checked')
@@ -146,28 +162,118 @@ function modalPostTurn(info, data) {
       $inputRegularCostumer.value = true;
       $checkboxesDays.style.display = 'flex';
 
-      // Obtenemos todos los checkboxes de los dias de recurrencia y los trabajamos.
-      const $checkboxesInputs = d.querySelectorAll('.form-checks input');
-    
-      // Cargamos el array de checksActivated con los checks activados.
-      for (let i = 0; i < $checkboxesInputs.length; i++) {
-        $checkboxesInputs[i].addEventListener('change', (e) => {
-          let contains = checksActivated.find(day => parseInt(day) == parseInt(e.target.value));
-
-          if (!contains) {
-            checksActivated.push(parseInt(e.target.value))
-          } else {
-            checksActivated.pop(parseInt(e.target.value))
-          }
-        })
-      }
+      handleSelectionCheckboxes(checksActivated);
     }
-  });
-
-  handleSubmit($formModal, completeDate, data, $modal, checksActivated);
+  })
 }
 
-async function handleSubmit(form, date, dataUserActive, $modal, checksActivated) {
+function modalPostTurn(info, data) {
+
+  /**
+   * Modal que contiene el formulario para hacer el post.
+   * param: info -> info de la celda seleccionada. info proporcionada por fullcalendar.
+   * param: data -> info del usuario logueado/activo.
+   */
+
+  const d = document;
+  const $modal = new bootstrap.Modal(d.getElementById('dateClickModal'));
+  const $inputEventDate = d.getElementById("eventDate");
+  const $inputEventTime = d.getElementById("event-datetime");
+  const $inputRegularCostumer = document.getElementById("regular-customer");
+
+  // Obtenemos los checks de los dias de recurrencia.
+  const $checkboxesDays = d.querySelector('.form-checkboxes');
+  $checkboxesDays.style.display = 'none';
+
+  let checksActivated = [];
+  activatedCheckboxes(info, checksActivated);
+
+  const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
+
+  const $formModal = d.getElementById("eventForm");
+  $formModal.inputName.value = '';
+  $formModal.inputNumber.value = '';
+  $inputEventDate.value = dayWithoutYear;
+  $inputEventTime.value = timeWithoutSeconds;
+
+  $modal.show();
+
+  const $btnCancel = document.querySelector('.btnCancel');
+  actionBtnCancel($btnCancel, $modal);
+
+  activateSectionCheckboxes($inputRegularCostumer, $checkboxesDays, checksActivated);
+
+  handleSubmit($formModal, completeDate, data, $modal, checksActivated, info);
+}
+
+const validateInputString = () => {
+
+  /**
+   * Validamos lo ingresado en el input del nombre del cliente.
+   */
+
+  document.getElementById('input-name').addEventListener('input', function(event) {
+    const input = event.target;
+  
+    const namePattern = /^[a-zA-Z\s]{1,25}$/;
+  
+    if (!namePattern.test(input.value)) {
+      input.setCustomValidity("Solo letras y espacios hasta 25 caracteres.");
+    } else {
+      input.setCustomValidity(""); 
+    }
+  });
+}
+
+const validateInputNumber = () => {
+
+  /**
+   * Validamos lo ingresado en el input del numero telefónico del cliente.
+   */
+
+  document.getElementById('input-number').addEventListener('input', function(event) {
+    const input = event.target;
+  
+    const numberPattern = /^\+?\d{1,15}$/;
+  
+    if (!numberPattern.test(input.value)) {
+      input.setCustomValidity("Solo números hasta 15 digitos.");
+    } else {
+      input.setCustomValidity("");
+    }
+  });
+}
+
+const addDatesOfMonth = (date, dateOutParsed, datesOfMonth, checksActivated) => {
+
+  /**
+   * Agregamos las fechas de los dias de recurrencia seleccionados, para luego poder identificarlos por separado y poder trabajarlos.
+   * param: date -> fecha completa de la celda seleccionada.
+   * param: dateOutParsed -> fecha completa pero parseada de la celda seleccionada.
+   * param: datesOfMonth -> array vacío de las fechas del mes de los dias de recurrencia seleccionados. 
+   * param: checksActivates -> array con los checks activados de los dias de recurrencia seleccionados.
+   */
+
+  const actualDate = new Date(date);
+  const actualMonth = actualDate.getMonth();
+  const actualYear = actualDate.getFullYear();
+  const { timeOfTurn } = parseDate(dateOutParsed);
+
+  for (const day of checksActivated) {
+    const newDate = new Date(actualYear, actualMonth, 1);
+    while (newDate.getMonth() === actualMonth) {
+      if (newDate.getDay() === day) {
+        datesOfMonth.push({
+          date: addHourOfStartDate(newDate.toISOString().split('T')[0], timeOfTurn),
+          id_dia: day
+        })
+      }
+      newDate.setDate(newDate.getDate() + 1);
+    }
+  }
+}
+
+async function handleSubmit(form, date, dataUserActive, $modal, checksActivated, info) {
   
   /**
    * Manejamos el envio de los datos del turno a crear.
@@ -189,29 +295,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated)
   span.style.marginBottom = '0rem';
   span.style.paddingBottom = '0rem';
 
-  document.getElementById('input-name').addEventListener('input', function(event) {
-    const input = event.target;
-  
-    const namePattern = /^[a-zA-Z\s]{1,25}$/;
-  
-    if (!namePattern.test(input.value)) {
-      input.setCustomValidity("Solo letras y espacios hasta 25 caracteres.");
-    } else {
-      input.setCustomValidity(""); 
-    }
-  });
-  
-  document.getElementById('input-number').addEventListener('input', function(event) {
-    const input = event.target;
-  
-    const numberPattern = /^\+?\d{1,15}$/;
-  
-    if (!numberPattern.test(input.value)) {
-      input.setCustomValidity("Solo números hasta 15 digitos.");
-    } else {
-      input.setCustomValidity("");
-    }
-  });
+  validateInputString();
+  validateInputNumber();
 
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
@@ -226,9 +311,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated)
     const dateOutParsed = date;
     const regularCustomer = $inputRegularCostumer.value;
 
-    if ($nameInput.checkValidity() && $numberInput.checkValidity()) {
-      console.log("Formulario válido. Enviando datos...");
-    } else {
+    if (!$nameInput.checkValidity() && !$numberInput.checkValidity()) {
       $nameInput.reportValidity(); 
       $numberInput.reportValidity();
     }
@@ -262,21 +345,24 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated)
     const data = await response.json();
     let id_turn = data.Id;
 
-    // Trabajamos con el turno recurrente
-    let regularTurn;
-    let urlRegularTurn;
-    let optionsRegularTurn;
-    let responseRegularTurn;
-
     let responses = [];
 
     if (regularCustomer === 'true') {
 
-      for (const day of checksActivated) {
+      // Trabajamos con el turno recurrente
+      let regularTurn;
+      let urlRegularTurn;
+      let optionsRegularTurn;
+      let responseRegularTurn;
 
+      const datesOfMonth = [];
+      addDatesOfMonth(date, dateOutParsed, datesOfMonth, checksActivated);
+
+      for (const date of datesOfMonth) {
         regularTurn = {
           id_turno: id_turn,
-          id_dia: day
+          id_dia: date.id_dia,
+          date: date.date
         };
 
         // urlRegularTurn = 'http://peluqueria-invasion-backend.vercel.app/recurrent_turns';
@@ -289,6 +375,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated)
         };
 
         responseRegularTurn = await fetch(urlRegularTurn, optionsRegularTurn);
+
         responses.push(responseRegularTurn);
       };
       

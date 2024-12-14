@@ -3,10 +3,10 @@ import { turnDateEnd } from "./date.js";
 
 const getRecurrentTurnsByUserActive = async (data) => {
 
-  /*
-  ** Obtenemos los turnos recurrentes del usuario activo 
-  * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
-  */
+  /**
+   * Obtenemos los turnos recurrentes del usuario activo 
+   * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
+   */
 
   // const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
   const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
@@ -17,10 +17,10 @@ const getRecurrentTurnsByUserActive = async (data) => {
 
 const getTurnsByUserActive = async (data) => {
 
-  /*
-  ** Obtenemos los turnos normales del usuario activo 
-  * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
-  */
+  /** 
+   * Obtenemos los turnos normales del usuario activo 
+   * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
+   */ 
 
   // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
   const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
@@ -37,7 +37,7 @@ const getEndOfMonth = (startDate) => {
    */
 
   const date = new Date(startDate);
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
 };
 
 const renderTurns = async (turns, recurrentTurns) => {
@@ -51,29 +51,31 @@ const renderTurns = async (turns, recurrentTurns) => {
   const arrayTurns = turns.map(turn => {
 
     const dateEnd = turnDateEnd(turn.turns.Date);
-
     let days = [];
+    let exdates = [];
 
     if (turn.turns.Regular === 'true') {
       // Obtenemos solo los días correspondientes a este turno
-      // turnoRecurrente es un array de dias, dias en donde ese turno se repite.
       const turnoRecurrente = recurrentTurns[turn.turns.Id]; // Usamos el ID del turno para obtener sus días.
       
       if (turnoRecurrente) {
         turnoRecurrente.forEach(day => {
           // En el array de days pusheamos los dias pertenecientes a ese turno.
-          if (!days.includes(day)) {
-            days.push(day);
+          if (day.exdate == 1) {
+            exdates.push(day.date)
+          }
+          if (!days.includes(day.dia)) {
+            days.push(day.dia);
           }
         });
       }
 
       const rruleConfig = {
-        freq: 'weekly', // Frecuencia de repetición
+        freq: 'daily', // Frecuencia de repetición
         interval: 1, // Cada 1 semana
         dtstart: turn.turns.Date, // Fecha inicial
         until: getEndOfMonth(turn.turns.Date), // Fecha final (último día del mes)
-        byweekday: days  // Días de repetición para este turno
+        byweekday: days,  // Días de repetición para este turno
       };
 
       return {
@@ -88,6 +90,7 @@ const renderTurns = async (turns, recurrentTurns) => {
           regular: turn.turns.Regular,
           end: new Date(dateEnd).toISOString(),
         },
+        exdate: exdates,
         rrule: rruleConfig,
       };
     }

@@ -1,7 +1,7 @@
 import '../styles/modal.css';
 
 const modalConfirm = `
-  <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+  <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -11,9 +11,9 @@ const modalConfirm = `
           </button>
         </div>
         <div class="modal-body">
-          <h2>Deseas eliminar el turno?</h2>
+          <h2>¿Deseas eliminar el turno?</h2>
         </div>
-        <div class="modal-footer-delete">
+        <div class="modal-footer-delete modal-footer">
           <button id="confirmDeleteTurn" class="btn btn-success">Eliminar</button>
           <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
         </div>
@@ -46,13 +46,25 @@ function deleteTurn(info){
     e.preventDefault();
 
     const publicId = info.event._def.publicId;
+    const date = new Date(info.event._instance.range.start).toISOString().split("T")[0];
+    const regularCustomer = info.event._def.extendedProps.regular;
+    let response;
 
-    const response = await fetch(`http://localhost:3001/turns/${publicId}`, {
+    if (regularCustomer === "true") {
+      // response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
+      //   method: 'DELETE'  
+      // });
+      response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
         method: 'DELETE'  
-    });
-    // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}`, {
-    //   method: 'DELETE'  
-    // });
+      });
+    } else {
+      // response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
+      //   method: 'DELETE'  
+      // });
+      response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
+        method: 'DELETE'  
+      });
+    }
 
     if (response.ok) {
       const focusableElement = document.querySelector('.fc-button-active') || document.body;

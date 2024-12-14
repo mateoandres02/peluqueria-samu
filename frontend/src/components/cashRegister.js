@@ -86,8 +86,6 @@ const loadBarberSelect = async (barberSelect) => {
 
 
 const rows = (dataTurns, cutServices) => {
-  console.log("dataTurns", dataTurns);
-  console.log("cutServices", cutServices);
   let row = '';
   dataTurns.forEach((user, index) => {
 
@@ -247,8 +245,6 @@ const usarCalcular = (dataTurns) => {
     totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el contador a cero
     totalEarned = 0; // Reiniciar totalEarned
 
-    console.log("boton tocado", $boton);
-    
     // Calcular el total solo con los datos actuales
     totalEarned = dataTurns.reduce((acc, turn) => {
       return acc + (turn.precio || 0);
@@ -256,7 +252,7 @@ const usarCalcular = (dataTurns) => {
 
     // Actualizar el display del total
     totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
-    console.log(`Total ganado RARO: $${totalEarned.toFixed(2)}`);
+    // console.log(`Total ganado RARO: $${totalEarned.toFixed(2)}`);
   }
 
   // Eliminar el listener anterior para evitar acumulación
@@ -296,7 +292,6 @@ const getPayForBarber = (dateValue) => {
   if ($payButton) { // Verifica que el botón exista
     $payButton.addEventListener('click', async () => {
       try {
-        console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
         await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
       } catch (error) {
         console.error('Error al calcular los pagos:', error);
@@ -324,7 +319,7 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
 
     // Comparar la fecha seleccionada con la fecha de hoy
     if (selectedDate !== today) {
-      console.log("Hola"); // Mensaje si las fechas son diferentes
+      // console.log("Hola"); // Mensaje si las fechas son diferentes
     }
 
     // Limpiar la tabla y el display del total
@@ -341,6 +336,55 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   };
 };
 
+// const getTurns = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
+//   // let responseTurns;
+
+//   // if (barberParam !== null && dateParam !== null) {
+//   //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+//   // } else if (barberParam === null && dateParam !== null) {
+//   //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+//   // } else if (barberParam !== null && dateParam === null) {
+//   //   responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+//   // }
+
+//   const dateParam = selectedDate ? `${selectedDate}` : null;
+//   const barberParam = barberId ? `${barberId}` : null;
+
+//   console.log(dateParam)
+
+//   const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+
+//   if (!responseTurns.ok) {
+//     tableBodyTurnsCashRegister.innerHTML = `
+//       <tr>
+//         <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+//       </tr>
+//     `;
+//     return;
+//   }
+
+//   const dataTurns = await responseTurns.json();
+
+//   console.log(dataTurns)
+
+//   return dataTurns;
+// }
+
+// const getRecurrentTurns = async (dataTurns, recurrentTurnsList) => {
+//   for (const turn of dataTurns) {
+//     const turnActive = turn.turns;
+//     if (turnActive.Regular === "true") {
+//       const turnRecurrentActiveId = turnActive.Id;
+
+//       const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/${turnRecurrentActiveId}`);
+//       const dataRecurrentTurns = await responseRecurrentTurns.json();
+
+//       recurrentTurnsList.push(dataRecurrentTurns);
+//       console.log('lista actualizada', recurrentTurnsList)
+//     }
+//   }
+// }
+
 const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
   try {
     const responseCutServices = await fetch("http://localhost:3001/cutservices");
@@ -350,14 +394,16 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     const barberParam = barberId ? `${barberId}` : null;
 
     let responseTurns;
+    
+    responseTurns = await fetch(`http://localhost:3001/recurrent_turns/${dateParam}`);
 
-    if (barberParam !== null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-    } else if (barberParam === null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-    } else if (barberParam !== null && dateParam === null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-    }
+    // if (barberParam !== null && dateParam !== null) {
+    //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+    // } else if (barberParam === null && dateParam !== null) {
+    //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+    // } else if (barberParam !== null && dateParam === null) {
+    //   responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+    // }
 
     if (!responseTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
@@ -369,6 +415,14 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     }
 
     const dataTurns = await responseTurns.json();
+
+    console.log(dataTurns)
+
+    // const dataTurns = await getTurns(tableBodyTurnsCashRegister, selectedDate = null, barberId = null)
+    // console.log(dataTurns)
+
+    // let recurrentTurnsList = [];
+    // const recurrentTurns = await getRecurrentTurns(dataTurns, recurrentTurnsList);
 
     if (dataTurns.length <= 0) {
       tableBodyTurnsCashRegister.innerHTML = `

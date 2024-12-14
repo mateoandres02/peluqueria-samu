@@ -1,9 +1,10 @@
 import { parseDate } from "./date";
 import '../styles/modal.css';
 import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn";
+import { removeAllModals } from "./calendarRender";
 
 const modalTurnContent = `
-  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -33,6 +34,32 @@ const modalTurnContent = `
   </div>
 `;
 
+const actionBtnDelete = ($btnDelete, modalConfirm, info) => {
+  let body = document.body;
+  $btnDelete.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    body.insertAdjacentHTML('beforeend', modalConfirm);
+    modalConfirmDisplay();
+    deleteTurn(info);
+
+    const modales = document.querySelectorAll('.modal');
+    modales.forEach(modal => removeAllModals(modal));
+  });
+}
+
+const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
+  $btnWsp.addEventListener('click', async(e) => {
+    e.preventDefault();
+    
+    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`
+    const wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+    $btnWsp.href = wspUrl
+    
+    window.open(wspUrl, '_blank');
+  });
+}
+
 function modalGetTurn(info) {
   
   /**
@@ -41,7 +68,6 @@ function modalGetTurn(info) {
    */
 
   const d = document;
-  let body = document.body;
 
   // Inicializamos la modal y obtenemos todos sus elementos.
   const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
@@ -85,31 +111,9 @@ function modalGetTurn(info) {
   const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp");
 
-  $btnDelete.addEventListener('click', async (e) => {
-    e.preventDefault();
-    body.insertAdjacentHTML('beforeend', modalConfirm);
-    modalConfirmDisplay();
-    deleteTurn(info);
+  actionBtnDelete($btnDelete, modalConfirm, info);
 
-    const modales = document.querySelectorAll('.modal');
-
-    modales.forEach(modal => {
-      modal.addEventListener('hidden.bs.modal', function () {
-        this.remove();
-      });
-    });
-      
-  });
-
-  $btnWsp.addEventListener('click', async(e) => {
-    e.preventDefault();
-    
-    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`
-    const wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
-    $btnWsp.href = wspUrl
-    
-    window.open(wspUrl, '_blank');
-  });
+  actionBtnWsp(name, day, startTime, tel, $btnWsp)
 }
 
 export {

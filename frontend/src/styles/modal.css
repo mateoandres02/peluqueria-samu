@@ -54,7 +54,7 @@
 }
 
 #infoEndTime {
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 }
 
 .modal-body span {
@@ -68,6 +68,7 @@
   display: flex;
   justify-content: center;
   gap: 2rem;
+  margin-top: 0rem !important;
 }
 
 .modal-close {
@@ -100,8 +101,15 @@
 
     width: 100%;
     padding: 1rem 1rem 0rem 1rem !important;
-    margin-top: 0rem;
     border-top: 1px solid var(--line-grey);
+    
+    /* border: 1px solid red; */
+    /* margin: 1rem 2rem 1rem 0rem; */
+    margin-top: 1rem !important;
+}
+
+.modal-footer-delete {
+    margin-top: 0rem !important;
 }
 
 .modal-footer-calendar {

@@ -1,16 +1,16 @@
 import { db } from "../database/db.js";
 import turns from "../models/mTurn.js"
 import turns_days from "../models/mTurnsDays.js";
+import users from "../models/mUser.js";
+import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and } from 'drizzle-orm';
 
-const getAllTurnDays = async (req, res) => {
+const getAllRecurrentTurns = async (req, res) => {
+
     try {
         const data = await db
-            .select({
-                turno: turns.Id,
-                dia: days.Nombre,
-            })
+            .select()
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
             .leftJoin(days, eq(days.id, turns_days.id_dia));
@@ -21,6 +21,38 @@ const getAllTurnDays = async (req, res) => {
             message: error.message || "Ocurrió un error recuperando los turnos y días.",
         });
     }
+
+};
+
+const getRecurrentTurnById = async (req, res) => {
+
+    try {
+        const id = req.params.id;
+
+        const data = await db
+            .select({
+                id_turno: turns_days.id_turno,
+                id_dia: turns_days.id_dia,
+                date: turns.Date,
+            })
+            .from(turns_days)
+            .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .where(eq(turns_days.id_turno, id));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se ha encontrado el registro del turno con id = ${id}`
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
+        });
+    }
+
 };
 
 const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
@@ -28,22 +60,24 @@ const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
         const id = req.params.idUserActive;
         
         const data = await db
-        .select({
-            turno: turns.Id,
-            dia: days.dia,
-        })
-        .from(turns_days)
-        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
-        .leftJoin(days, eq(days.id, turns_days.id_dia))
-        .where(eq(turns.NroUsuario, id));
+            .select({
+                turno: turns.Id,
+                dia: days.dia,
+                date: turns_days.date,
+                exdate: turns_days.exdate
+            })
+            .from(turns_days)
+            .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .where(eq(turns.NroUsuario, id));
 
         // Organizar los días por turno
         const turnsWithDays = data.reduce((acc, curr) => {
-            const { turno, dia } = curr;
+            const { turno, dia, date, exdate } = curr;
             if (!acc[turno]) {
                 acc[turno] = [];
             }
-            acc[turno].push(dia);
+            acc[turno].push({dia, date, exdate});
             return acc;
         }, {});
         
@@ -56,51 +90,7 @@ const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
     }
 };
 
-const postTurnDay = async (req, res) => {
-    try {
-        const { id_turno, id_dia } = req.body;
-
-        if (!id_turno || id_dia == undefined) {
-            return res.status(400).send({
-                message: "¡Faltan datos para crear el registro!",
-            });
-        }
-
-        const newTurnDay = { id_turno, id_dia };
-
-        const response = await db.insert(turns_days).values(newTurnDay).returning();
-
-        res.status(201).send(response[0]);
-    } catch (error) {
-        res.status(500).send({
-            message: error.message || "Ocurrió un error creando un registro en Turnos_Dias.",
-        });
-    }
-};
-
-const getTurnById = async (req, res) => {
-    try {
-        const id = req.params.id;
-
-        const data = await db.select()
-        .from(turns)
-        .where(turns.Id == id);
-
-        if (data.length) {
-            res.status(200).send(data[0]);
-        } else {
-            res.status(404).send({
-                message: `No se ha encontrado el registro del turno con id = ${id}`
-            });
-        }
-    } catch (err) {
-        res.status(500).send({
-            message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
-        });
-    }
-};
-
-const getAllTurnsByDate = async (req, res) => {
+const getAllRecurrentTurnsDaysByDate = async (req, res) => {
     try {
         const date = req.params.date;
 
@@ -108,11 +98,14 @@ const getAllTurnsByDate = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
-        }).from(turns)
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
-        .where(like(turns.Date, `%${date}%`));
+        .where(like(turns_days.date, `%${date}%`));
 
         if (data.length) {
             res.status(200).send(data);
@@ -128,7 +121,7 @@ const getAllTurnsByDate = async (req, res) => {
     }
 }
 
-const getAllTurnsByDateAndBarber = async (req, res) => {
+const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
     try {
         const date = req.params.date;
         const idUserActive = req.params.idUserActive;
@@ -137,11 +130,14 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
-        }).from(turns)
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
-        .where(and(like(turns.Date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
+        .where(and(like(turns_days.date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
 
         res.send(data);
 
@@ -152,66 +148,63 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
     }
 }
 
-const postTurn = async (req, res) => {
+const postTurnRecurrentDay = async (req, res) => {
     try {
-        const { Nombre, Telefono, Date, Regular, NroUsuario, Service } = req.body;
+        const { id_turno, id_dia, date } = req.body;
 
-        if (!Nombre || !Telefono || !Date || !NroUsuario) {
+        if (!id_turno || id_dia == undefined || !date) {
             return res.status(400).send({
-                message: "¡No hay contenido para el post!"
+                message: "¡Faltan datos para crear el registro!",
             });
         }
 
-        const newTurn = {
-            Nombre,
-            Telefono,
-            Date,
-            Regular,
-            NroUsuario,
-            Service
-        };
+        const newTurnDay = { id_turno, id_dia, date, exdate: 0 };
 
-        const response = await db.insert(turns).values(newTurn).returning();
+        const response = await db.insert(turns_days).values(newTurnDay).returning();
 
         res.status(201).send(response[0]);
-    } catch (e) {
-        res.status(500).send({
-            message: e.message || "Ocurrió algún error creando un registro para los turnos."
-        });
-    }
-};
-
-const updateTurn = async (req, res) => {
-    try {
-        const id = req.params.id;
-
-        const response = await db.update(turns)
-            .set(req.body)
-            .where(eq(turns.Id, id))
-            .returning();
-
-        if (response.length) {
-            const updatedTurn = await db.select().from(turns).where(eq(turns.Id, id)).limit(1);
-            res.send(updatedTurn[0]);
-        } else {
-            res.status(404).send({
-                message: `No se pudo actualizar el registro del turno con id = ${id}`
+    } catch (error) {
+        if (error.message.includes('UNIQUE constraint')) {
+            return res.status(409).send({
+              message: "El turno ya existe para esa fecha.",
             });
-        }
-    } catch (e) {
+          }
         res.status(500).send({
-            message: e.message || "Ocurrió un error al actualizar el registro del turno con id = " + id
+            message: error.message || "Ocurrió un error creando un registro en Turnos_Dias.",
         });
     }
 };
 
-const deleteTurn = async (req, res) => {
-    try {
-        const id = req.params.id;
 
-        const response = await db.delete(turns)
-            .where(eq(turns.Id, id))
-            .returning();
+// const updateTurn = async (req, res) => {
+//     try {
+//         const id = req.params.id;
+
+//         const response = await db.update(turns)
+//             .set(req.body)
+//             .where(eq(turns.Id, id))
+//             .returning();
+
+//         if (response.length) {
+//             const updatedTurn = await db.select().from(turns).where(eq(turns.Id, id)).limit(1);
+//             res.send(updatedTurn[0]);
+//         } else {
+//             res.status(404).send({
+//                 message: `No se pudo actualizar el registro del turno con id = ${id}`
+//             });
+//         }
+//     } catch (e) {
+//         res.status(500).send({
+//             message: e.message || "Ocurrió un error al actualizar el registro del turno con id = " + id
+//         });
+//     }
+// };
+
+const deleteTurnOfRecurrentTurns = async (req, res) => {
+    try {
+        const { id, date } = req.params;
+
+        const response = await db.update(turns_days).set({exdate: 1}).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
 
         if (response.length) {
             res.status(204).send({
@@ -230,14 +223,13 @@ const deleteTurn = async (req, res) => {
 };
 
 const actionsTurns = {
-    // getAllTurns,
-    // getAllTurnsByBarber,
-    // getAllTurnsByDate,
+    getAllRecurrentTurns,
+    getRecurrentTurnById,
     getAllRecurrentTurnsDaysByBarber,
-    // getTurnById,
-    postTurnDay,
-    // updateTurn,
-    // deleteTurn
+    getAllRecurrentTurnsDaysByDate,
+    getAllRecurrentTurnsByDateAndBarber,
+    postTurnRecurrentDay,
+    deleteTurnOfRecurrentTurns
 };
 
 export default actionsTurns;

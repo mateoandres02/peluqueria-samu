@@ -226,13 +226,30 @@ const handleSelectChange = (cutServices, dateValue) => {
   });
 };
 
-const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect) => {
+const getBarbers = async () => {
+
+  /**
+   * Obtenemos los barberos disponibles en nuestro sistema.
+   */
 
   const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
+  return dataBarbers;
+}
+
+const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect) => {
+
+  /**
+   * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
+   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
+   * param: barberSelect -> elemento html del selectable para elegir algun barbero.
+   */
+
+  const dataBarbers = await getBarbers();
 
   barberSelect.addEventListener('change', async (e) => {
 
+    // Filtramos de todos los barberos, al barbero seleccionado.
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
     
     const dateInput = document.querySelector('input[type="date"]');
@@ -365,9 +382,8 @@ const getPayForBarber = (dateValue) => {
 }
 
 const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
-  // Obtener los barberos una vez y almacenarlos en dataBarbers
-  const barbers = await fetch('http://localhost:3001/users');
-  dataBarbers = await barbers.json();
+  
+  const dataBarbers = await getBarbers();
 
   // Se elimina el listener porque sino se van acumulando, haciendo varias peticiones a la base de datos cada vez
   dateInput.removeEventListener('change', handleDateChange); 
@@ -398,82 +414,104 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   };
 };
 
-// const getTurns = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
-//   // let responseTurns;
+const getServices = async () => {
 
-//   // if (barberParam !== null && dateParam !== null) {
-//   //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-//   // } else if (barberParam === null && dateParam !== null) {
-//   //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-//   // } else if (barberParam !== null && dateParam === null) {
-//   //   responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-//   // }
+  /**
+   * Obtenemos los servicios a través de una solicitud al backend.
+   */
 
-//   const dateParam = selectedDate ? `${selectedDate}` : null;
-//   const barberParam = barberId ? `${barberId}` : null;
+  const responseCutServices = await fetch("http://localhost:3001/cutservices");
+  const cutServices = await responseCutServices.json();
+  return cutServices;
+}
 
-//   console.log(dateParam)
+const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
 
-//   const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+  /**
+   * Obtenemos los turnos filtrando por fecha y por barbero.
+   * param: dateParam -> fecha elegida.
+   * param: barberParam -> barbero elegido.
+   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
+   */
 
-//   if (!responseTurns.ok) {
-//     tableBodyTurnsCashRegister.innerHTML = `
-//       <tr>
-//         <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
-//       </tr>
-//     `;
-//     return;
-//   }
+  if (recurrent) {
+    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+    return responseRecurrentTurns;
+  } else {
+    const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+    return responseTurns;
+  }
+}
 
-//   const dataTurns = await responseTurns.json();
+const getTurnsFilteredByDate = async (dateParam, recurrent) => {
 
-//   console.log(dataTurns)
+  /**
+   * Obtenemos los turnos filtrando por fecha.
+   * param: dateParam -> fecha elegida.
+   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
+   */
 
-//   return dataTurns;
-// }
+  if (recurrent) {
+    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
+    return responseRecurrentTurns;
+  } else {
+    const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+    return responseTurns;
+  }
+}
 
-// const getRecurrentTurns = async (dataTurns, recurrentTurnsList) => {
-//   for (const turn of dataTurns) {
-//     const turnActive = turn.turns;
-//     if (turnActive.Regular === "true") {
-//       const turnRecurrentActiveId = turnActive.Id;
+const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
 
-//       const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/${turnRecurrentActiveId}`);
-//       const dataRecurrentTurns = await responseRecurrentTurns.json();
+  /**
+   * Obtenemos los turnos filtrando por barbero.
+   * param: barberParam -> barbero elegido.
+   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
+   */
 
-//       recurrentTurnsList.push(dataRecurrentTurns);
-//       console.log('lista actualizada', recurrentTurnsList)
-//     }
-//   }
-// }
+  if (recurrent) {
+    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
+    return responseRecurrentTurns;
+  } else {
+    const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+    return responseTurns;
+  }
+}
 
 const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
 
-  try {
-    const responseCutServices = await fetch("http://localhost:3001/cutservices");
-    const cutServices = await responseCutServices.json();
+  /**
+   * Renderiza los turnos en una tabla.
+   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se renderizarán los turnos.
+   * param: selectedDate -> fecha seleccionada, declarada por defecto null. Luego se actualiza su valor.
+   * param: barberId -> barbero seleccionado, declarado por defecto null. Luego se actualiza su valor.
+   */
 
+  try {
+    const cutServices = await getServices();
     const dateParam = selectedDate ? `${selectedDate}` : null;
     const barberParam = barberId ? `${barberId}` : null;
 
+    let dateReformated = reformatDate(selectedDate);
+
     let responseTurns;
     let responseRecurrentTurns;
+    let recurrent;
 
     if (barberParam !== null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+      responseTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = false);
+      responseRecurrentTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = true);
     } else if (barberParam === null && dateParam !== null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
+      responseTurns = await getTurnsFilteredByDate(dateParam, recurrent = false);
+      responseRecurrentTurns = await getTurnsFilteredByDate(dateParam, recurrent = true);
     } else if (barberParam !== null && dateParam === null) {
-      responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
+      responseTurns = await getTurnsFilteredByBarber(barberParam, recurrent = false);
+      responseRecurrentTurns = await getTurnsFilteredByBarber(barberParam, recurrent = true);
     }
 
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+          <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
         </tr>
       `;
       return;
@@ -494,7 +532,6 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
             (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
           ) {
 
-          let dateReformated = reformatDate(selectedDate);
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
               <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>

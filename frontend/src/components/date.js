@@ -13,7 +13,6 @@ function parseDate(date) {
   const dateWithoutTime = `${day}/${month}/${year}`
   const timeWithoutSeconds = `${hour}:${minute}`;
   const timeOfTurn = `${hour}:${minute}:${seconds}`;
-
   const completeDate = date;
 
   return {
@@ -25,7 +24,26 @@ function parseDate(date) {
   }
 };
 
+const reformatDate = (date) => {
+
+  /**
+   * Reformateamos la fecha de yyyy-dd-mm a dd-mm-yyyy
+   * param: date -> fecha en formato yyyy-dd-mm
+   */
+
+  const [year, month, day] = date.split('-');
+  const dateReformated = `${day}/${month}/${year}`;
+  return dateReformated;
+}
+
 const addHourOfStartDate = (dateWithoutTime, timeOfTurn) => {
+
+  /**
+   * Agregamos la hora del turno a la fecha en formato yyyy-dd-mm para poder guardarla bien en la base de datos y poder trabajar correctamente con rrule.
+   * param: dateWithoutTime -> fecha sin horario.
+   * param: timeOfTurn -> el horario del turno.
+   */
+  
   const completeDate = `${dateWithoutTime}T${timeOfTurn}`;
   return completeDate;
 }
@@ -63,4 +81,4 @@ const turnDateEnd = (date) => {
   
 }
 
-export { parseDate, addHourOfStartDate, turnDateEnd };
+export { parseDate, addHourOfStartDate, reformatDate, turnDateEnd };

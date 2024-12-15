@@ -1,6 +1,8 @@
 import { db } from "../database/db.js";
 import turns from "../models/mTurn.js"
 import turns_days from "../models/mTurnsDays.js";
+import users from "../models/mUser.js";
+import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and } from 'drizzle-orm';
 
@@ -88,6 +90,64 @@ const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
     }
 };
 
+const getAllRecurrentTurnsDaysByDate = async (req, res) => {
+    try {
+        const date = req.params.date;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(like(turns_days.date, `%${date}%`));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado turnos para ese día.`
+            });
+        }
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || "Ocurrió un error al recuperar los registros que correspondan a ese día"
+        })
+    }
+}
+
+const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
+    try {
+        const date = req.params.date;
+        const idUserActive = req.params.idUserActive;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(and(like(turns_days.date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
+
+        res.send(data);
+
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con id ${idUserActive}.`
+        });
+    }
+}
+
 const postTurnRecurrentDay = async (req, res) => {
     try {
         const { id_turno, id_dia, date } = req.body;
@@ -115,57 +175,6 @@ const postTurnRecurrentDay = async (req, res) => {
     }
 };
 
-// const getAllTurnsByDate = async (req, res) => {
-//     try {
-//         const date = req.params.date;
-
-//         const data = await db.select({
-//             turns: turns,
-//             peluquero: users.Nombre,
-//             servicio: services.Nombre,
-//             precio: services.Precio
-//         }).from(turns)
-//         .leftJoin(users, eq(users.Id, turns.NroUsuario))
-//         .leftJoin(services, eq(services.Id, turns.Service))
-//         .where(like(turns.Date, `%${date}%`));
-
-//         if (data.length) {
-//             res.status(200).send(data);
-//         } else {
-//             res.status(404).send({
-//                 message: `No se han encontrado turnos para ese día.`
-//             });
-//         }
-//     } catch (e) {
-//         res.status(500).send({
-//             message: e.message || "Ocurrió un error al recuperar los registros que correspondan a ese día"
-//         })
-//     }
-// }
-
-// const getAllTurnsByDateAndBarber = async (req, res) => {
-//     try {
-//         const date = req.params.date;
-//         const idUserActive = req.params.idUserActive;
-
-//         const data = await db.select({
-//             turns: turns,
-//             peluquero: users.Nombre,
-//             servicio: services.Nombre,
-//             precio: services.Precio
-//         }).from(turns)
-//         .leftJoin(users, eq(users.Id, turns.NroUsuario))
-//         .leftJoin(services, eq(services.Id, turns.Service))
-//         .where(and(like(turns.Date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
-
-//         res.send(data);
-
-//     } catch (e) {
-//         res.status(500).send({
-//             message: e.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con id ${idUserActive}.`
-//         });
-//     }
-// }
 
 // const updateTurn = async (req, res) => {
 //     try {
@@ -217,6 +226,8 @@ const actionsTurns = {
     getAllRecurrentTurns,
     getRecurrentTurnById,
     getAllRecurrentTurnsDaysByBarber,
+    getAllRecurrentTurnsDaysByDate,
+    getAllRecurrentTurnsByDateAndBarber,
     postTurnRecurrentDay,
     deleteTurnOfRecurrentTurns
 };

@@ -1,4 +1,4 @@
-import { parseDate } from './date';
+import { parseDate, reformatDate } from './date';
 import '/src/styles/cashRegister.css';
 
 const containerCashView = `<div class="containerCashView"></div>`;
@@ -83,11 +83,72 @@ const loadBarberSelect = async (barberSelect) => {
   });
 }
 
+// const rows = (dataTurns, cutServices) => {
+//   let row = '';
+//   // let idsPubliqued = [];
+//   dataTurns.forEach((user, index) => {
+//     if (user.exdate == 1) {
+//       return;
+//     }
 
+//     if (index > -1) {
+//       let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
 
-const rows = (dataTurns, cutServices) => {
+//       let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
+
+//       let costField = user.precio ? user.precio : '0'; 
+
+//       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
+
+//       // if (idsPubliqued.includes(user.turns.Id)) {
+//       //   console.log('si contiene el turno', user.turns)
+//       //   return;
+//       // } else {
+//       //   console.log('no contiene el turno', user.turns)
+//       //   idsPubliqued.push(user.turns.Id);
+//       // }
+
+//       console.log(idsPubliqued);
+
+//       row += `
+//         <tr key=${user.turns.Id}>
+//           <td scope="row">${date.dateWithoutTime}</td>
+//           <td>${user.turns.Nombre}</td>
+//           <td>${user.peluquero}</td>
+//           <td><div>${serviceField}</div></td>
+//           <td id="tdService">
+//             <div>
+//               <select class="form-select cut-service-select cut-service-select-notnull" data-id="${user.turns.Id}" aria-label="Tipo de corte">
+//                 <option selected value="null">Seleccionar...</option>
+//                 ${selectOptions}
+//               </select>
+//             </div>
+//           </td>
+//           <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
+//         </tr>
+//       `;
+//     }
+//   });
+
+//   return row;
+// };
+
+const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
   let row = '';
-  dataTurns.forEach((user, index) => {
+  let idsPubliqued = [];
+
+  let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
+
+  dataTurnsConcats.forEach((user, index) => {
+    if (user.exdate == 1) {
+      return;
+    }
+
+    if (idsPubliqued.includes(user.turns.Id)) {
+      return;
+    } else {
+      idsPubliqued.push(user.turns.Id);
+    }
 
     if (index > -1) {
       let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
@@ -97,10 +158,11 @@ const rows = (dataTurns, cutServices) => {
       let costField = user.precio ? user.precio : '0'; 
 
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
+      let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
 
       row += `
         <tr key=${user.turns.Id}>
-          <td scope="row">${date.dateWithoutTime}</td>
+          <td scope="row">${dateRecurrentTurn.dateWithoutTime || date.dateWithoutTime}</td>
           <td>${user.turns.Nombre}</td>
           <td>${user.peluquero}</td>
           <td><div>${serviceField}</div></td>
@@ -386,6 +448,7 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
 // }
 
 const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
+
   try {
     const responseCutServices = await fetch("http://localhost:3001/cutservices");
     const cutServices = await responseCutServices.json();
@@ -394,54 +457,64 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     const barberParam = barberId ? `${barberId}` : null;
 
     let responseTurns;
+    let responseRecurrentTurns;
+
+    if (barberParam !== null && dateParam !== null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+    } else if (barberParam === null && dateParam !== null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
+    } else if (barberParam !== null && dateParam === null) {
+      responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+      responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
+    }
+
+    if (!responseTurns.ok && !responseRecurrentTurns.ok) {
+      tableBodyTurnsCashRegister.innerHTML = `
+        <tr>
+          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
+        </tr>
+      `;
+      return;
+    } else {
+
+      let dataRecurrentTurns = await responseRecurrentTurns.json();
+      let dataTurns = await responseTurns.json();
+
+      // Llamar a usarCalcular con los datos actuales
+      usarCalcular(dataTurns); // Asegúrate de pasar los datos correctos
+  
+      if (tableBodyTurnsCashRegister !== undefined) {
+  
+        tableBodyTurnsCashRegister.innerHTML = "";
+
+        if (
+            (dataTurns.message && dataRecurrentTurns.message) || 
+            (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
+          ) {
+
+          let dateReformated = reformatDate(selectedDate);
+          tableBodyTurnsCashRegister.innerHTML = `
+            <tr>
+              <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+            </tr>
+          `;
+
+        } else if (dataTurns.message && !dataRecurrentTurns.message) {
+          tableBodyTurnsCashRegister.innerHTML += `${rows(dataTurns = [], dataRecurrentTurns, cutServices)}`;
+        } else if (!dataTurns.message && dataRecurrentTurns.message) {
+          tableBodyTurnsCashRegister.innerHTML += `${rows(dataTurns, dataRecurrentTurns = [], cutServices)}`;
+        } else {
+          tableBodyTurnsCashRegister.innerHTML += `${rows(dataTurns, dataRecurrentTurns, cutServices)}`;
+        }
+
+      } 
+  
+      handleSelectChange(cutServices, selectedDate);
+    }
+
     
-    responseTurns = await fetch(`http://localhost:3001/recurrent_turns/${dateParam}`);
-
-    // if (barberParam !== null && dateParam !== null) {
-    //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-    // } else if (barberParam === null && dateParam !== null) {
-    //   responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-    // } else if (barberParam !== null && dateParam === null) {
-    //   responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-    // }
-
-    if (!responseTurns.ok) {
-      tableBodyTurnsCashRegister.innerHTML = `
-        <tr>
-          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
-        </tr>
-      `;
-      return;
-    }
-
-    const dataTurns = await responseTurns.json();
-
-    console.log(dataTurns)
-
-    // const dataTurns = await getTurns(tableBodyTurnsCashRegister, selectedDate = null, barberId = null)
-    // console.log(dataTurns)
-
-    // let recurrentTurnsList = [];
-    // const recurrentTurns = await getRecurrentTurns(dataTurns, recurrentTurnsList);
-
-    if (dataTurns.length <= 0) {
-      tableBodyTurnsCashRegister.innerHTML = `
-        <tr>
-          <td colspan="6">No tiene turnos para el día ${selectedDate || 'de hoy'}.</td>
-        </tr>
-      `;
-      return;
-    }
-
-    // Llamar a usarCalcular con los datos actuales
-    usarCalcular(dataTurns); // Asegúrate de pasar los datos correctos
-
-    // Mostrar los datos en la tabla
-    if (tableBodyTurnsCashRegister !== undefined) {
-      tableBodyTurnsCashRegister.innerHTML = `${rows(dataTurns, cutServices)}`;
-    }
-
-    handleSelectChange(cutServices, selectedDate);
   } catch (error) {
     console.log(error);
   }

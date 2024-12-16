@@ -7,7 +7,7 @@
     left: 0;
     top: 0;
 
-    overflow-y: hidden;
+    overflow-y: auto !important;
 }
 
 .modal-content {
@@ -45,7 +45,6 @@
     margin-left: 1px;
 }
 
-
 .modal-body h2 {
     margin-bottom: .5rem;
 
@@ -55,21 +54,11 @@
 }
 
 #infoEndTime {
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 }
 
 .modal-body span {
     font-weight: 800;
-}
-
-.modal-footer {
-  padding: 10px;
-  text-align: right;
-
-  display: flex;
-  flex-direction: row-reverse;
-
-  border-top: 1px solid var(--line-grey);
 }
 
 .modal-footer-delete {
@@ -79,6 +68,7 @@
   display: flex;
   justify-content: center;
   gap: 2rem;
+  margin-top: 0rem !important;
 }
 
 .modal-close {
@@ -105,10 +95,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: row-reverse;
+
+    text-align: right;
 
     width: 100%;
-    padding: 1rem 1rem 0rem 1rem!important;
-    margin-top: 0rem;
+    padding: 1rem 1rem 0rem 1rem !important;
+    border-top: 1px solid var(--line-grey);
+    
+    /* border: 1px solid red; */
+    /* margin: 1rem 2rem 1rem 0rem; */
+    margin-top: 1rem !important;
+}
+
+.modal-footer-delete {
+    margin-top: 0rem !important;
 }
 
 .modal-footer-calendar {
@@ -153,6 +154,40 @@ input[type="number"] {
 
 .input[type="datetime"] {
     margin-bottom: 1.5rem;
+}
+
+.form-switch {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    position: relative;
+}
+
+.form-check-input-regular {
+    position: absolute;
+    left: 16.5ch;
+}
+
+.form-checkboxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.form-checkboxes .form-checks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: .5rem;
+    padding: 0;
+}
+
+.form-check-input-day {
+    margin: .5rem;
+    padding: 0;
 }
 
 /* Media queries CELULAR*/

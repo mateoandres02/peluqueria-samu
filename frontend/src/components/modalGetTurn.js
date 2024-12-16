@@ -1,9 +1,10 @@
 import { parseDate } from "./date";
 import '../styles/modal.css';
-import { clickDelete, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn";
+import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn";
+import { removeAllModals } from "./calendarRender";
 
 const modalTurnContent = `
-  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel" aria-hidden="true">
+  <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -18,6 +19,7 @@ const modalTurnContent = `
           <h2 id="infoDay"><i class="bi bi-calendar-event"></i>Día: <span id="spanDay"></span></h2>
           <h2 id="infoStartTime"><i class="bi bi-clock"></i>Inicio de Turno: <span id="spanStartTime"></span></h2>
           <h2 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h2>
+          <h2 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h2>
           <div class="modal-footer modal-footer-calendar">
             <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>
@@ -32,74 +34,21 @@ const modalTurnContent = `
   </div>
 `;
 
-function modalTurnContentDisplay(info) {
-  const d = document;
-
+const actionBtnDelete = ($btnDelete, modalConfirm, info) => {
   let body = document.body;
-
-  // Inicializamos la modal
-  const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
-
-  // Obtenemos los elementos de la modal 
-  const $spanName = d.getElementById("spanName");
-  const $spanTel = d.getElementById("spanTel");
-  const $spanDay = d.getElementById("spanDay");
-  const $spanStartTime = d.getElementById("spanStartTime");
-  const $spanEndTime = d.getElementById("spanEndTime");
-  
-  // Obtenemos la fecha parseada de el start
-  const { dayWithoutYear, timeWithoutSeconds:timeWithoutSecondsStart } = parseDate(info.event.startStr);
-
-  // Obtenemos la fecha parseada de el end
-  const { timeWithoutSeconds:timeWithoutSecondsEnd  } = parseDate(info.event.endStr);
-
-  // Obtenemos los valores de cada input
-  const name = info.event._def.title;
-  const tel = info.event._def.extendedProps.telefono;
-  const day = dayWithoutYear;
-  const startTime = timeWithoutSecondsStart;
-  const endTime = timeWithoutSecondsEnd;
-  
-  // Reseteamos valores cada vez que se vuelve a abrir la modal
-  $spanName.innerHTML = "";
-  $spanTel.innerHTML = "";
-  $spanDay.innerHTML = "";
-  $spanStartTime.innerHTML = "";
-  $spanEndTime.innerHTML = "";
-
-  // Ingresamos los datos correspondientes a cada elemento
-  $spanName.innerHTML += `${name}`;
-  $spanTel.innerHTML += `${tel}`;
-  $spanDay.innerHTML += `${day}`;
-  $spanStartTime.innerHTML += `${startTime}`;
-  $spanEndTime.innerHTML += `${endTime}`;
-
-  // Mostramos la modal.
-  $modal.show();
-
-  // Botones de modal footer
-  const $btnDelete = document.getElementById("deleteTurn");
-  const $btnWsp = document.getElementById("contactWsp");
-
   $btnDelete.addEventListener('click', async (e) => {
     e.preventDefault();
 
     body.insertAdjacentHTML('beforeend', modalConfirm);
-
     modalConfirmDisplay();
-
-    clickDelete(info);
+    deleteTurn(info);
 
     const modales = document.querySelectorAll('.modal');
-
-    modales.forEach(modal => {
-      modal.addEventListener('hidden.bs.modal', function () {
-        this.remove();
-      });
-    });
-      
+    modales.forEach(modal => removeAllModals(modal));
   });
+}
 
+const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
   $btnWsp.addEventListener('click', async(e) => {
     e.preventDefault();
     
@@ -111,7 +60,63 @@ function modalTurnContentDisplay(info) {
   });
 }
 
+function modalGetTurn(info) {
+  
+  /**
+   * Obtenemos la información del turno y la mostramos en una modal.
+   * param: info -> trae info de la celda seleccionada del calendario, proporcionado por fullcalendar.
+   */
+
+  const d = document;
+
+  // Inicializamos la modal y obtenemos todos sus elementos.
+  const $modal = new bootstrap.Modal(d.getElementById('dateClickModalTurnContent'));
+  const $spanName = d.getElementById("spanName");
+  const $spanTel = d.getElementById("spanTel");
+  const $spanDay = d.getElementById("spanDay");
+  const $spanStartTime = d.getElementById("spanStartTime");
+  const $spanEndTime = d.getElementById("spanEndTime");
+  const $spanRegularCustomer = d.getElementById("spanRegularCustomer");
+  
+  const { dayWithoutYear, timeWithoutSeconds: timeWithoutSecondsStart } = parseDate(info.event.startStr);
+  const { timeWithoutSeconds: timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
+
+  // Obtenemos los valores de cada input de la modal.
+  const name = info.event._def.title;
+  const tel = info.event._def.extendedProps.telefono;
+  const day = dayWithoutYear;
+  const startTime = timeWithoutSecondsStart;
+  const endTime = timeWithoutSecondsEnd;
+  let regular = info.event._def.extendedProps.regular;
+
+  if (regular === 'true') regular = 'Sí';
+  if (regular === 'false') regular = 'No';
+  
+  $spanName.innerHTML = "";
+  $spanTel.innerHTML = "";
+  $spanDay.innerHTML = "";
+  $spanStartTime.innerHTML = "";
+  $spanEndTime.innerHTML = "";
+  $spanRegularCustomer.innerHTML = "";
+
+  $spanName.innerHTML += `${name}`;
+  $spanTel.innerHTML += `${tel}`;
+  $spanDay.innerHTML += `${day}`;
+  $spanStartTime.innerHTML += `${startTime}`;
+  $spanEndTime.innerHTML += `${endTime}`;
+  $spanRegularCustomer.innerHTML += `${regular}`;
+
+  $modal.show();
+
+  const $btnDelete = document.getElementById("deleteTurn");
+  const $btnWsp = document.getElementById("contactWsp");
+
+  actionBtnDelete($btnDelete, modalConfirm, info);
+
+  actionBtnWsp(name, day, startTime, tel, $btnWsp)
+}
+
 export {
   modalTurnContent,
-  modalTurnContentDisplay
+  modalGetTurn
 }

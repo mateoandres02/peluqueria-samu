@@ -7,7 +7,43 @@
   padding: .5rem;
 
   margin-left: 290px;
+
+  border: 1px solid red;
 }
+
+.fixed-turn-event {
+  width: 80% !important; /* Ajusta el ancho (relativo al contenedor del calendario) */
+}
+
+.normal-turn {
+  width: 80% !important;
+}
+
+.fc-day-today {
+  background-color: #fffcdc !important;
+}
+
+.fc-timegrid-event {
+  border: 1px solid #000 !important; 
+}
+
+.fc-timegrid-col-bg {
+  background-color: #000 !important;
+}
+
+.fc-timegrid-more-link-inner {
+  text-decoration: none !important;
+  color: black !important;
+}
+
+.fc-more-link {
+  text-decoration: none;
+}
+
+/* Elimina el borde derecho del último día para evitar doble borde
+.fc-timegrid-col:last-child {
+  border-right: none !important;
+} */
 
 /* .fc-day-mon {
 } */
@@ -53,6 +89,10 @@
 .fc-col-header-cell-cushion,
 .fc-daygrid-day-number {
   color: black;
+}
+
+table .fc-timegrid-slot .fc-timegrid-slot-lane {
+  border: 1px solid red !important;
 }
 
 /* Media queries */

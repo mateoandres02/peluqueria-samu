@@ -10,6 +10,6 @@ router.get("/turns/:date/:idUserActive", cTurn.getAllTurnsByDateAndBarber);
 router.get("/turns/:id", cTurn.getTurnById);
 router.post("/turns", cTurn.postTurn);
 router.put("/turns/:id", cTurn.updateTurn);
-router.delete("/turns/:id", cTurn.deleteTurn);
+router.delete("/turns/:id/:date", cTurn.deleteTurn);
 
 export default router;

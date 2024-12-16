@@ -9,6 +9,7 @@ import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
 import routesCutService from "./app/routes/rCutService.js";
 import routesPaymentUsers  from "./app/routes/rPaymentUsers.js";
+import routesTurnsDays from "./app/routes/rTurnsDays.js"
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(routesTurn);
 app.use(routesUser);
 app.use(routesCutService);
 app.use(routesPaymentUsers);
+app.use(routesTurnsDays);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {

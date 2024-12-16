@@ -8,9 +8,12 @@ import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData, loadBarbersConfigSection } from './configParams.js';
 
-
-// param: data -> user active.
 const indexView = async (data) => {
+
+    /**
+     * Renderizamos la vista del admin
+     * param: data -> user active.
+     */
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
@@ -20,12 +23,15 @@ const indexView = async (data) => {
     app.innerHTML += btnHamburger;
     
     switch (urlActive) {
-        case '#admin-calendar':
+        case '#calendario':
+
             app.innerHTML += calendario;
             calendarRender(modalElement, data);
+
             break;
         
-        case '#cash-register':
+        case '#caja':
+            
             app.innerHTML += containerCashView;
 
             let $containerCashView = document.querySelector('.containerCashView');
@@ -69,128 +75,80 @@ const indexView = async (data) => {
 
             break;
 
-        case '#history-register':
-
-            console.log("toque historial de registro")
+        case '#historial-de-registro':
 
             break;
         
-        case '#manage-employees':
+        case '#administrar-empleados':
 
-            // Agregamos al div.app el contendor donde se va a desplegar toda la vista para administrar empleados
             app.innerHTML += manageEmployeesView;
 
-            // Obtenemos el contenedor agregado, para luego agregar dentro de él, el resto de componentes.
             let manageEmployeesContainer = document.querySelector('.manageEmployeesContainer');
-
-            // Agregamos el componente para registrar un empleado.
             manageEmployeesContainer.insertAdjacentHTML('beforeend', postEmployee);
 
-            // Hacemos la carga de datos de la tabla con los registros de la base de datos.
             const tableEmployees = await usersData();
-
-            // Cuando la tabla tenga los datos de los registros de la base de datos, la agregamos a la vista.
             if (tableEmployees) {
                 manageEmployeesContainer.insertAdjacentHTML('beforeend', tableEmployees);
             };
 
-            // Agregamos la modal para manipular las distintas acciones sobre los empleados, a la vista.
             manageEmployeesContainer.insertAdjacentHTML('beforeend', modal);
             
-            // Obtenemos el boton para crear un registro.
             const $btnPostEmployee = document.querySelector('.postEmployee-btn');
-
-            // Seteamos atributos en el boton para conectarlo a la modal.
             $btnPostEmployee.setAttribute('data-bs-toggle', 'modal');
             $btnPostEmployee.setAttribute('data-bs-target', '#postEmployee');
 
-            // Inicializamos la modal
             const $modal = new bootstrap.Modal(document.getElementById('postEmployee'));
 
-            // Al boton para registrar un empleado le damos la funcionalidad de desplegar la modal.
             showRegisterEmployeeModal($btnPostEmployee);
 
-            // Obtenemos el formulario de la modal para darle eventos.
             const $formPostEmployee = document.querySelector('#formPOSTEmployee');
-
-            // Obtenemos el footer de la modal para luego agregarle el mensaje sobre el resultado del envio del formulario.
             const $modalFooter = document.querySelector('.modal-footer');
-
-            // Manejamos el evento submit del formulario.
             submitEmployee($formPostEmployee, $modal, $modalFooter);
 
-            // Obtenemos el boton para cancelar la accion sobre el registro.
             const $btnCancel = document.querySelector('.btnCancel');
-
-            // Manejamos funcionalidad de cancelar el registro de un empleado.
             cancelSubmitForm($btnCancel, $formPostEmployee, $modal);
 
-            // Obtenemos todos los botones para modificar un registro.
             const $btnsPut = document.querySelectorAll('.modify i');
-
-            // Manejamos funcionalidad de actualizar empleados.
             updateEmployee($btnsPut, $modal);
 
-            // Obtenemos todos los botones del delete
             const $btnsDelete = document.querySelectorAll('.delete i');
-
-            // Manejamos funcionalidad de eliminar empleados.
             deleteEmployee($btnsDelete)
 
             break;
 
-        case '#generate-table':
-            
-
-            break;
-
-        case '#config-params':
+        case '#configuracion':
 
             app.innerHTML += configParamsView;
 
             let configParamsContainer = document.querySelector('.configParamsView');
-
-            console.log(configParamsContainer)
-
-            // Agregamos el componente para registrar un empleado.
             configParamsContainer.insertAdjacentHTML('beforeend', configParamsInitialView);
 
             const tableServices = await serviceData()
-
             if (tableServices) {
                 configParamsContainer.insertAdjacentHTML('beforeend', tableServices);
             }
-
             configParamsContainer.insertAdjacentHTML('beforeend', modalServices);
 
             const $btnPostService = document.querySelector('.postService-btn');
-
             $btnPostService.setAttribute('data-bs-toggle', 'modal');
-
             $btnPostService.setAttribute('data-bs-target', '#postService');
 
             const $modalService = new bootstrap.Modal(document.getElementById('postService'));
 
-            console.log($modalService)
             showRegisterServiceModal($btnPostService);
 
             const $formPostService = document.querySelector('#formPOSTService');
-
             const $modalFooterService = document.querySelector('.modal-footer');
 
-            //obtener y mostrar
             submitService($formPostService, $modalService, $modalFooterService);
 
             const $btnCancelService = document.querySelector('.btnCancel');
-
             cancelSubmitFormService($btnCancelService, $formPostService, $modalService);
 
             const $btnsPutService = document.querySelectorAll('.modify i');
-
             updateService($btnsPutService, $modalService);
 
             const $btnsDeleteService = document.querySelectorAll('.delete i');
-
             deleteService($btnsDeleteService)
 
             configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);

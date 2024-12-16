@@ -5,6 +5,7 @@ import turns from "../models/mTurn.js";
 
 
 const getAllCutServices = async (req, res) => {
+
   try {
     const data = await db.select({
         servicio: cutServices,
@@ -14,31 +15,32 @@ const getAllCutServices = async (req, res) => {
 
     res.send(formattedData)
   } catch (e) {
-      res.status(500).send({
-          message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
-      });
-    }
+    res.status(500).send({
+        message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
+    });
+  }
+
 }
 
 const getServiceById = async (req, res) => {
 
   try {
-      const id = req.params.id;
+    const id = req.params.id;
 
-      const data = await db.select().from(cutServices).where(eq(cutServices.Id, id)).all();
+    const data = await db.select().from(cutServices).where(eq(cutServices.Id, id)).all();
 
-      if (data.length) {
-          res.status(200).send(data[0]);
-      } else {
-          res.status(404).send({
-              message: `No se ha encontrado el registro del servicio con id = ${id}`
-          });
-      };
+    if (data.length) {
+      res.status(200).send(data[0]);
+    } else {
+      res.status(404).send({
+        message: `No se ha encontrado el registro del servicio con id = ${id}`
+      });
+    };
 
   } catch (err) {
-      res.status(500).send({
-          message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
-      });
+    res.status(500).send({
+      message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
+    });
   }
   
 }
@@ -116,9 +118,6 @@ const deleteCutService = async (req, res) => {
     const response = await db.delete(cutServices)
       .where(eq(cutServices.Id,id))
       .returning();
-      console.log(`Intentando eliminar el servicio con ID: ${id}`);
-
-      console.log('Respuesta de la eliminación:', response);
 
     if (response.length) {
       res.status(204).send({

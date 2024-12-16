@@ -193,36 +193,40 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
   });
 }
 
+
+
+
 let totalEarned = 0;
 let dataBarbers = [];
 
-const usarCalcular = (dataTurns) => {
+
+const calculateTotal = (dataturns, totalEarnedDisplay) => {
+  totalEarned = dataturns.reduce((acc, turn) => {
+    return acc + (turn.precio || 0);
+  }, 0);
+  console.log("DATATURNS", dataturns)
+  totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
+}
+
+const handleCalculateClick = (dataturns, totalEarnedDisplay) => {
+  calculateTotal(dataturns, totalEarnedDisplay);
+};
+
+
+const usarCalcular = (dataturns) => {
   const $boton = document.querySelector('.btn-primary');
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay'); // Asegúrate de que este ID sea correcto
 
-  // Definir la función calculateTotal
-  async function calculateTotal() {
-    // Resetear el total antes de calcular
-    totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el contador a cero
-    totalEarned = 0; // Reiniciar totalEarned
-
-    console.log("boton tocado", $boton);
-    
-    // Calcular el total solo con los datos actuales
-    totalEarned = dataTurns.reduce((acc, turn) => {
-      return acc + (turn.precio || 0);
-    }, 0);
-
-    // Actualizar el display del total
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
-    console.log(`Total ganado RARO: $${totalEarned.toFixed(2)}`);
+  if (dataturns.message || !dataturns.message) {
+    totalEarnedDisplay.innerHTML = `Total ganado: <b>$0.00</b>`;
   }
 
-  // Eliminar el listener anterior para evitar acumulación
-  $boton.removeEventListener('click', calculateTotal); // Asegúrate de que esta función esté definida
+  // Eliminar todos los event listeners anteriores
+  $boton.replaceWith($boton.cloneNode(true));
+  const $nuevoBoton = document.querySelector('.btn-primary');
 
   // Agregar el nuevo listener
-  $boton.addEventListener('click', calculateTotal);
+  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataturns, totalEarnedDisplay));
 };
 
 const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
@@ -247,7 +251,7 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
 
     // Limpiar la tabla y el display del total
     totalEarned = 0; // Resetea el contador
-    totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el display del total
+    //totalEarnedDisplay.innerHTML = 'Total ganado: <b>$0.00</b>'; // Resetea el display del total
     tableBodyTurnsCashRegister.innerHTML = ''; // Limpia el contenido de la tabla
 
     const barberInput = document.querySelector('#barberSelect');
@@ -260,6 +264,8 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
 };
 
 const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
+  const $boton = document.querySelector('.btn-primary');
+
   try {
     const responseCutServices = await fetch("http://localhost:3001/cutservices");
     const cutServices = await responseCutServices.json();
@@ -288,6 +294,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
     const dataTurns = await responseTurns.json();
 
+    
     if (dataTurns.length <= 0) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
@@ -296,6 +303,8 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       `;
       return;
     }
+
+     //const total = await calculateTotal(dataTurns);
 
     // Llamar a usarCalcular con los datos actuales
     usarCalcular(dataTurns); // Asegúrate de pasar los datos correctos
@@ -385,6 +394,25 @@ const getPayForBarber = (dateValue) => {
   }
 }
 
+// funciones para exportar elementos html al indexAdminView.js y poder cargarlos al dom
+const additionalCashViewElement = () => {
+  const newElementHTML = `
+      <div class="new-element">
+          <button class="new-action-btn">Nueva Acción</button>
+      </div>
+  `;
+  return newElementHTML;
+};
+
+const addNewElementListener = () => {
+  const $newActionButton = document.querySelector('.new-action-btn');
+  if ($newActionButton) {
+      $newActionButton.addEventListener('click', () => {
+          console.log('Botón de nueva acción presionado.');
+      });
+  }
+};
+
 export {
   containerCashView,
   infoSectionCashView,
@@ -394,5 +422,7 @@ export {
   addDateFilterListener,
   loadBarberSelect,
   addBarberFilterListener,
-  getEarnedForBarber
+  getEarnedForBarber,
+  additionalCashViewElement,
+  addNewElementListener
 };

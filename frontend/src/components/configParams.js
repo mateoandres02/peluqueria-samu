@@ -46,10 +46,34 @@ const modalServices = `
   </div>
 `;
 
+const configPaymentView = `
+  <div class="paymentParams">
+    <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Pagos</h4>
+    <select id="barberSelectConfigParams" class="barberSelect">
+      <option value="null">Seleccionar...</option>
+    </select>
+  </div>`
+
+
+const tablePaymentEdit = `
+<div class="table-pay-container">
+  <table class="table-pay-light">
+    <thead class="table-pay-head">
+      <tr>
+        <th scope="col">SERVICIO</th>
+        <th scope="col">% PAGO</th>
+      </tr>
+    </thead>
+    <tbody class="table-pay-body">
+    </tbody>
+  </table>
+</div>
+`;
+
 const rows = (data) => {
   let row = '';
   data.forEach((item, index) => {
-    if (index > 0) {
+    if (index > -1) {
       row += `
         <tr key=${item.Id}>
           <td scope="row">${item.Nombre}</td>
@@ -62,6 +86,22 @@ const rows = (data) => {
               <i class="bi bi-trash-fill"></i>
             </button>
           </td>
+        </tr>
+      `;
+    };
+  });
+
+  return row;
+};
+
+const rowsPayment = (data) => {
+  let row = '';
+  data.forEach((item, index) => {
+    if (index > -1) {
+      row += `
+        <tr key=${item.Id}>
+          <td scope="row">${item.Nombre}</td>
+          <td>PORCENTAJE</td>
         </tr>
       `;
     };
@@ -143,25 +183,6 @@ const submitService = (form, modal, modalFooter) => {
     const id = form.getAttribute('data-id');
     const nombre = form.Nombre.value;
     const precio = form.Precio.value;
-
-    
-    //const response = await fetch("http://localhost:3001/cutservices");
-    //const allServices = await response.json();
-
-    //const isDuplicate = allServices.some(service => service.Nombre.toLowerCase() === nombre.toLowerCase() && service.Id !== id);
-    //if (isDuplicate) {
-    //     span.innerHTML = '¡El servicio de corte ya existeeeee!';
-    //     span.style.color = 'red';
-    //     modalFooter.appendChild(span);
-    //     setTimeout(() => {
-    //     modalFooter.removeChild(span);
-    //    }, 2500);
-    //     return;
-    //}
-    // Validación para el modo 'update' 
-    //if (mode === 'update') {
-    //  
-    //}
 
     submitServiceButton.setAttribute('disabled', 'true');
 
@@ -295,84 +316,79 @@ const deleteService = (btnsDelete) => {
   });
 }
 
+/////PAYMENT SECTION//////////////////////////////////////////
 
+const loadBarbersConfigSection = async (barberSelect) => {
+  const barbers = await fetch('http://localhost:3001/users');
+  const dataBarbers = await barbers.json();
 
-
-/*
-const showServices = async () => {
-    const data = await getServices();
-    console.log(data);
-
-    document.querySelector('.table-container').innerHTML = tableServices;
-
-    if (data.length > 0) {
-      let services = '';
-      console.log(data);
-      data.forEach(item => {
-        services += `
-          <tr>
-            <td>${item.Nombre}</td>
-            <td>${item.Precio}</td>
-          </tr>
-        `;
-      });
-
-      document.querySelector('.table-cash-body').innerHTML = services;
-    }
+  dataBarbers.forEach(barber => {
+    barberSelect.innerHTML += `<option value="${barber.Nombre}">${barber.Nombre}</option>`;
+  });
 }
-*/
 
-/*
-const servicesData = async () => {
+const paymentData = async (tableBodyPaymentEdit) => {
   try {
-    // const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
-    const response = await fetch("http://localhost:3001/cutservices");
+    const responseCutServices = await fetch("http://localhost:3001/cutservices");
+    const cutServices = await responseCutServices.json();
+
+    if (tableBodyPaymentEdit !== undefined) {
+      tableBodyPaymentEdit.innerHTML = `${rows(dataTurns, cutServices)}`;
+    }
     
-    if (!response.ok) {
-      alert('Hubo algun error en obtener los usuarios.');
-    } else {
-      const data = await response.json();
-      
-      if (data.length > 1) {
-        let tableEmployees = `
-          <div class="table-container">
-            <table class="table-light">
-              <thead>
-                <tr>
-                  <th scope="col">ID</th>
-                  <th scope="col">USUARIO</th>
-                  <th scope="col">CONTRASEÑA</th>
-                  <th scope="col">ROL</th>
-                  <th scope="col">ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rows(data)}
-              </tbody>
-            </table>
-          </div>
-        `;
-
-        return tableEmployees;
-
-      } else {
-        return '<p class="empty">No hay empleados registrados.</p>'
-      }
-    };
   } catch (error) {
-    console.log(error);
-  };
+    console.error('Error al obtener los barberos:', error);
+  }
+}
+
+
+const rowsPay = (cutServices) => {
+  console.log("cutServices", cutServices);
+  let row = '';
+  dataTurns.forEach((user, index) => {
+
+    if (index > -1) {
+
+      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
+
+      let costField = user.precio ? user.precio : '0'; 
+
+      let date = user.turns.Date ? parseDate(user.turns.Date) : '';
+
+      row += `
+        <tr key=${user.turns.Id}>
+          <td scope="row">${date.dateWithoutTime}</td>
+          <td>${user.turns.Nombre}</td>
+          <td>${user.peluquero}</td>
+          <td><div>${serviceField}</div></td>
+          <td id="tdService">
+            <div>
+              <select class="form-select cut-service-select cut-service-select-notnull" data-id="${user.turns.Id}" aria-label="Tipo de corte">
+                <option selected value="null">Seleccionar...</option>
+                ${selectOptions}
+              </select>
+            </div>
+          </td>
+          <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
+        </tr>
+      `;
+    }
+  });
+
+  return row;
 };
-*/
 
 export { 
   configParamsView,
   configParamsInitialView,
+  configPaymentView,
   serviceData,
   modalServices,
   showRegisterServiceModal,
   submitService,
   cancelSubmitFormService,
   updateService,
-  deleteService 
+  deleteService,
+  paymentData,
+  loadBarbersConfigSection
 };

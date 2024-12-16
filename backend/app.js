@@ -8,6 +8,7 @@ import routesSession from "./app/routes/rSession.js";
 import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
 import routesCutService from "./app/routes/rCutService.js";
+import routesPaymentUsers  from "./app/routes/rPaymentUsers.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get('/verify-token', verifyToken, (req, res) => {
 app.use(routesTurn);
 app.use(routesUser);
 app.use(routesCutService);
+app.use(routesPaymentUsers);
 
 // Levantamos el puerto.
 app.listen(config.port, () => {

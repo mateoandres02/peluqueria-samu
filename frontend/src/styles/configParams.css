@@ -222,3 +222,21 @@ label {
   display: block;
   margin-bottom: .25rem;
 }
+
+.paymentParams {
+  padding-left: 1rem;
+  width: 80%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.paymentParams h4 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.paymentParams p {
+  font-weight: 600;
+  font-size: 1.2rem;
+}

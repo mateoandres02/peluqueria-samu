@@ -1,9 +1,12 @@
 import { parseDate, reformatDate } from './date';
 import '/src/styles/cashRegister.css';
 
+// const containerCashView = `<div class="containerCashView"></div>`;
+//<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
+//<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toISOString().split('T')[0]}">
+
 const containerCashView = `<div class="containerCashView"></div>`;
 //<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
-const currentDate = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split('/').reverse().join('-');
 
 const today = new Date();
 today.setMinutes(today.getMinutes() - today.getTimezoneOffset());

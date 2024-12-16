@@ -18,6 +18,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 999;
 }
 
 .sidebar-nav {
@@ -152,8 +153,35 @@
 /* Media queries */
 
 @media (640px > width) {
+    /* .sidebar {
+        display: none;
+    }
+
+    .sidebar {
+        width: 280px;
+        max-width: 300px;
+        height: 100vh;
+    
+        background-color: var(--sidebar-grey);
+        color: var(--light-grey-letter);
+    
+        display: grid;
+        grid-template-rows: 10% 75% 15%;
+        grid-template-areas: 
+            "profile"
+            "menu"
+            "logout";
+    
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+    } */
+
     .sidebar {
         display: none;
+        height: calc(100vh - 69px);
+        margin: 69px auto 0rem auto;
     }
 }
 

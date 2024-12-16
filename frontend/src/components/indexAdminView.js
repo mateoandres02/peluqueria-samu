@@ -1,7 +1,8 @@
-import calendarRender from './calendarRender.js';
+import { getWidthDisplay } from './calendarRender.js';
+import { calendarRender } from './calendarRender.js';
 import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
-import { btnHamburger, closeMenu } from "./btnHamburger.js";
+import { header, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
 import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, getEarnedForBarber, additionalCashViewElement, addNewElementListener} from "./cashRegister.js";
 import { logout } from './logout.js';
@@ -17,16 +18,19 @@ const indexView = async (data) => {
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
-    
+
     app.innerHTML = '';
+    app.innerHTML += header;
     app.innerHTML += menuFunction(userActive);
-    app.innerHTML += btnHamburger;
+
+    let columnsCalendarViewTimeGrid;
+    columnsCalendarViewTimeGrid = getWidthDisplay();
     
     switch (urlActive) {
         case '#calendario':
 
             app.innerHTML += calendario;
-            calendarRender(modalElement, data);
+            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
 
             break;
         
@@ -162,7 +166,7 @@ const indexView = async (data) => {
     
         default:
             app.innerHTML += calendario;
-            calendarRender(modalElement, data);
+            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
             break;
     };
 

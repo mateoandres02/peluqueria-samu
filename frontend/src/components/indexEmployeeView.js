@@ -1,7 +1,7 @@
-import calendarRender from './calendarRender.js';
+import { calendarRender } from './calendarRender.js';
 import calendario from "./calendario.js";
 import { menu } from "./menuEmployee.js";
-import { btnHamburger, closeMenu } from "./btnHamburger.js";
+import { header, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
 
@@ -12,8 +12,8 @@ const indexView = async (data) => {
     const urlActive = window.location.hash;
     
     app.innerHTML = '';
+    app.innerHTML += header;
     app.innerHTML += menu(userActive);
-    app.innerHTML += btnHamburger;
 
     switch (urlActive) {
         

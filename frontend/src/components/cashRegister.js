@@ -307,21 +307,21 @@ const usarCalcular = (dataturns) => {
 };
 
 
-const getPayForBarber = (dateValue) => {
-  const $payButton = document.querySelector('.pay-button');
+// const getPayForBarber = (dateValue) => {
+//   const $payButton = document.querySelector('.pay-button');
 
-  if ($payButton) { // Verifica que el botón exista
-    $payButton.addEventListener('click', async () => {
-      try {
-        await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
-      } catch (error) {
-        console.error('Error al calcular los pagos:', error);
-      }
-    });
-  } else {
-    console.error('El botón de calcular pagos no se encontró en el DOM.');
-  }
-}
+//   if ($payButton) { // Verifica que el botón exista
+//     $payButton.addEventListener('click', async () => {
+//       try {
+//         await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
+//       } catch (error) {
+//         console.error('Error al calcular los pagos:', error);
+//       }
+//     });
+//   } else {
+//     console.error('El botón de calcular pagos no se encontró en el DOM.');
+//   }
+// }
 
 const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   

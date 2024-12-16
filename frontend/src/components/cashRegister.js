@@ -1,8 +1,17 @@
 import { parseDate, reformatDate } from './date';
 import '/src/styles/cashRegister.css';
 
+// const containerCashView = `<div class="containerCashView"></div>`;
+//<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
+//<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toISOString().split('T')[0]}">
+
 const containerCashView = `<div class="containerCashView"></div>`;
 //<input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new DatetoL().ocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }).split(',')[0].split('/').reverse().join('-')}">
+
+const today = new Date();
+today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+const formattedDate = today.toISOString().split('T')[0];
+
 const infoSectionCashView = `
   <div class="infoSectionCashView">
     <h3>Seguimiento de Caja</h3>
@@ -10,7 +19,7 @@ const infoSectionCashView = `
     <div class="cashRegisterFilterContainer">
         <div class="cashRegisterFilter">
           <span>Filtrar por fecha</span>
-          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${new Date().toISOString().split('T')[0]}">
+          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${formattedDate}">
       </div>
       <div class="filterBarberCashTracking">
         <span>Filtrar por barbero</span>

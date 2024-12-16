@@ -9,7 +9,20 @@ import "../styles/vistaCalendario.css";
 const d = document;
 let body = document.body;
 
-export const removeAllModals = (modal) => {
+const getWidthDisplay = () => {
+  let columnsCalendarViewTimeGrid;
+  const innerWidth = window.innerWidth;
+
+  if (innerWidth <= 640) {
+    columnsCalendarViewTimeGrid = 3;
+  } else {
+    columnsCalendarViewTimeGrid = 7; 
+  }
+
+  return columnsCalendarViewTimeGrid;
+}
+
+const removeAllModals = (modal) => {
   /**
    * Remueve todas las modales activas y devuelve el puntero a un objeto del dom para la accesibilidad.
    * param: modal -> modal activa.
@@ -71,8 +84,8 @@ const dateSetStyles = () => {
   });
 }
 
-export default async function calendarRender (modalElement, data) {
-  
+async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
+
   /**
    * Renderiza el calendario.
    * param: modalElement -> element html
@@ -101,7 +114,8 @@ export default async function calendarRender (modalElement, data) {
     dayMaxEventRows: true,
     views: {
       timeGrid: {
-        dayMaxEventRows: 6
+        dayMaxEventRows: 6,
+        // duration: { days: columnsCalendarViewTimeGrid }
       },
       dayGrid: {
         dayMaxEventRows: 3
@@ -145,5 +159,11 @@ export default async function calendarRender (modalElement, data) {
   calendar.render();
 
   dateSetStyles();
-  
+
 };
+
+export {
+  getWidthDisplay,
+  removeAllModals,
+  calendarRender
+}

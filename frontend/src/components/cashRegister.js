@@ -565,23 +565,23 @@ const getEarnedForBarber = async (dateValue) => {
   }
 }
 
-const getPayForBarber = (dateValue) => {
-  const $payButton = document.querySelector('.pay-button');
+// const getPayForBarber = (dateValue) => {
+//   const $payButton = document.querySelector('.pay-button');
 
-  //ACA SE EJECUTA LA FUNCION AL CLICKEAR EL BOTON
-  if ($payButton) { // Verifica que el botón exista
-    $payButton.addEventListener('click', async () => {
-      try {
-        console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
-        await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
-      } catch (error) {
-        console.error('Error al calcular los pagos:', error);
-      }
-    });
-  } else {
-    console.error('El botón de calcular pagos no se encontró en el DOM.');
-  }
-}
+//   //ACA SE EJECUTA LA FUNCION AL CLICKEAR EL BOTON
+//   if ($payButton) { // Verifica que el botón exista
+//     $payButton.addEventListener('click', async () => {
+//       try {
+//         console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
+//         await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
+//       } catch (error) {
+//         console.error('Error al calcular los pagos:', error);
+//       }
+//     });
+//   } else {
+//     console.error('El botón de calcular pagos no se encontró en el DOM.');
+//   }
+// }
 
 // funciones para exportar elementos html al indexAdminView.js y poder cargarlos al dom
 const additionalCashViewElement = () => {

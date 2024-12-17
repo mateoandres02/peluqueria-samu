@@ -2,7 +2,7 @@ import '../styles/modal.css';
 
 const modalConfirm = `
   <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-question-octagon"></i>Advertencia</h1>
@@ -49,6 +49,9 @@ function deleteTurn(info){
     const date = new Date(info.event._instance.range.start).toISOString().split("T")[0];
     const regularCustomer = info.event._def.extendedProps.regular;
     let response;
+
+    console.log(publicId)
+    console.log(date)
 
     if (regularCustomer === "true") {
       // response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {

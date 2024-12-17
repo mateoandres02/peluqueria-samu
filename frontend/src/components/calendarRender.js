@@ -98,7 +98,7 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: "timeGridWeek",
+    initialView: "Semana",
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -113,9 +113,14 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     editable: false,
     dayMaxEventRows: true,
     views: {
+      Semana: { // Vista personalizada
+        type: 'timeGrid',
+        duration: { days: columnsCalendarViewTimeGrid }, // Duración dinámica
+        buttonText: 'Semana', // Texto del botón (puedes cambiarlo)
+        dayMaxEventRows: 6
+      },
       timeGrid: {
         dayMaxEventRows: 6,
-        // duration: { days: columnsCalendarViewTimeGrid }
       },
       dayGrid: {
         dayMaxEventRows: 3
@@ -123,7 +128,7 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     },
     allDaySlot: false,
     headerToolbar: { 
-      left: 'dayGridMonth,timeGridWeek,timeGridDay', // agregar myCustomButton si queremos uno personalizado.
+      left: 'dayGridMonth,Semana,timeGridDay', // agregar myCustomButton si queremos uno personalizado.
       center: 'title',
       right: 'prev,next',
     },

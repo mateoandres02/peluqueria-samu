@@ -3,7 +3,7 @@ import '../styles/modal.css';
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h1>

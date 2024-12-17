@@ -206,6 +206,12 @@ const deleteTurnOfRecurrentTurns = async (req, res) => {
 
         const response = await db.update(turns_days).set({exdate: 1}).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
 
+        const turnExists = await db.select().from(turns).where(like(turns.Date, `%${date}%`))
+
+        if (turnExists.length) {
+            await db.delete(turns).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`))).returning();
+        } 
+        
         if (response.length) {
             res.status(204).send({
                 message: "¡El registro se eliminó exitosamente!"

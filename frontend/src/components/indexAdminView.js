@@ -53,7 +53,6 @@ const indexView = async (data) => {
             
             const $dateInput = document.querySelector('#filterDateInput');
             addDateFilterListener($tableBodyTurnsCashRegister, $dateInput);
-
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
             
             //$containerCashView.insertAdjacentHTML('beforeend', additionalCashViewElement());

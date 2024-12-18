@@ -1,24 +1,31 @@
-import "../styles/configParams.css"
+import "../styles/configParams.css";
 
-let configParamsView = 
-`<div class="configParamsView">
-  <h3>Configuración de Parametros</h3>
-  <p class="infoConfigParams-p">Puede establecer valores de ciertos parametros en funcion a precios y servicios que cambien en el dia a dia!</p>
-</div>`;
+const configParamsView = `
+  <div class="configParamsView">
+    <h3>Configuración de Parametros</h3>
+    <p class="infoConfigParams-p">Establece distintas configuraciones para distintas funcionalidades de la aplicación.</p>
+  </div>
+`;
 
 const configParamsInitialView = `
+  <hr>
   <div class="serviceParams">
-    <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Servicios</h4>
-    <button type="button" class="postService-btn">
-      <img class="svg" src="/assets/icons/add.svg">
-        Agregar <br> Servicio
-    </button>
+    <div class="serviceParams-title">
+      <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Servicios</h4>
+      <p>Agrega, modifica o elimina los servicios que ofreces.</p>
+    </div>
+    <div class="serviceParams-btn">
+      <button type="button" class="postService-btn">
+        <img class="svg" src="/assets/icons/add.svg">
+          Agregar <br> Servicio
+      </button>
+    </div>
   </div>
 `;
 
 const modalServices = `
   <div class="modal fade" id="postService" tabindex="-1" aria-labelledby="postServiceLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="postServiceLabel">Registrar empleado</h1>
@@ -47,13 +54,19 @@ const modalServices = `
 `;
 
 const configPaymentView = `
+  <hr>
   <div class="paymentParams">
-    <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Pagos</h4>
-    <select id="barberSelectConfigParams" class="barberSelect">
-      <option value="null">Seleccionar...</option>
-    </select>
-  </div>`
-
+    <div class="paymentParams-title">
+      <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Pagos</h4>
+      <p>Configura los distintos porcentajes con respecto a los pagos que recibirán tus empleados.</p>
+    </div>
+    <div class="paymentParams-selectable">
+      <select id="barberSelectConfigParams" class="barberSelect">
+        <option value="null">Seleccionar...</option>
+      </select>
+    </div>
+  </div>
+`;
 
 const tablePaymentEdit = `
 <div class="table-pay-container">
@@ -71,6 +84,12 @@ const tablePaymentEdit = `
 `;
 
 const rows = (data) => {
+
+  /**
+   * Cargamos la tabla de servicios con los servicios de la aplicacion.
+   * param: data -> array de servicios almacenados en la base de datos.
+   */
+
   let row = '';
   data.forEach((item, index) => {
     if (index > -1) {
@@ -111,22 +130,27 @@ const rowsPayment = (data) => {
 };
 
 const serviceData = async () => {
+
+  /**
+   * Retornamos la tabla cargada o un mensaje de que no existen servicios en la aplicacion.
+   */
+
   try {
-    // const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
-    const response = await fetch("http://localhost:3001/cutservices");
+    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
+    // const response = await fetch("http://localhost:3001/cutservices");
     
     if (!response.ok) {
       alert('Hubo algun error en obtener los servicios.');
     } else {
       const data = await response.json();
 
-      if (data.length > 1) {
+      if (data.length > 0) {
         let tableServices = `
-          <div class="table-container">
-            <table class="table-light">
+          <div class="table-config-container table-container">
+            <table>
               <thead>
                 <tr>
-                  <th scope="col">NOMBRE</th>
+                  <th scope="col">NOMBRE DEL SERVICIO</th>
                   <th scope="col">PRECIO</th>
                   <th scope="col">ACCIONES</th>
                 </tr>
@@ -150,6 +174,12 @@ const serviceData = async () => {
 }
 
 const showRegisterServiceModal = (btn) => {
+
+  /**
+   * Muestra la modal al hacer click en el boton.
+   * param: btn -> elemento html del boton que hace el post.
+   */
+
   btn.addEventListener('click', () => {
     document.querySelector("#postServiceLabel").textContent = "Registrar Servicio";
     document.querySelector(".btnPost").textContent = "Registrar";
@@ -161,12 +191,18 @@ const showRegisterServiceModal = (btn) => {
 
     formService.Nombre.value = '';
     formService.Precio.value = '';
-
-    console.log('click', formService);
   });
 }
 
 const submitService = (form, modal, modalFooter) => {
+
+  /**
+   * Hace un post del servicio.
+   * param: form -> elemento html del formulario.
+   * param: modal -> modal para poder hacer el post.
+   * param: modalFooter -> elemento html del footer de la modal
+   */
+
   const span = document.createElement('span');
   const submitServiceButton = document.querySelector('.btnPost');
   span.innerHTML = 'Error al crear el servicio.';
@@ -191,12 +227,13 @@ const submitService = (form, modal, modalFooter) => {
       "Precio": precio
     }
 
-    let url = 'http://localhost:3001/cutservices';
+    let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
+    // let url = 'http://localhost:3001/cutservices';
     let method = 'POST';
 
     if (mode === 'update') {
-      // url = `https://peluqueria-invasion-backend.vercel.app/users/${id}`;
-      url = `http://localhost:3001/cutservices/${id}`;
+      url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
+      // url = `http://localhost:3001/cutservices/${id}`;
       method = 'PUT';
     };
 
@@ -236,6 +273,11 @@ const submitService = (form, modal, modalFooter) => {
 };
 
 const cancelSubmitFormService = (btnCancel, form, modal) => {
+
+  /**
+   * Cancela el post.
+   */
+
   btnCancel.addEventListener('click', (e) => {
     e.preventDefault();
 
@@ -249,15 +291,19 @@ const cancelSubmitFormService = (btnCancel, form, modal) => {
 };
 
 const updateService = (btnsPut, modal) => {
+
+  /**
+   * Hace un update en la base de datos del servicio.
+   */
+
   btnsPut.forEach(btn => {
 
     btn.addEventListener('click', async (e) => {
 
       const key = e.currentTarget.getAttribute('key');
 
-
-      // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
-      const response = await fetch(`http://localhost:3001/cutservices/${key}`);
+      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
+      // const response = await fetch(`http://localhost:3001/cutservices/${key}`);
       const data = await response.json();
 
       document.querySelector("#postServiceLabel").textContent = "Actualizar Servicio";
@@ -277,36 +323,32 @@ const updateService = (btnsPut, modal) => {
 };
 
 const deleteService = (btnsDelete) => {
-  // A cada boton le damos el evento click.
+
+  /**
+   * Hace un delete en la base de datos del servicio seleccionado.
+   */
+
   btnsDelete.forEach(btn => {
     btn.addEventListener('click', async (e) => {                    
-      // Obtenemos la key
+      
       const key = e.currentTarget.closest('tr').getAttribute('key');
-      console.log("anda delete")
-      // Hacemos una request para obtener información del registro a eliminar.
-      // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`);
-      const response = await fetch(`http://localhost:3001/cutservices/${key}`);
+      
+      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
+      // const response = await fetch(`http://localhost:3001/cutservices/${key}`);
       
       const data = await response.json();
 
-      console.log(data);
-
-      // Confirmamos la eliminación del registro.
       const $confirm = confirm(`¿Estás seguro que quieres eliminar el servicio ${data.Nombre}?`);
 
-      // Si la confirmación es true, eliminamos el registro.
       if ($confirm) {
-        // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
-        //   method: 'DELETE'
-        // });
-        const response = await fetch(`http://localhost:3001/cutservices/${data.Id}`, {
-            method: 'DELETE'
+        const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${data.Id}`, {
+          method: 'DELETE'
         });
-
-        console.log(response)
+        // const response = await fetch(`http://localhost:3001/cutservices/${data.Id}`, {
+        //     method: 'DELETE'
+        // });
 
         if (response.ok) {
-          // Una vez eliminado el registro, recargamos la página.
           window.location.reload();
         } else {
           alert('Error al eliminar el servicio.');
@@ -316,20 +358,10 @@ const deleteService = (btnsDelete) => {
   });
 }
 
-/////PAYMENT SECTION//////////////////////////////////////////
-
-const loadBarbersConfigSection = async (barberSelect) => {
-  const barbers = await fetch('http://localhost:3001/users');
-  const dataBarbers = await barbers.json();
-
-  dataBarbers.forEach(barber => {
-    barberSelect.innerHTML += `<option value="${barber.Nombre}">${barber.Nombre}</option>`;
-  });
-}
-
 const paymentData = async (tableBodyPaymentEdit) => {
   try {
-    const responseCutServices = await fetch("http://localhost:3001/cutservices");
+    // const responseCutServices = await fetch("http://localhost:3001/cutservices");
+    const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
     const cutServices = await responseCutServices.json();
 
     if (tableBodyPaymentEdit !== undefined) {
@@ -390,5 +422,4 @@ export {
   updateService,
   deleteService,
   paymentData,
-  loadBarbersConfigSection
 };

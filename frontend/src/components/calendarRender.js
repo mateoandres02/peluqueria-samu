@@ -84,6 +84,19 @@ const dateSetStyles = () => {
   });
 }
 
+function getMondayDate() {
+
+  /**
+   * Obtiene el lunes como dia inicial
+   */
+
+  let today = new Date();
+  let day = today.getDay(); 
+  let diff = day === 0 ? -6 : 1 - day;
+  today.setDate(today.getDate() + diff);
+  return today.toISOString().split('T')[0];
+}
+
 async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
 
   /**
@@ -99,6 +112,7 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "Semana",
+    initialDate: getMondayDate(),
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -112,23 +126,24 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     slotMinTime: '08:00:00',
     editable: false,
     dayMaxEventRows: true,
+    nowIndicator: true,
     views: {
-      Semana: { // Vista personalizada
+      Semana: {
         type: 'timeGrid',
-        duration: { days: columnsCalendarViewTimeGrid }, // Duración dinámica
-        buttonText: 'Semana', // Texto del botón (puedes cambiarlo)
-        dayMaxEventRows: 6
+        duration: { days: columnsCalendarViewTimeGrid },
+        buttonText: 'Semana',
+        dayMaxEventRows: 6,
       },
       timeGrid: {
         dayMaxEventRows: 6,
       },
       dayGrid: {
-        dayMaxEventRows: 3
+        dayMaxEventRows: 3,
       }
     },
     allDaySlot: false,
     headerToolbar: { 
-      left: 'dayGridMonth,Semana,timeGridDay', // agregar myCustomButton si queremos uno personalizado.
+      left: 'dayGridMonth,Semana,timeGridDay',
       center: 'title',
       right: 'prev,next',
     },
@@ -136,14 +151,6 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     eventClick: function(info) {
       eventInfo(info)
     },
-    // customButtons: {
-    //   myCustomButton: {
-    //     text: `boton personalizado`,
-    //     click: function() {
-    //       alert("funcionalidad del boton personalizado");
-    //     }
-    //   }
-    // },
     dateClick: function(info) {
       dateInfo(info, data, modalElement)
     },
@@ -155,8 +162,8 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     // },
     locale: esLocale,
     eventOverlap: false,
-    datesSet: function() {
-      dateSetStyles()
+    datesSet: function(info) {
+      dateSetStyles();
     }
       
   });

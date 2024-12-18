@@ -10,10 +10,14 @@ const formattedDate = today.toISOString().split('T')[0];
 let totalEarned = 0;
 let totalEarnedTurns = 0;
 
+let dataFinalsTurns;
+
+let registrosFinalesGlobal = [];
+
 const infoSectionCashView = `
   <div class="infoSectionCashView">
     <h3>Seguimiento de Caja</h3>
-    <p>Aquí puedes visualizar métricas obtenidas relacionadas a la caja registradora.</p>
+    <p>Visualiza los cobros realizados y los pagos por realizar.</p>
     <div class="cashRegisterFilterContainer">
         <div class="cashRegisterFilter">
           <span>Filtrar por fecha</span>
@@ -32,7 +36,7 @@ const infoSectionCashView = `
         <button class="btn btn-primary" >Calcular Total</button>
       </div>
       <div class="infoTotalEarned">
-        <h5 id="totalEarnedDisplay">Total ganado: <b>$0.00</b></h5>
+        <h5 id="totalEarnedDisplay">Total ganado en el día: <b>$ 0.00</b></h5>
       </div>
     </div>
   </div>
@@ -44,6 +48,7 @@ const tableTurns = `
       <thead class="table-cash-head">
         <tr>
           <th scope="col">FECHA</th>
+          <th scope="col">HORA</th>
           <th scope="col">CLIENTE</th>
           <th scope="col">BARBERO</th>
           <th scope="col">SERVICIO</th>
@@ -58,20 +63,22 @@ const tableTurns = `
 `;
 
 const paymentSection = `
+  <hr>
   <div class="paymentSection">
     <div class="payment-panel">
-      <h4>Pagos</h4>
+      <h3>Pagos</h3>
+      <p>Visualiza cuánto tienes que pagarles a tus empleados.</p>
       <div>
         <button class="btn btn-primary pay-button" id="pay-button">Calcular Pagos</button>
       </div>
     </div>
-    <div class="table-cash-container">
-    <table class="table-cash-light">
-      <thead class="table-cash-head">
+    <div class="table-payment-container table-container">
+    <table>
+      <thead>
         <tr>
           <th scope="col">BARBERO</th>
           <th scope="col">TOTAL GANADO</th>
-          <th scope="col">CORRESPONDIENTE</th>
+          <th scope="col">PAGO CORRESPONDIENTE</th>
         </tr>
       </thead>
       <tbody class="table-pay-body">
@@ -109,6 +116,18 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
   let registrosFinales = [];
   let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
 
+  // Ordenamos los turnos por hora (de forma ascendente)
+  dataTurnsConcats.sort((a, b) => {
+    const dateA = a.date ? parseDate(a.date).timeWithoutSeconds : '';
+    const dateB = b.date ? parseDate(b.date).timeWithoutSeconds : '';
+    
+    // Convertimos las horas a formato comparable
+    if (dateA && dateB) {
+      return new Date(`1970-01-01T${dateA}`) - new Date(`1970-01-01T${dateB}`);
+    }
+    return 0;
+  });
+
   dataTurnsConcats.forEach((user, index) => {
 
     if (user.exdate == 1) {
@@ -131,11 +150,13 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
 
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
       let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
+      let hourTurn = user.date ? parseDate(user.date) : '';
 
       if (user.exdate != 1) {
         row += `
           <tr key=${user.turns.Id}>
             <td scope="row">${dateRecurrentTurn.dateWithoutTime || date.dateWithoutTime}</td>
+            <td>${hourTurn.timeWithoutSeconds || date.timeWithoutSeconds}</td>
             <td>${user.turns.Nombre}</td>
             <td>${user.peluquero}</td>
             <td><div>${serviceField}</div></td>
@@ -153,6 +174,8 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
       }
     }
   });
+
+  registrosFinalesGlobal = registrosFinales;
 
   return { row, registrosFinales };
 };
@@ -191,13 +214,20 @@ const handleSelectChange = (cutServices, dateValue) => {
         Service: selectedService.Id
       };
 
-      await fetch(`http://localhost:3001/turns/${rowId}`, 
+      await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
         { 
           method: 'PUT', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(turn)
         }
       );
+      // await fetch(`http://localhost:3001/turns/${rowId}`, 
+      //   { 
+      //     method: 'PUT', 
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(turn)
+      //   }
+      // );
 
       if (valueCalendar === today) {
         window.location.reload();
@@ -212,7 +242,8 @@ const getBarbers = async () => {
    * Obtenemos los barberos disponibles en nuestro sistema.
    */
 
-  const barbers = await fetch('http://localhost:3001/users');
+  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users');
+  // const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
   return dataBarbers;
 }
@@ -227,10 +258,12 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
 
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-
+  const paymentTableBody = document.querySelector('.table-pay-body');
+  
   barberSelect.addEventListener('change', async (e) => {
-
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$0.00</b>`;
+    
+    totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ 0.00</b>`;
+    paymentTableBody.innerHTML = '';
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
     
@@ -256,12 +289,14 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-
+  const paymentTableBody = document.querySelector('.table-pay-body');
+  
   dateInput.removeEventListener('change', handleDateChange); 
   dateInput.addEventListener('change', handleDateChange);
-
+  
   async function handleDateChange(e) {
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$0.00</b>`;
+    totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ 0.00</b>`;
+    paymentTableBody.innerHTML = '';
 
     let selectedDate = e.target.value;
 
@@ -287,7 +322,7 @@ const calculateTotal = (dataFinalsTurns, totalEarnedDisplay) => {
   }, 0);
   totalEarned = totalEarnedTurns;
 
-  totalEarnedDisplay.innerHTML = `Total ganado: <b>$${totalEarned.toFixed(2)}</b>`;
+  totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ ${totalEarned.toFixed(2)}</b>`;
 }
 
 const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay) => {
@@ -325,8 +360,9 @@ const getServices = async () => {
   /**
    * Obtenemos los servicios a través de una solicitud al backend.
    */
-
-  const responseCutServices = await fetch("http://localhost:3001/cutservices");
+  
+  const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
+  // const responseCutServices = await fetch("http://localhost:3001/cutservices");
   const cutServices = await responseCutServices.json();
   return cutServices;
 }
@@ -341,10 +377,12 @@ const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}/${dateParam}`);
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}/${barberParam}`);
+    // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
     return responseTurns;
   }
 }
@@ -358,10 +396,12 @@ const getTurnsFilteredByDate = async (dateParam, recurrent) => {
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/date/${dateParam}`);
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}`);
+    // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
     return responseTurns;
   }
 }
@@ -375,10 +415,12 @@ const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}`);
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${barberParam}`);
+    // const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
     return responseTurns;
   }
 }
@@ -425,7 +467,6 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
       let dataRecurrentTurns = await responseRecurrentTurns.json();
       let dataTurns = await responseTurns.json();
-      let dataFinalsTurns;
 
       if (tableBodyTurnsCashRegister !== undefined) {
   
@@ -461,6 +502,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       usarCalcular(dataFinalsTurns); 
 
       handleSelectChange(cutServices, selectedDate);
+
     }
     
   } catch (error) {
@@ -468,95 +510,57 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
   }
 };
 
-const getEarnedForBarber = async (dateValue) => {
-  try {
-    // Hacer la solicitud para obtener los turnos de la fecha seleccionada
-    const responseTurns = await fetch(`http://localhost:3001/turns/${dateValue}`);
-    const dataTurns = await responseTurns.json();
+const handlePaidsForBarber = ($payButton) => {
+  $payButton.addEventListener('click', () => {
+    getPaidForBarbers();
+  })
+}
 
-    // Filtrar los turnos que tienen servicio
-    const filteredTurns = dataTurns.filter(turn => turn.turns.Service);
+const getPaidForBarbers = async () => {
+  // Filtrar los turnos que tienen servicio
+  const filteredTurns = registrosFinalesGlobal.filter(turn => turn.turns.Service);
+  // Crear un objeto para almacenar las ganancias por peluquero
+  const totalForBarber = {};
 
-    // Crear un objeto para almacenar las ganancias por peluquero
-    const totalForBarber = {};
+  // Sumar las ganancias por cada peluquero
+  filteredTurns.forEach(turn => {
+    const barber = turn.peluquero;
+    const price = turn.precio || 0;
+    const nameService = turn.servicio;
 
-    // Sumar las ganancias por cada peluquero
-    filteredTurns.forEach(turn => {
-      const barber = turn.peluquero; // Asumiendo que el nombre del peluquero está en turn.peluquero
-      const price = turn.precio || 0; // Asegurarse de que el precio sea un número
-      const nameService = turn.servicio;
+    if (!totalForBarber[barber]) {
+      totalForBarber[barber] = 0; // Inicializar si no existe
+    }
 
-      if (!totalForBarber[barber]) {
-        totalForBarber[barber] = 0; // Inicializar si no existe
-      }
+    // a esto lo podemos aprovechar para dividir los distintos porcentajes
+    // if (nameService === 'Corte' || nameService === 'corte') {
+    //   totalForBarber[barber] += price * 0.5; // Sumar la mitad del precio al peluquero correspondiente
+    // }
 
-      if (nameService === 'Corte' || nameService === 'corte') {
-        totalForBarber[barber] += price * 0.5; // Sumar la mitad del precio al peluquero correspondiente
-      }
-      totalForBarber[barber] += price; // Sumar el precio al peluquero correspondiente
-    });
+    totalForBarber[barber] += price;
+  });
 
-     // Limpiar la tabla de pagos antes de agregar nuevos datos
-    const paymentTableBody = document.querySelector('.table-pay-body'); // Asegúrate de que esta clase sea la correcta
-    paymentTableBody.innerHTML = ''; // Limpiar la tabla
-    console.log("TURNOS FILTRADOS",filteredTurns)
-    for (const barber in totalForBarber) {
-      const totalEarned = totalForBarber[barber];
+  const paymentTableBody = document.querySelector('.table-pay-body');
+  paymentTableBody.innerHTML = '';
 
-      const paymentBarber = totalEarned * 0.5;
-      if (barber === 'Alvaro' || barber === 'alvaro') {
+  for (const barber in totalForBarber) {
+    const totalEarned = totalForBarber[barber];
 
-      }
-      console.log(`El peluquero ${barber} ha juntado: $${totalForBarber[barber].toFixed(2)}, y su pago es de: $${paymentBarber.toFixed(2)}`);
-      const row = document.createElement('tr');
-      row.innerHTML = `
+    const paymentBarber = totalEarned * 0.5;
+    
+    // if (barber === 'Alvaro' || barber === 'alvaro') {
+
+    // }
+
+    paymentTableBody.innerHTML += `
+      <tr>
         <td>${barber}</td>
         <td>$${totalEarned.toFixed(2)}</td>
         <td>$${paymentBarber.toFixed(2)}</td>
-      `;
-      paymentTableBody.appendChild(row);
-    }
-  } catch (error) {
-    console.log('Error al calcular las ganancias por peluquero:', error);
+      </tr>
+    `;
   }
 }
-
-// const getPayForBarber = (dateValue) => {
-//   const $payButton = document.querySelector('.pay-button');
-
-//   //ACA SE EJECUTA LA FUNCION AL CLICKEAR EL BOTON
-//   if ($payButton) { // Verifica que el botón exista
-//     $payButton.addEventListener('click', async () => {
-//       try {
-//         console.log('Calculando pagos...'); // Asegúrate de que este mensaje se imprima
-//         await getEarnedForBarber(dateValue); // Asegúrate de que esta función se ejecute
-//       } catch (error) {
-//         console.error('Error al calcular los pagos:', error);
-//       }
-//     });
-//   } else {
-//     console.error('El botón de calcular pagos no se encontró en el DOM.');
-//   }
-// }
-
-// funciones para exportar elementos html al indexAdminView.js y poder cargarlos al dom
-const additionalCashViewElement = () => {
-  const newElementHTML = `
-      <div class="new-element">
-          <button class="new-action-btn">Nueva Acción</button>
-      </div>
-  `;
-  return newElementHTML;
-};
-
-const addNewElementListener = () => {
-  const $newActionButton = document.querySelector('.new-action-btn');
-  if ($newActionButton) {
-      $newActionButton.addEventListener('click', () => {
-          console.log('Botón de nueva acción presionado.');
-      });
-  }
-};
 
 export {
   containerCashView,
@@ -567,7 +571,5 @@ export {
   addDateFilterListener,
   loadBarberSelect,
   addBarberFilterListener,
-  getEarnedForBarber,
-  additionalCashViewElement,
-  addNewElementListener
+  handlePaidsForBarber,
 };

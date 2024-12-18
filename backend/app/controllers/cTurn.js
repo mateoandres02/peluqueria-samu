@@ -11,7 +11,8 @@ const getAllTurns = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service));
@@ -32,7 +33,8 @@ const getAllTurnsByBarber = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
@@ -77,7 +79,8 @@ const getAllTurnsByDate = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
@@ -106,7 +109,8 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))

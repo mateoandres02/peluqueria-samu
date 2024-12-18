@@ -8,8 +8,8 @@ const getRecurrentTurnsByUserActive = async (data) => {
    * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
    */
 
-  // const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
-  const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
+  const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
+  // const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
   const recurrentTurns = await responseRecurrentsTurns.json();
 
   return recurrentTurns;
@@ -22,8 +22,8 @@ const getTurnsByUserActive = async (data) => {
    * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
    */ 
 
-  // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
-  const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
+  // const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
   const turns = await response.json();
 
   return turns;

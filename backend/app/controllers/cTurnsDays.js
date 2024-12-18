@@ -138,7 +138,7 @@ const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
         .where(and(like(turns_days.date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
-
+        
         res.send(data);
 
     } catch (e) {

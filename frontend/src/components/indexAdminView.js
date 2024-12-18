@@ -4,10 +4,10 @@ import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
 import { header, closeMenu } from "./btnHamburger.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, getEarnedForBarber, additionalCashViewElement, addNewElementListener} from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
-import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData, loadBarbersConfigSection } from './configParams.js';
+import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData } from './configParams.js';
 
 const indexView = async (data) => {
 
@@ -41,7 +41,6 @@ const indexView = async (data) => {
             let $containerCashView = document.querySelector('.containerCashView');
             $containerCashView.insertAdjacentHTML('beforeend', infoSectionCashView);
             $containerCashView.insertAdjacentHTML('beforeend', tableTurns);
-            //$containerCashView.insertAdjacentHTML('beforeend', paymentSection);
             
             const $barberSelect = document.querySelector('#barberSelect');
             await loadBarberSelect($barberSelect);
@@ -55,26 +54,10 @@ const indexView = async (data) => {
             addDateFilterListener($tableBodyTurnsCashRegister, $dateInput);
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
             
-            //$containerCashView.insertAdjacentHTML('beforeend', additionalCashViewElement());
-            //addNewElementListener();
-
             $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
 
-            // Mueve esta parte aquí para asegurarte de que el botón ya esté en el DOM
             const $payButton = document.querySelector('.pay-button');
-            if ($payButton) {
-                $payButton.addEventListener('click', async () => {
-                    try {
-                        console.log('Calculando pagos...');
-                        await getEarnedForBarber($currentDate);
-                    } catch (error) {
-                        console.error('Error al calcular los pagos:', error);
-                    }
-                });
-            } else {
-                console.error('El botón de calcular pagos no se encontró en el DOM.');
-            }
-
+            handlePaidsForBarber($payButton);
 
             break;
 
@@ -126,7 +109,7 @@ const indexView = async (data) => {
             let configParamsContainer = document.querySelector('.configParamsView');
             configParamsContainer.insertAdjacentHTML('beforeend', configParamsInitialView);
 
-            const tableServices = await serviceData()
+            const tableServices = await serviceData();
             if (tableServices) {
                 configParamsContainer.insertAdjacentHTML('beforeend', tableServices);
             }
@@ -142,7 +125,6 @@ const indexView = async (data) => {
 
             const $formPostService = document.querySelector('#formPOSTService');
             const $modalFooterService = document.querySelector('.modal-footer');
-
             submitService($formPostService, $modalService, $modalFooterService);
 
             const $btnCancelService = document.querySelector('.btnCancel');
@@ -157,7 +139,7 @@ const indexView = async (data) => {
             configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);
 
             const $barberSelectConfigParams = document.querySelector('#barberSelectConfigParams');
-            await loadBarbersConfigSection($barberSelectConfigParams);
+            await loadBarberSelect($barberSelectConfigParams);
 
             let $tableBodyPaymentEdit = document.querySelector('.table-pay-body');            
 

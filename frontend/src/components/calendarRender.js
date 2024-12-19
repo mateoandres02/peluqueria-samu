@@ -94,6 +94,7 @@ function getMondayDate() {
   let day = today.getDay(); 
   let diff = day === 0 ? -6 : 1 - day;
   today.setDate(today.getDate() + diff);
+  today.setHours(today.getHours() - 3);
   return today.toISOString().split('T')[0];
 }
 

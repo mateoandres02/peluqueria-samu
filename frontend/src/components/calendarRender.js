@@ -84,19 +84,19 @@ const dateSetStyles = () => {
   });
 }
 
-function getMondayDate() {
+// function getMondayDate() {
 
-  /**
-   * Obtiene el lunes como dia inicial
-   */
+//   /**
+//    * Obtiene el lunes como dia inicial
+//    */
 
-  let today = new Date();
-  let day = today.getDay(); 
-  let diff = day === 0 ? -6 : 1 - day;
-  today.setDate(today.getDate() + diff);
-  today.setHours(today.getHours() - 3);
-  return today.toISOString().split('T')[0];
-}
+//   let today = new Date();
+//   let day = today.getDay(); 
+//   let diff = day === 0 ? -6 : 1 - day;
+//   today.setDate(today.getDate() + diff);
+//   today.setHours(today.getHours() - 3);
+//   return today.toISOString().split('T')[0];
+// }
 
 async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
 
@@ -112,8 +112,9 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: "Semana",
-    initialDate: getMondayDate(),
+    // initialView: "Semana",
+    initialView: "timeGridWeek",
+    // initialDate: getMondayDate(),
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -129,12 +130,12 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     dayMaxEventRows: true,
     nowIndicator: true,
     views: {
-      Semana: {
-        type: 'timeGrid',
-        duration: { days: columnsCalendarViewTimeGrid },
-        buttonText: 'Semana',
-        dayMaxEventRows: 6,
-      },
+    //   Semana: {
+    //     type: 'timeGrid',
+    //     duration: { days: columnsCalendarViewTimeGrid },
+    //     buttonText: 'Semana',
+    //     dayMaxEventRows: 6,
+    //   },
       timeGrid: {
         dayMaxEventRows: 6,
       },
@@ -144,7 +145,8 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     },
     allDaySlot: false,
     headerToolbar: { 
-      left: 'dayGridMonth,Semana,timeGridDay',
+      // left: 'dayGridMonth,Semana,timeGridDay',
+      left: 'dayGridMonth,timeGridWeek,timeGridDay',
       center: 'title',
       right: 'prev,next',
     },

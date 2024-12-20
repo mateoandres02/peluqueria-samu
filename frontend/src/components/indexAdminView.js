@@ -7,6 +7,7 @@ import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFi
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData, loadBarbersConfigSection } from './configParams.js';
+//import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, historyData } from './historialTurnos.js';
 
 const indexView = async (data) => {
 
@@ -76,6 +77,20 @@ const indexView = async (data) => {
             break;
 
         case '#historial-de-registro':
+
+            //app.innerHTML += containerHistoryView;
+
+            //let $containerHistoryView = document.querySelector('.containerHistoryView');
+            //$containerHistoryView.insertAdjacentHTML('beforeend', infoSectionHistoryTurnsView);
+            //$containerHistoryView.insertAdjacentHTML('beforeend', tableTurnsHistory);
+
+            //const $barberSelectHistory = document.querySelector('#barberSelectHistory');
+            //await loadBarberSelect($barberSelectHistory);
+
+            //let $tableBodyTurnsHistoryView = document.querySelector('.table-history-body');
+            //let $currentDateHistory = document.querySelector('#filterDateInputHistory')./value;
+
+            //await historyData($tableBodyTurnsHistoryView, $currentDateHistory, null);
 
             break;
         

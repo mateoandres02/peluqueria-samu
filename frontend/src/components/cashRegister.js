@@ -1,4 +1,4 @@
-import { parseDate, reformatDate } from './date';
+import { parseDate, reformatDate } from './date.js';
 import '/src/styles/cashRegister.css';
 
 const containerCashView = `<div class="containerCashView"></div>`;

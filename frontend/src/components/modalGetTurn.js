@@ -1,27 +1,28 @@
 import { parseDate } from "./date";
-import '../styles/modal.css';
 import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn.js";
 import { removeAllModals } from "./calendarRender.js";
+
+import '../styles/modal.css';
 
 const modalTurnContent = `
   <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-info-circle"></i>Informacion de Turno</h1>
+          <h2 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-info-circle"></i>Informacion de Turno</h2>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
         </div>
         <div class="modal-body">
-          <h2 id="infoName"><i class="bi bi-person-lines-fill"></i>Nombre y Apellido: <span id="spanName"></span> </h2>
-          <h2 id="infoTel"><i class="bi bi-telephone"></i>Teléfono: <span id="spanTel"></span></h2>
-          <h2 id="infoDay"><i class="bi bi-calendar-event"></i>Día: <span id="spanDay"></span></h2>
-          <h2 id="infoStartTime"><i class="bi bi-clock"></i>Inicio de Turno: <span id="spanStartTime"></span></h2>
-          <h2 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h2>
-          <h2 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h2>
+          <h3 id="infoName"><i class="bi bi-person-lines-fill"></i>Cliente: <span id="spanName"></span> </h3>
+          <h3 id="infoTel"><i class="bi bi-telephone"></i>Teléfono: <span id="spanTel"></span></h3>
+          <h3 id="infoDay"><i class="bi bi-calendar-event"></i>Día: <span id="spanDay"></span></h3>
+          <h3 id="infoStartTime"><i class="bi bi-clock"></i>Inicio de Turno: <span id="spanStartTime"></span></h3>
+          <h3 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h3>
+          <h3 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h3>
           <div class="modal-footer modal-footer-calendar">
-            <a id="contactWsp" class="btn btn-success" href="" target="_blank">
+            <a id="contactWsp" class="btn btn-success" href="https://web.whatsapp.com/" target="_blank">
               <i class="bi bi-whatsapp"></i>
             </a>
             <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal">

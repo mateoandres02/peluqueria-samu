@@ -81,4 +81,35 @@ const turnDateEnd = (date) => {
   
 }
 
-export { parseDate, addHourOfStartDate, reformatDate, turnDateEnd };
+const getEndOfMonth = (startDate) => {
+
+  /**
+   * Obtenemos el ultimo dia del mes para que no se haga una inserción masiva de registros en la base de datos con los turnos recurrentes.
+   * param: startDate -> es la fecha inicial del turno.
+   */
+
+  const date = new Date(startDate);
+  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
+};
+
+const getToday = () => {
+
+  /**
+   * Obtiene la fecha del día actual para poder aplicar el filtro.
+   * Retorna la fecha formateada.
+   */
+
+  const today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  const formattedDate = today.toISOString().split('T')[0];
+  return formattedDate;
+}
+
+export { 
+  parseDate, 
+  addHourOfStartDate, 
+  reformatDate, 
+  turnDateEnd, 
+  getEndOfMonth, 
+  getToday
+};

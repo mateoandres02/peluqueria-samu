@@ -1,4 +1,4 @@
-import '/src/styles/btnHamburger.css';
+import '/src/styles/header.css';
 
 const header = `
     <header class="header">

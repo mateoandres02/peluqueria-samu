@@ -1,15 +1,23 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { modalPostTurn } from "./modalPostTurn.js";
-import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js"
+import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js";
 // import checkAuthentication from "./auth.js";
-import { getRecurrentTurnsByUserActive, getTurnsByUserActive, renderTurns } from "./turns.js";
-import rrulePlugin from '@fullcalendar/rrule'
-import "../styles/vistaCalendario.css";
+import { renderTurns } from "./turns.js";
+import { getTurnsByUserActive, getRecurrentTurnsByUserActive } from  "./requests.js";
+import rrulePlugin from '@fullcalendar/rrule';
+
+import "../styles/calendar.css";
 
 const d = document;
-let body = document.body;
+const body = document.body;
 
 const getWidthDisplay = () => {
+
+  /**
+   * Obtiene los pixeles de anchura de la pantalla para saber si es un celular o una computadora.
+   * Retorna un valor exacto de las columnas que se mostrarían en el calendario en caso de ser un celular o una computadora.
+   */
+
   let columnsCalendarViewTimeGrid;
   const innerWidth = window.innerWidth;
 
@@ -23,10 +31,12 @@ const getWidthDisplay = () => {
 }
 
 const removeAllModals = (modal) => {
+
   /**
    * Remueve todas las modales activas y devuelve el puntero a un objeto del dom para la accesibilidad.
    * param: modal -> modal activa.
    */
+
   modal.addEventListener('hidden.bs.modal', function () {
     const focusableElement = document.querySelector('.fc-button-active') || document.body;
     focusableElement.focus();
@@ -44,11 +54,10 @@ const eventInfo = (info) => {
 
   document.querySelectorAll('.fc-popover').forEach(popover => popover.remove());
 
-  body.insertAdjacentHTML('beforeend', modalTurnContent);
+  body.insertAdjacentHTML('beforeend', modalTurnContent); // Está siendo importado de otro componente.
   modalGetTurn(info);
 
-  const modales = document.querySelectorAll('.modal');
-  modales.forEach(modal => removeAllModals(modal));
+  document.querySelectorAll('.modal').forEach(modal => removeAllModals(modal));
 }
 
 const dateInfo = (info, data, modalElement) => {
@@ -62,6 +71,7 @@ const dateInfo = (info, data, modalElement) => {
 
   // Preguntamos si el usuario está autenticado.
   // checkAuthentication();
+
   body.insertAdjacentHTML('beforeend', modalElement);
   modalPostTurn(info, data);
   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
@@ -84,19 +94,19 @@ const dateSetStyles = () => {
   });
 }
 
-function getMondayDate() {
+// function getMondayDate() {
 
-  /**
-   * Obtiene el lunes como dia inicial
-   */
+//   /**
+//    * Obtiene el lunes como dia inicial
+//    */
 
-  let today = new Date();
-  let day = today.getDay(); 
-  let diff = day === 0 ? -6 : 1 - day;
-  today.setDate(today.getDate() + diff);
-  today.setHours(today.getHours() - 3);
-  return today.toISOString().split('T')[0];
-}
+//   let today = new Date();
+//   let day = today.getDay(); 
+//   let diff = day === 0 ? -6 : 1 - day;
+//   today.setDate(today.getDate() + diff);
+//   today.setHours(today.getHours() - 3);
+//   return today.toISOString().split('T')[0];
+// }
 
 async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
 
@@ -109,11 +119,13 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
   const turns = await getTurnsByUserActive(data);
   const recurrentTurns = await getRecurrentTurnsByUserActive(data);
   let arrayTurns = await renderTurns(turns, recurrentTurns);
+  
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: "Semana",
-    initialDate: getMondayDate(),
+    // initialView: "Semana",
+    initialView: "timeGridWeek",
+    // initialDate: getMondayDate(),
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -129,12 +141,12 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     dayMaxEventRows: true,
     nowIndicator: true,
     views: {
-      Semana: {
-        type: 'timeGrid',
-        duration: { days: columnsCalendarViewTimeGrid },
-        buttonText: 'Semana',
-        dayMaxEventRows: 6,
-      },
+      // Semana: {
+      //   type: 'timeGrid',
+      //   duration: { days: columnsCalendarViewTimeGrid },
+      //   buttonText: 'Semana',
+      //   dayMaxEventRows: 6,
+      // },
       timeGrid: {
         dayMaxEventRows: 6,
       },
@@ -144,7 +156,8 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     },
     allDaySlot: false,
     headerToolbar: { 
-      left: 'dayGridMonth,Semana,timeGridDay',
+      // left: 'dayGridMonth,Semana,timeGridDay',
+      left: 'dayGridMonth,timeGridWeek,timeGridDay',
       center: 'title',
       right: 'prev,next',
     },

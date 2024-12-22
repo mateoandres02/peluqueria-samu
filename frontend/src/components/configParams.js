@@ -342,7 +342,7 @@ const deleteService = (btnsDelete) => {
         const confirm = await showModalConfirmDelete(modalConfirm);
 
         if (confirm) {
-          const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${data.Id}`, {
+          const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
             method: 'DELETE'
           });
           // const response = await fetch(`http://localhost:3001/cutservices/${key}`, {

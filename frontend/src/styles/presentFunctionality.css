@@ -1,0 +1,117 @@
+.present-container {
+    padding: 1rem;
+    
+    width: 100%;
+    min-width: 425px;
+    max-width: 800px;
+    height: auto;
+}
+
+.present-container h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+.present-container p {
+    font-weight: 600;
+    font-size: 1.2rem;
+
+    margin-bottom: 1rem;
+}
+
+.present-container-filters {
+    width: 100%;
+    height: 3.5rem;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.present-container-filter {
+    width: 100%;
+    height: 100%;
+    margin: 0rem 0rem 1rem 0rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.present-container-filter span {
+    margin-right: 1rem;
+}
+
+.present-container-filter input {
+    padding: .5rem;
+    border-top: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    outline: none;
+}
+
+#barberSelect {
+    width: 15ch;
+    margin-left: 1rem;
+    border: 1px solid #ced4da;
+    display: inline-block;
+}
+
+.totalEarned {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    
+    margin: 1rem 0rem;
+
+    width: 100%;
+}
+
+.totalEarnedInfo {
+    margin-left: 2rem;
+    text-align: center;
+}
+
+.present-container-btn {
+    width: 100%;
+}
+
+.present-container-btn button {
+    width: 16ch;
+}
+
+.pay-button {
+    margin-bottom: 1rem;
+}
+
+@media (640px > width) {
+    .present-container-filters {
+        width: 100%;
+        height: auto;
+    
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .totalEarned {
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .totalEarnedBtn {
+        width: 100%;
+        margin-bottom: 1rem;
+    
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .totalEarnedInfo {
+        margin-left: 0rem;
+    }
+}

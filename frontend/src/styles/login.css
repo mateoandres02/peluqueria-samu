@@ -45,7 +45,6 @@ html {
 
 body {
   width: 100%;
-  /* margin: 0; */
 
   background-image: url('/assets/waves.svg');
   background-size: cover;
@@ -169,11 +168,3 @@ button:hover {
 .show {
   display: block !important;
 }
-
-/* Media queries CELULAR*/
-
-/*
-@media only screen and (max-width: 600px) {
-  /* estilos para pantallas menores o iguales a 600px 
-}
-*/

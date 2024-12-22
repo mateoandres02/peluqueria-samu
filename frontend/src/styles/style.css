@@ -103,20 +103,11 @@ p {
     min-width: 320px;
 }
 
-.header {
-    display: none;
+.containerFunctionalityView {
+    width: 100%;
+    height: auto;
+    margin-left: 290px !important;
 }
-
-.contenedorCalendario {
-    padding: 0;
-    margin: 0;
-}
-
-/* Utilities */
-
-
-
-/* Media queries */
 
 @media (640px > width) {
     #app {
@@ -124,47 +115,8 @@ p {
         padding: 0;
     }
 
-    .header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        background-color: var(--sidebar-grey);
-        color: var(--light-grey-letter);
-
-        height: var(--header-height);
-        width: 100%;
-    }
-
-    .header-title {
-        width: 80%;
-        height: 100%;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .header-title h1 {
-        font-size: 1.5rem;
-    }
-
-    .header-title h1 a {
-        text-decoration: none;
-        color: var(--light-grey-letter);
-    }
-
-    .header-btn {
-        width: 20%;
-        height: 100%;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .sidebar {
-        display: none;
+    .containerFunctionalityView {
+        margin-left: 0 !important;
     }
 }
 

@@ -54,7 +54,7 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
     e.preventDefault();
     
     const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`
-    const wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+    const wspUrl = `https://web.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
     $btnWsp.href = wspUrl
     
     window.open(wspUrl, '_blank');

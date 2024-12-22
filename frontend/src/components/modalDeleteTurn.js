@@ -52,19 +52,19 @@ function deleteTurn(info){
     let response;
 
     if (regularCustomer === "true") {
-      // response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
-      response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
+      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
         method: 'DELETE'  
       });
+      // response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
+      //   method: 'DELETE'  
+      // });
     } else {
-      // response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
-      response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
+      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
         method: 'DELETE'  
       });
+      // response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
+      //   method: 'DELETE'  
+      // });
     }
 
     if (response.ok) {

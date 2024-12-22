@@ -50,12 +50,19 @@ const actionBtnDelete = ($btnDelete, modalConfirm, info) => {
 }
 
 const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
+  const innerWidth = window.innerWidth;
+  
   $btnWsp.addEventListener('click', async(e) => {
     e.preventDefault();
-    
-    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`
-    const wspUrl = `https://web.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
-    $btnWsp.href = wspUrl
+
+    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`;
+    let wspUrl;
+    if (innerWidth < 640) {
+      wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+    } else {
+      wspUrl = `https://web.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+    }
+    $btnWsp.href = wspUrl;
     
     window.open(wspUrl, '_blank');
   });
@@ -79,13 +86,13 @@ function modalGetTurn(info) {
   const $spanEndTime = d.getElementById("spanEndTime");
   const $spanRegularCustomer = d.getElementById("spanRegularCustomer");
   
-  const { dayWithoutYear, timeWithoutSeconds: timeWithoutSecondsStart } = parseDate(info.event.startStr);
+  const { dayWithoutYearParsed, timeWithoutSeconds: timeWithoutSecondsStart } = parseDate(info.event.startStr);
   const { timeWithoutSeconds: timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
 
   // Obtenemos los valores de cada input de la modal.
   const name = info.event._def.title;
   const tel = info.event._def.extendedProps.telefono;
-  const day = dayWithoutYear;
+  const day = dayWithoutYearParsed;
   const startTime = timeWithoutSecondsStart;
   const endTime = timeWithoutSecondsEnd;
   let regular = info.event._def.extendedProps.regular;

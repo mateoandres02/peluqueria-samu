@@ -241,6 +241,8 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
    * param: barberSelect -> elemento html del selectable para elegir algun barbero.
    */
 
+  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
+
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
@@ -272,6 +274,8 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
    * param: dateInput -> dia elegido en el filtro.
    */
   
+  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
+
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
@@ -377,6 +381,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
           <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
         </tr>
       `;
+      registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
       return;
     } else {
 
@@ -386,6 +391,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       if (tableBodyTurnsCashRegister !== undefined) {
   
         tableBodyTurnsCashRegister.innerHTML = "";
+        registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
 
         if (
             (dataTurns.message && dataRecurrentTurns.message) || 
@@ -439,7 +445,7 @@ const getPaidForBarbers = async () => {
 
   const paymentTableBody = document.querySelector('.table-pay-body');
 
-  if (!filteredTurns.length) {
+  if (filteredTurns.length == 0) {
     paymentTableBody.innerHTML = '';
     paymentTableBody.innerHTML += `
       <tr>

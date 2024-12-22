@@ -37,7 +37,7 @@ const modal = `
             <label for="rol">Rol</label>
             <input type="text" id="rol" class="input" name="Rol" value="Empleado" readonly>
             
-            <div class="modal-footer">
+            <div class="modal-footer modal-footer-without-padding">
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
               <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>

@@ -209,6 +209,10 @@ input[type="number"] {
     color: #888;
 }
 
+.modal-footer-without-padding {
+    padding: 1rem 0rem !important;
+}
+
 @media (640px > width) {    
     .form-checkboxes {
         padding-left: 6rem;

@@ -14,13 +14,15 @@ function parseDate(date) {
   const timeWithoutSeconds = `${hour}:${minute}`;
   const timeOfTurn = `${hour}:${minute}:${seconds}`;
   const completeDate = date;
+  const dayWithoutYearParsed = `${day}/${month}`;
 
   return {
     dayWithoutYear,
     dateWithoutTime,
     timeWithoutSeconds,
     timeOfTurn,
-    completeDate
+    completeDate,
+    dayWithoutYearParsed
   }
 };
 

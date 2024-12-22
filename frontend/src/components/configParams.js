@@ -47,7 +47,7 @@ const modalServices = `
             <label for="price">Precio</label>
             <input type="number" id="price" name="Precio" class="input" required>
 
-            <div class="modal-footer">
+            <div class="modal-footer modal-footer-without-padding">
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
               <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>

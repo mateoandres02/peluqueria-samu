@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { config } from "./app/config/config.js";
 import { verifyToken } from "./app/middlewares/auth.js";
-import { corsOptions } from "./app/middlewares/cors.js";
+// import { corsOptions } from "./app/middlewares/cors.js";
 import routesSession from "./app/routes/rSession.js";
 import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
@@ -16,7 +16,8 @@ const app = express();
 // Middlewares.
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 
 // Encabezados para evitar problemas de caché
 app.use((req, res, next) => {

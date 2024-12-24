@@ -38,6 +38,13 @@ const getBarbers = async () => {
     return dataBarbers;
 }
 
+const getBarberById = async (id) => {
+  const barber = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${id}`);
+  // const barber = await fetch(`http://localhost:3001/users/${id}`);
+  const dataBarber = await barber.json();
+  return dataBarber;
+}
+
 const getServices = async () => {
 
     /**
@@ -108,12 +115,21 @@ const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
     }
 }
 
+const getPaymentUsersById = async (id) => {
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id}`);
+  // const response = await fetch(`http://localhost:3001/paymentusers/${id}`);
+  const dataBarber = await response.json();
+  return dataBarber;
+}
+
 export {
     getTurnsByUserActive,
     getRecurrentTurnsByUserActive,
     getBarbers,
+    getBarberById,
     getServices,
     getTurnsFilteredByDateAndBarber,
     getTurnsFilteredByDate,
-    getTurnsFilteredByBarber
+    getTurnsFilteredByBarber,
+    getPaymentUsersById
 }

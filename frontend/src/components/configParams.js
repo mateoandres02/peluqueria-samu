@@ -1,5 +1,6 @@
 import { modalConfirm } from "./modalDeleteTurn";
 import { showModalConfirmDelete } from "./manageEmployees";
+import { getBarbers, getBarberById, getPaymentUsersById } from "./requests";
 
 import "../styles/configParams.css";
 
@@ -79,14 +80,94 @@ const tablePaymentEdit = `
       <thead>
         <tr>
           <th scope="col">SERVICIO</th>
-          <th scope="col">% PAGO</th>
+          <th scope="col">% PAGO INICIAL 
+          <th scope="col">% PAGO NUEVO</th>
         </tr>
       </thead>
-      <tbody class="table-pay-body">
+      <tbody class="table-config-pay-body">
       </tbody>
     </table>
   </div>
 `;
+
+const handleModifyPercentage = (links) => {
+  console.log(links)
+
+  links.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      
+      e.preventDefault();
+      
+      const key = e.currentTarget.closest('tr').getAttribute('key');
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.value = 0; // Valor inicial
+      input.id = 'input-new-percentage'; // Opcional, para identificar el input más tarde
+
+      console.log(key)
+
+      console.log(e.target.parentNode);
+      e.target.parentNode.replaceChild(input, e.target);
+      
+      // try {
+      //   const confirm = await showModalConfirmDelete(modalConfirm);
+
+      //   if (confirm) {
+      //     // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
+      //     //   method: 'DELETE'
+      //     // });
+      //     const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
+      //       method: 'DELETE'
+      //     });
+
+      //     if (response.ok) {
+      //       window.location.reload();
+      //     } else {
+      //       alert('Error al eliminar el servicio.');
+      //     };
+      //   } else {
+      //     console.log('Acción cancelada por el usuario.');
+      //   }
+      // } catch (e) {};
+    });
+
+  })
+}
+
+const rowsService = (dataServices, dataPaymentBarber) => {
+  let row = '';
+
+  const array = dataPaymentBarber.map(barber => {
+    const service = dataServices.find(service => service.Id === barber.id_servicio);
+    if (service) {
+      return {
+        id_usuario: barber.id_usuario,
+        service: service.Nombre,
+        precio: service.Precio,
+        porcentaje_inicial: barber.porcentaje_inicial,
+        porcentaje_final: barber.porcentaje_final,
+      };
+    }
+    return null;
+  }).filter(Boolean);
+
+  array.forEach((item, index) => {
+    if (index > -1) {
+      console.log(item)
+      row += `
+        <tr key=${index}>
+          <td scope="row">${item.service}</td>
+          <td scope="row">${item.porcentaje_inicial}</td>
+          <td scope="row"><a href="#" class="modify-percentage">${item.porcentaje_final}</a></td>
+        </tr>
+      `;
+    };
+  });
+
+  console.log(row)
+  return row;
+}
 
 const rows = (data) => {
 
@@ -110,22 +191,6 @@ const rows = (data) => {
               <i class="bi bi-trash-fill"></i>
             </button>
           </td>
-        </tr>
-      `;
-    };
-  });
-
-  return row;
-};
-
-const rowsPayment = (data) => {
-  let row = '';
-  data.forEach((item, index) => {
-    if (index > -1) {
-      row += `
-        <tr key=${item.Id}>
-          <td scope="row">${item.Nombre}</td>
-          <td>PORCENTAJE</td>
         </tr>
       `;
     };
@@ -362,57 +427,38 @@ const deleteService = (btnsDelete) => {
   });
 }
 
-const paymentData = async (tableBodyPaymentEdit) => {
+const handleChangeBarber = async (table, selectable) => {
+  const dataBarbers = await getBarbers();
+
+  selectable.addEventListener('change', async (e) => {
+    
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
+
+    if (filteredBarber.length > 0) {
+      const dataBarber = await getPaymentUsersById(filteredBarber[0].Id);
+      paymentData(table, dataBarber)
+    }
+
+  });
+}
+
+const paymentData = async (table, dataBarber) => {
   try {
     // const responseCutServices = await fetch("http://localhost:3001/cutservices");
     const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
     const cutServices = await responseCutServices.json();
 
-    if (tableBodyPaymentEdit !== undefined) {
-      tableBodyPaymentEdit.innerHTML = `${rows(dataTurns, cutServices)}`;
+    if (table !== undefined) {
+      table.innerHTML = `${rowsService(cutServices, dataBarber)}`;
     }
+
+    const links = document.querySelectorAll('.modify-percentage');
+    handleModifyPercentage(links)
     
   } catch (error) {
     console.error('Error al obtener los barberos:', error);
   }
 }
-
-
-const rowsPay = (cutServices) => {
-  console.log("cutServices", cutServices);
-  let row = '';
-  dataTurns.forEach((user, index) => {
-
-    if (index > -1) {
-
-      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
-
-      let costField = user.precio ? user.precio : '0'; 
-
-      let date = user.turns.Date ? parseDate(user.turns.Date) : '';
-
-      row += `
-        <tr key=${user.turns.Id}>
-          <td scope="row">${date.dateWithoutTime}</td>
-          <td>${user.turns.Nombre}</td>
-          <td>${user.peluquero}</td>
-          <td><div>${serviceField}</div></td>
-          <td id="tdService">
-            <div>
-              <select class="form-select cut-service-select cut-service-select-notnull" data-id="${user.turns.Id}" aria-label="Tipo de corte">
-                <option selected value="null">Seleccionar...</option>
-                ${selectOptions}
-              </select>
-            </div>
-          </td>
-          <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
-        </tr>
-      `;
-    }
-  });
-
-  return row;
-};
 
 export { 
   configParamsView,
@@ -426,5 +472,8 @@ export {
   cancelSubmitFormService,
   updateService,
   deleteService,
-  paymentData,
+  // paymentData,
+  handleChangeBarber,
+  tablePaymentEdit,
+  handleModifyPercentage
 };

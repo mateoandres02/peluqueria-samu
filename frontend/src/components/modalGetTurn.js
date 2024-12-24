@@ -34,14 +34,14 @@ const modalTurnContent = `
   </div>
 `;
 
-const actionBtnDelete = ($btnDelete, modalConfirm, info) => {
+const actionBtnDelete = ($btnDelete, modalConfirm, info, data) => {
   let body = document.body;
   $btnDelete.addEventListener('click', async (e) => {
     e.preventDefault();
 
     body.insertAdjacentHTML('beforeend', modalConfirm);
     modalConfirmDisplay();
-    deleteTurn(info);
+    deleteTurn(info, data);
 
     const modales = document.querySelectorAll('.modal');
     modales.forEach(modal => removeAllModals(modal));
@@ -60,7 +60,7 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
   });
 }
 
-function modalGetTurn(info) {
+function modalGetTurn(info, data) {
   
   /**
    * Obtenemos la información del turno y la mostramos en una modal.
@@ -111,7 +111,7 @@ function modalGetTurn(info) {
   const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp");
 
-  actionBtnDelete($btnDelete, modalConfirm, info);
+  actionBtnDelete($btnDelete, modalConfirm, info, data);
 
   actionBtnWsp(name, day, startTime, tel, $btnWsp)
 }

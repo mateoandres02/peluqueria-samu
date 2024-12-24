@@ -5,6 +5,7 @@ import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and } from 'drizzle-orm';
+import logAction from "../utils/logActions.js";
 
 const getAllRecurrentTurns = async (req, res) => {
 
@@ -157,14 +158,36 @@ const postTurnRecurrentDay = async (req, res) => {
                 message: "¡Faltan datos para crear el registro!",
             });
         }
-
+        //console.log("cliente", turnRecurrentDayData);
+        //console.log("turnsID", turns.Id);
+        
         const newTurnDay = { id_turno, id_dia, date, exdate: 0 };
-
+            
         const response = await db.insert(turns_days).values(newTurnDay).returning();
-
+            
         res.status(201).send(response[0]);
-    } catch (error) {
-        if (error.message.includes('UNIQUE constraint')) {
+
+        const turnRecurrentDayData = await db.select({
+            cliente: turns.Nombre,
+            id: turns.Id
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .where(eq(turns.Id, id_turno));
+
+        if (!turnRecurrentDayData.length) {
+            return res.status(404).send({
+                message: `No se encontró el turno con nro de usuario = ${id_turno}`
+            });
+        }
+
+        //logAction({
+        //    FechaTurno: date,
+        //})
+
+        console.log("id_turno", id_turno);
+
+        } catch (error) {
+            if (error.message.includes('UNIQUE constraint')) {
             return res.status(409).send({
               message: "El turno ya existe para esa fecha.",
             });

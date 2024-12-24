@@ -1,4 +1,5 @@
 import '../styles/modal.css';
+import logAction from '../utils/logActions.js';
 
 const modalConfirm = `
   <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -22,6 +23,24 @@ const modalConfirm = `
   </div>
 `;
 
+function formattedEndDate(dateString) {
+  // Convertir el string en un objeto Date
+  const date = new Date(dateString);
+
+  // Restar 30 minutos
+  date.setMinutes(date.getMinutes() - 30);
+
+  // Formatear la fecha y hora de salida
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  // Retornar la fecha formateada
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+} 
+
 function modalConfirmDisplay() {
 
   /**
@@ -33,11 +52,12 @@ function modalConfirmDisplay() {
   modalConfirm.show();
 }
   
-function deleteTurn(info){
+function deleteTurn(info, data){
 
   /**
    * Gestionamos el delete del turno.
    * param: info -> info proporcionada por fullcalendar de la celda seleccinada, por ende del turno seleccionado.
+   * param: data -> info del usuario logueado.
    */
   
   const $deleteTurn = document.getElementById("confirmDeleteTurn");
@@ -48,27 +68,44 @@ function deleteTurn(info){
     const publicId = info.event._def.publicId;
     const date = new Date(info.event._instance.range.start).toISOString().split("T")[0];
     const regularCustomer = info.event._def.extendedProps.regular;
+    const userName = data.user.Nombre
     let response;
 
     console.log(publicId)
     console.log(date)
 
-    if (regularCustomer === "true") {
-      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
-        method: 'DELETE'  
-      });
-      // response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
-    } else {
-      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
-        method: 'DELETE'  
-      });
-      // response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
-    }
+    const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 
+    if (regularCustomer === "true") {
+      //response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
+      //  method: 'DELETE'  
+      //});
+      logAction({
+        Barbero: userName,
+        Cliente: info.event._def.title,
+        FechaTurno: formatedStartDate,
+        Accion: 'DELETE'
+      })
+
+      response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
+        method: 'DELETE'  
+      });
+    } else {
+      //response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
+      //  method: 'DELETE'  
+      //});
+      logAction({
+        Barbero: userName,
+        Cliente: info.event._def.title,
+        FechaTurno: formatedStartDate,
+        Accion: 'DELETE'
+      })
+
+      response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
+        method: 'DELETE'  
+      });
+    }
+    
     if (response.ok) {
       const focusableElement = document.querySelector('.fc-button-active') || document.body;
       focusableElement.focus();

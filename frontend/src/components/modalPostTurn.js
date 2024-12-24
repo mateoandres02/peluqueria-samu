@@ -1,5 +1,6 @@
 import { parseDate, addHourOfStartDate } from "./date";
 import '../styles/modal.css';
+import logAction from "../utils/logActions.js";
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -310,6 +311,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     const idBarber = dataUserActive.user.Id;
     const dateOutParsed = date;
     const regularCustomer = $inputRegularCostumer.value;
+    const nameBarber = dataUserActive.user.Nombre;
 
     if (!$nameInput.checkValidity() && !$numberInput.checkValidity()) {
       $nameInput.reportValidity(); 
@@ -326,8 +328,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       Service: null
     }
 
-    const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
-    // const url = 'http://localhost:3001/turns';
+    //const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
+    const url = 'http://localhost:3001/turns';
 
     const options = {
       method: 'POST',
@@ -336,6 +338,23 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     };
 
     const response = await fetch(url, options);
+
+    logAction({
+      Barbero: nameBarber,
+      Cliente: clientName,
+      FechaTurno: dateOutParsed,
+      Accion: 'POST'
+    })
+
+    if (options.method === 'DELETE') {
+      //logAction({
+      //  Barbero: nameBarber,
+      //  Cliente: clientName,
+      //  FechaTurno: dateOutParsed,
+      //  Accion: 'DELETE'
+      //})
+      console.log("hola");
+    }
 
     if (!response.ok) {
       span.style.color = 'red';
@@ -365,8 +384,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
           date: date.date
         };
 
-        urlRegularTurn = 'https://peluqueria-invasion-backend.vercel.app/recurrent_turns';
-        // urlRegularTurn = 'http://localhost:3001/recurrent_turns';
+        //urlRegularTurn = 'https://peluqueria-invasion-backend.vercel.app/recurrent_turns';
+        urlRegularTurn = 'http://localhost:3001/recurrent_turns';
 
         optionsRegularTurn = {
           method: 'POST',
@@ -377,6 +396,15 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         responseRegularTurn = await fetch(urlRegularTurn, optionsRegularTurn);
 
         responses.push(responseRegularTurn);
+
+        logAction({
+          Barbero: nameBarber,
+          Cliente: clientName,
+          FechaTurno: date.date,
+          Accion: 'POST'
+        })
+
+        console.log("asdadasdasd")
       };
       
     }

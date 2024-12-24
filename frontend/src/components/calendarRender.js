@@ -33,19 +33,19 @@ const removeAllModals = (modal) => {
     this.remove();
   });
 }
-
-const eventInfo = (info) => {
+const eventInfo = (info, data) => {
   
   /**
    * Permite ver la información del evento almacenado en la base de datos. Hace un get del evento generado.
    * Quita todos los popovers para mostrar de manera correcta la modal.
    * param: info -> información provista por fullcalendar de la celda seleccionada.
+   * data -> información del usuario logueado.
    */
 
   document.querySelectorAll('.fc-popover').forEach(popover => popover.remove());
 
   body.insertAdjacentHTML('beforeend', modalTurnContent);
-  modalGetTurn(info);
+  modalGetTurn(info, data);
 
   const modales = document.querySelectorAll('.modal');
   modales.forEach(modal => removeAllModals(modal));
@@ -152,7 +152,7 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     },
     events: arrayTurns,
     eventClick: function(info) {
-      eventInfo(info)
+      eventInfo(info, data)
     },
     dateClick: function(info) {
       dateInfo(info, data, modalElement)

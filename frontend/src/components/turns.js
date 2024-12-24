@@ -1,44 +1,5 @@
-import { turnDateEnd } from "./date.js";
+import { turnDateEnd, getEndOfMonth } from "./date.js";
 
-
-const getRecurrentTurnsByUserActive = async (data) => {
-
-  /**
-   * Obtenemos los turnos recurrentes del usuario activo 
-   * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
-   */
-
-  //const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
-  const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
-  const recurrentTurns = await responseRecurrentsTurns.json();
-
-  return recurrentTurns;
-}
-
-const getTurnsByUserActive = async (data) => {
-
-  /** 
-   * Obtenemos los turnos normales del usuario activo 
-   * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
-   */ 
-
-  //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
-  const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
-  const turns = await response.json();
-
-  return turns;
-}
-
-const getEndOfMonth = (startDate) => {
-
-  /**
-   * Obtenemos el ultimo dia del mes para que no se haga una inserción masiva de registros en la base de datos con los turnos recurrentes.
-   * param: startDate -> es la fecha inicial del turno.
-   */
-
-  const date = new Date(startDate);
-  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
-};
 
 const renderTurns = async (turns, recurrentTurns) => {
 
@@ -51,6 +12,7 @@ const renderTurns = async (turns, recurrentTurns) => {
   const arrayTurns = turns.map(turn => {
 
     const dateEnd = turnDateEnd(turn.turns.Date);
+
     let days = [];
     let exdates = [];
 
@@ -115,8 +77,6 @@ const renderTurns = async (turns, recurrentTurns) => {
 
 
 export {
-  getRecurrentTurnsByUserActive,
-  getTurnsByUserActive,
   renderTurns
 }
 

@@ -1,5 +1,3 @@
-/* Component properties */
-
 .sidebar {
     width: 280px;
     max-width: 300px;
@@ -33,7 +31,6 @@
 }
 
 .profile {
-    /* width: 80%; era para el btn de hamburguesa */
     width: 100%;
     height: 100%;
     padding: 0rem 1rem;
@@ -153,38 +150,9 @@
 /* Media queries */
 
 @media (640px > width) {
-    /* .sidebar {
-        display: none;
-    }
-
-    .sidebar {
-        width: 280px;
-        max-width: 300px;
-        height: 100vh;
-    
-        background-color: var(--sidebar-grey);
-        color: var(--light-grey-letter);
-    
-        display: grid;
-        grid-template-rows: 10% 75% 15%;
-        grid-template-areas: 
-            "profile"
-            "menu"
-            "logout";
-    
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 999;
-    } */
-
     .sidebar {
         display: none;
-        height: calc(100vh - 69px);
-        margin: 69px auto 0rem auto;
+        height: calc(100vh - 80px);
+        margin: 80px auto 0rem auto;
     }
-}
-
-@media (1080px > width) {
-
 }

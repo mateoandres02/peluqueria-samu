@@ -6,17 +6,17 @@ const modalConfirm = `
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-question-octagon"></i>Advertencia</h1>
+          <h2 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-question-octagon"></i>Advertencia</h2>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
         </div>
         <div class="modal-body">
-          <h2>¿Deseas eliminar el turno?</h2>
+          <h3 class="modal-body-confirm">¿Deseas eliminar el turno?</h3>
         </div>
-        <div class="modal-footer-delete modal-footer">
-          <button id="confirmDeleteTurn" class="btn btn-success">Eliminar</button>
-          <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
+        <div class="modal-footer modal-footer-delete">
+          <button id="confirmDeleteTurn" class="btn btn-danger btn-success">Eliminar</button>
+          <button id="closeModal" class="btn btn-outline-secondary btnCancel" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
@@ -48,6 +48,7 @@ function modalConfirmDisplay() {
    */
 
   const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
+  console.log($modal)
   const modalConfirm = bootstrap.Modal.getInstance($modal._element);
   modalConfirm.show();
 }
@@ -70,9 +71,6 @@ function deleteTurn(info, data){
     const regularCustomer = info.event._def.extendedProps.regular;
     const userName = data.user.Nombre
     let response;
-
-    console.log(publicId)
-    console.log(date)
 
     const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 

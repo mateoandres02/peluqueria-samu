@@ -1,11 +1,13 @@
+import { modalConfirm } from './modalDeleteTurn.js';
+
 import '../styles/manageEmployees.css';
 
-let manageEmployeesView = '<div class="manageEmployeesContainer"></div>';
+const manageEmployeesView = '<div class="manageEmployeesContainer containerFunctionalityView"></div>';
 
 const postEmployee = `
-  <div class="postEmployee">
-    <h3>Administración de Empleados</h3>
-    <p class="postEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y contraseña.</p>
+  <div class="postEmployee present-container">
+    <h2>Administrar empleados</h2>
+    <p class="postEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y/o contraseña.</p>
     <button type="button" class="postEmployee-btn">
       <img src="/assets/icons/person-fill-add.svg">
       Agregar <br> Empleado
@@ -15,7 +17,7 @@ const postEmployee = `
 
 const modal = `
   <div class="modal fade" id="postEmployee" tabindex="-1" aria-labelledby="postEmployeeLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="postEmployeeLabel">Registrar empleado</h1>
@@ -35,7 +37,7 @@ const modal = `
             <label for="rol">Rol</label>
             <input type="text" id="rol" class="input" name="Rol" value="Empleado" readonly>
             
-            <div class="modal-footer">
+            <div class="modal-footer modal-footer-without-padding">
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
               <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>
@@ -57,7 +59,7 @@ const rows = (data) => {
           <td>${user.Nombre}</td>
           <td>${user.Contrasena}</td>
           <td>${user.Rol}</td>
-          <td>
+          <td class="btns-actions">
             <button class="table-btns modify">
               <i class="bi bi-pencil-fill" key=${user.Id}></i>
             </button>
@@ -93,7 +95,7 @@ const usersData = async () => {
                   <th scope="col">USUARIO</th>
                   <th scope="col">CONTRASEÑA</th>
                   <th scope="col">ROL</th>
-                  <th scope="col">ACCIONES</th>
+                  <th scope="col" class="container-btns-actions">ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
@@ -110,7 +112,7 @@ const usersData = async () => {
       }
     };
   } catch (error) {
-    console.log(error);
+    alert(error);
   };
 };
 
@@ -239,8 +241,7 @@ const submitEmployee = (form, modal, modalFooter) => {
       }, 1500);
     })
     .catch((e) => {
-      // Error 500.
-      console.log('Error del servidor:', e);
+      alert('Error del servidor:', e);
     });
 
   });
@@ -303,41 +304,63 @@ const updateEmployee = (btnsPut, modal) => {
   });
 };
 
+const showModalConfirmDelete = (modal) => {
+  return new Promise((resolve, reject) => {
+    // Insertamos la modal en el DOM
+    document.body.insertAdjacentHTML("beforeend", modal);
+
+    const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
+    const modalElement = document.getElementById('dateClickModalConfirm');
+
+    // Mostrar la modal
+    $modal.show();
+
+    // Escuchar el clic en el botón "Eliminar"
+    modalElement.querySelector('#confirmDeleteTurn').addEventListener('click', () => {
+      resolve(true); // Se confirma la acción
+      $modal.hide();
+    });
+
+    // Escuchar el clic en el botón "Cancelar"
+    modalElement.querySelector('#closeModal').addEventListener('click', () => {
+      resolve(false); // Se cancela la acción
+      $modal.hide();
+    });
+
+    // Eliminar la modal del DOM cuando se cierre
+    modalElement.addEventListener('hidden.bs.modal', () => {
+      modalElement.remove();
+    });
+  });
+};
+
+
 const deleteEmployee = (btnsDelete) => {
-  // A cada boton le damos el evento click.
   btnsDelete.forEach(btn => {
     btn.addEventListener('click', async (e) => {                    
-      // Obtenemos la key
       const key = e.currentTarget.closest('tr').getAttribute('key');
 
-      // Hacemos una request para obtener información del registro a eliminar.
-      //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`);
-      const response = await fetch(`http://localhost:3001/users/${key}`);
-      const data = await response.json();
 
-      console.log(data);
+      try {
+        const confirm = await showModalConfirmDelete(modalConfirm);
 
-      // Confirmamos la eliminación del registro.
-      const $confirm = confirm(`¿Estás seguro que quieres eliminar al empleado ${data.Nombre}?`);
-
-      // Si la confirmación es true, eliminamos el registro.
-      if ($confirm) {
-        //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
-        //  method: 'DELETE'
-        //});
-        const response = await fetch(`http://localhost:3001/users/${key}`, {
+        if (confirm) {
+          const responseDelete = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
             method: 'DELETE'
-        });
+          });
+          // const responseDelete = await fetch(`http://localhost:3001/users/${key}`, {
+          //     method: 'DELETE'
+          // });
 
-        console.log(response)
-
-        if (response.ok) {
-          // Una vez eliminado el registro, recargamos la página.
-          window.location.reload();
+          if (responseDelete.ok) {
+            window.location.reload();
+          } else {
+            alert('Error al eliminar el usuario.');
+          };
         } else {
-          alert('Error al eliminar el usuario.');
-        };
-      };
+          console.log('Acción cancelada por el usuario.');
+        }
+      } catch (e) {};
     });
   });
 }
@@ -351,5 +374,6 @@ export {
   submitEmployee, 
   cancelSubmitForm, 
   updateEmployee, 
-  deleteEmployee 
+  deleteEmployee,
+  showModalConfirmDelete
 };

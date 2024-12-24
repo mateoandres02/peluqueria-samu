@@ -9,8 +9,12 @@ import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
 import routesCutService from "./app/routes/rCutService.js";
 import routesPaymentUsers  from "./app/routes/rPaymentUsers.js";
+<<<<<<< HEAD
 import routesTurnsDays from "./app/routes/rTurnsDays.js"
 import routesHistoryLog from "./app/routes/rHistoryLog.js";
+=======
+import routesTurnsDays from "./app/routes/rTurnsDays.js";
+>>>>>>> 220d4c4909da32e51d27f2e12e2d6898d6064e9c
 
 const app = express();
 
@@ -18,6 +22,14 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
+
+// Encabezados para evitar problemas de caché
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
 
 // Endpoints.
 app.use(routesSession);

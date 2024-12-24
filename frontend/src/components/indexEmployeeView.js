@@ -2,9 +2,11 @@ import { getWidthDisplay } from './calendarRender.js';
 import { calendarRender } from './calendarRender.js';
 import calendario from "./calendario.js";
 import { menu } from "./menuEmployee.js";
-import { header, closeMenu } from "./btnHamburger.js";
+import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
+
+import "../styles/style.css"
 
 // param: data -> user active.
 const indexView = async (data) => {

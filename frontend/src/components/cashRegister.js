@@ -1,51 +1,50 @@
-import { parseDate, reformatDate } from './date';
-import '/src/styles/cashRegister.css';
+import { parseDate, reformatDate, getToday } from './date';
+import { getBarbers, getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber } from "./requests"
 
-const containerCashView = `<div class="containerCashView"></div>`;
+import '/src/styles/table.css';
+import '/src/styles/presentFunctionality.css'
 
-const today = new Date();
-today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-const formattedDate = today.toISOString().split('T')[0];
+const today = getToday();
 
 let totalEarned = 0;
 let totalEarnedTurns = 0;
 
 let dataFinalsTurns;
-
 let registrosFinalesGlobal = [];
 
+const containerCashView = `<div class="containerCashView containerFunctionalityView"></div>`;
+
 const infoSectionCashView = `
-  <div class="infoSectionCashView">
-    <h3>Seguimiento de Caja</h3>
+  <div class="present-container">
+    <h2>Seguimiento de Caja</h2>
     <p>Visualiza los cobros realizados y los pagos por realizar.</p>
-    <div class="cashRegisterFilterContainer">
-        <div class="cashRegisterFilter">
-          <span>Filtrar por fecha</span>
-          <input type="date" class="filter-date-cash-tracking" id="filterDateInput" value="${formattedDate}">
+    <div class="present-container-filters">
+      <div class="present-container-filter">
+        <span>Filtrar por fecha</span>
+        <input type="date" id="filterDateInput" value="${today}">
       </div>
-      <div class="filterBarberCashTracking">
+      <div class="present-container-filter">
         <span>Filtrar por barbero</span>
         <select id="barberSelect" class="form-select">
           <option value="null">Seleccionar...</option>
         </select>
       </div>
     </div>
-
     <div class="totalEarned">
-      <div>
-        <button class="btn btn-primary" >Calcular Total</button>
+      <div class="totalEarnedBtn">
+        <button class="btn btn-primary">Calcular Total</button>
       </div>
-      <div class="infoTotalEarned">
-        <h5 id="totalEarnedDisplay">Total ganado en el día: <b>$ 0.00</b></h5>
+      <div class="totalEarnedInfo">
+        <h5 id="totalEarnedDisplay">Total ganado: <b>$ 0.00</b></h5>
       </div>
     </div>
   </div>
 `;
 
 const tableTurns = `
-  <div class="table-cash-container">
-    <table class="table-cash-light">
-      <thead class="table-cash-head">
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
           <th scope="col">FECHA</th>
           <th scope="col">HORA</th>
@@ -64,27 +63,25 @@ const tableTurns = `
 
 const paymentSection = `
   <hr>
-  <div class="paymentSection">
-    <div class="payment-panel">
-      <h3>Pagos</h3>
-      <p>Visualiza cuánto tienes que pagarles a tus empleados.</p>
-      <div>
-        <button class="btn btn-primary pay-button" id="pay-button">Calcular Pagos</button>
-      </div>
+  <div class="present-container">
+    <h2>Pagos</h2>
+    <p>Visualiza cuánto tienes que pagarles a tus empleados.</p>
+    <div class="present-container-btn">
+      <button class="btn btn-primary pay-button" id="pay-button">Calcular Pagos</button>
     </div>
-    <div class="table-payment-container table-container">
+  </div>
+  <div class="table-container table-payment-container">
     <table>
       <thead>
         <tr>
           <th scope="col">BARBERO</th>
           <th scope="col">TOTAL GANADO</th>
-          <th scope="col">PAGO CORRESPONDIENTE</th>
+          <th scope="col">TOTAL A PAGAR</th>
         </tr>
       </thead>
       <tbody class="table-pay-body">
       </tbody>
     </table>
-  </div>
   </div>
 `;
 
@@ -162,7 +159,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
             <td><div>${serviceField}</div></td>
             <td id="tdService">
               <div>
-                <select class="form-select cut-service-select cut-service-select-notnull" data-id="${user.turns.Id}" aria-label="Tipo de corte">
+                <select class="form-select cut-service-select" data-id="${user.turns.Id}" aria-label="Tipo de corte">
                   <option selected value="null">Seleccionar...</option>
                   ${selectOptions}
                 </select>
@@ -236,18 +233,6 @@ const handleSelectChange = (cutServices, dateValue) => {
   });
 };
 
-const getBarbers = async () => {
-
-  /**
-   * Obtenemos los barberos disponibles en nuestro sistema.
-   */
-
-  //const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users');
-   const barbers = await fetch('http://localhost:3001/users');
-  const dataBarbers = await barbers.json();
-  return dataBarbers;
-}
-
 const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect) => {
 
   /**
@@ -256,13 +241,15 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
    * param: barberSelect -> elemento html del selectable para elegir algun barbero.
    */
 
+  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
+
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
   
   barberSelect.addEventListener('change', async (e) => {
     
-    totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ 0.00</b>`;
+    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
     paymentTableBody.innerHTML = '';
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
@@ -287,6 +274,8 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
    * param: dateInput -> dia elegido en el filtro.
    */
   
+  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
+
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
@@ -295,7 +284,7 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   dateInput.addEventListener('change', handleDateChange);
   
   async function handleDateChange(e) {
-    totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ 0.00</b>`;
+    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
     paymentTableBody.innerHTML = '';
 
     let selectedDate = e.target.value;
@@ -322,7 +311,7 @@ const calculateTotal = (dataFinalsTurns, totalEarnedDisplay) => {
   }, 0);
   totalEarned = totalEarnedTurns;
 
-  totalEarnedDisplay.innerHTML = `Total ganado en el día: <b>$ ${totalEarned.toFixed(2)}</b>`;
+  totalEarnedDisplay.innerHTML = `Total ganado: <b>$ ${totalEarned.toFixed(2)}</b>`;
 }
 
 const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay) => {
@@ -354,76 +343,6 @@ const usarCalcular = (dataFinalsTurns) => {
 
   $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay));
 };
-
-const getServices = async () => {
-
-  /**
-   * Obtenemos los servicios a través de una solicitud al backend.
-   */
-  
-  //const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
-   const responseCutServices = await fetch("http://localhost:3001/cutservices");
-  const cutServices = await responseCutServices.json();
-  return cutServices;
-}
-
-const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por fecha y por barbero.
-   * param: dateParam -> fecha elegida.
-   * param: barberParam -> barbero elegido.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  if (recurrent) {
-    //const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}/${dateParam}`);
-     const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
-    return responseRecurrentTurns;
-  } else {
-    //const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}/${barberParam}`);
-     const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-    return responseTurns;
-  }
-}
-
-const getTurnsFilteredByDate = async (dateParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por fecha.
-   * param: dateParam -> fecha elegida.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  if (recurrent) {
-    //const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/date/${dateParam}`);
-     const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
-    return responseRecurrentTurns;
-  } else {
-    //const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}`);
-     const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-    return responseTurns;
-  }
-}
-
-const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por barbero.
-   * param: barberParam -> barbero elegido.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  if (recurrent) {
-    //const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}`);
-     const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
-    return responseRecurrentTurns;
-  } else {
-    //const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${barberParam}`);
-     const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-    return responseTurns;
-  }
-}
 
 const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
 
@@ -459,9 +378,10 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+          <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
         </tr>
       `;
+      registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
       return;
     } else {
 
@@ -471,6 +391,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       if (tableBodyTurnsCashRegister !== undefined) {
   
         tableBodyTurnsCashRegister.innerHTML = "";
+        registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
 
         if (
             (dataTurns.message && dataRecurrentTurns.message) || 
@@ -479,7 +400,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
-              <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+              <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
             </tr>
           `;
 
@@ -522,6 +443,18 @@ const getPaidForBarbers = async () => {
   // Crear un objeto para almacenar las ganancias por peluquero
   const totalForBarber = {};
 
+  const paymentTableBody = document.querySelector('.table-pay-body');
+
+  if (filteredTurns.length == 0) {
+    paymentTableBody.innerHTML = '';
+    paymentTableBody.innerHTML += `
+      <tr>
+        <td colspan="3">No hay turnos registrados con algun servicio elegido <br> para poder sacar un cálculo de pago.</td>
+      </tr>
+    `;
+    return;
+  }
+
   // Sumar las ganancias por cada peluquero
   filteredTurns.forEach(turn => {
     const barber = turn.peluquero;
@@ -540,7 +473,6 @@ const getPaidForBarbers = async () => {
     totalForBarber[barber] += price;
   });
 
-  const paymentTableBody = document.querySelector('.table-pay-body');
   paymentTableBody.innerHTML = '';
 
   for (const barber in totalForBarber) {
@@ -553,7 +485,7 @@ const getPaidForBarbers = async () => {
     // }
 
     paymentTableBody.innerHTML += `
-      <tr>
+      <tr >
         <td>${barber}</td>
         <td>$${totalEarned.toFixed(2)}</td>
         <td>$${paymentBarber.toFixed(2)}</td>

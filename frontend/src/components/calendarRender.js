@@ -1,15 +1,23 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { modalPostTurn } from "./modalPostTurn.js";
-import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js"
+import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js";
 // import checkAuthentication from "./auth.js";
-import { getRecurrentTurnsByUserActive, getTurnsByUserActive, renderTurns } from "./turns.js";
-import rrulePlugin from '@fullcalendar/rrule'
-import "../styles/vistaCalendario.css";
+import { renderTurns } from "./turns.js";
+import { getTurnsByUserActive, getRecurrentTurnsByUserActive } from  "./requests.js";
+import rrulePlugin from '@fullcalendar/rrule';
+
+import "../styles/calendar.css";
 
 const d = document;
-let body = document.body;
+const body = document.body;
 
 const getWidthDisplay = () => {
+
+  /**
+   * Obtiene los pixeles de anchura de la pantalla para saber si es un celular o una computadora.
+   * Retorna un valor exacto de las columnas que se mostrarían en el calendario en caso de ser un celular o una computadora.
+   */
+
   let columnsCalendarViewTimeGrid;
   const innerWidth = window.innerWidth;
 
@@ -23,10 +31,12 @@ const getWidthDisplay = () => {
 }
 
 const removeAllModals = (modal) => {
+
   /**
    * Remueve todas las modales activas y devuelve el puntero a un objeto del dom para la accesibilidad.
    * param: modal -> modal activa.
    */
+
   modal.addEventListener('hidden.bs.modal', function () {
     const focusableElement = document.querySelector('.fc-button-active') || document.body;
     focusableElement.focus();
@@ -47,8 +57,7 @@ const eventInfo = (info, data) => {
   body.insertAdjacentHTML('beforeend', modalTurnContent);
   modalGetTurn(info, data);
 
-  const modales = document.querySelectorAll('.modal');
-  modales.forEach(modal => removeAllModals(modal));
+  document.querySelectorAll('.modal').forEach(modal => removeAllModals(modal));
 }
 
 const dateInfo = (info, data, modalElement) => {
@@ -62,6 +71,7 @@ const dateInfo = (info, data, modalElement) => {
 
   // Preguntamos si el usuario está autenticado.
   // checkAuthentication();
+
   body.insertAdjacentHTML('beforeend', modalElement);
   modalPostTurn(info, data);
   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
@@ -109,6 +119,7 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
   const turns = await getTurnsByUserActive(data);
   const recurrentTurns = await getRecurrentTurnsByUserActive(data);
   let arrayTurns = await renderTurns(turns, recurrentTurns);
+  
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -130,12 +141,12 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     dayMaxEventRows: true,
     nowIndicator: true,
     views: {
-    //   Semana: {
-    //     type: 'timeGrid',
-    //     duration: { days: columnsCalendarViewTimeGrid },
-    //     buttonText: 'Semana',
-    //     dayMaxEventRows: 6,
-    //   },
+      // Semana: {
+      //   type: 'timeGrid',
+      //   duration: { days: columnsCalendarViewTimeGrid },
+      //   buttonText: 'Semana',
+      //   dayMaxEventRows: 6,
+      // },
       timeGrid: {
         dayMaxEventRows: 6,
       },

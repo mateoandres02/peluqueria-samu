@@ -1,9 +1,14 @@
+import { modalConfirm } from "./modalDeleteTurn";
+import { showModalConfirmDelete } from "./manageEmployees";
+
 import "../styles/configParams.css";
 
-const configParamsView = `
-  <div class="configParamsView">
-    <h3>Configuración de Parametros</h3>
-    <p class="infoConfigParams-p">Establece distintas configuraciones para distintas funcionalidades de la aplicación.</p>
+const configParamsView = `<div class="configParamsView containerFunctionalityView"></div>`;
+
+const infoSectionParamsView = `
+  <div class="present-container">
+    <h2>Configuración de Parametros</h2>
+    <p class="configParamsView-p">Establece distintas configuraciones para distintas funcionalidades de la aplicación.</p>
   </div>
 `;
 
@@ -11,7 +16,7 @@ const configParamsInitialView = `
   <hr>
   <div class="serviceParams">
     <div class="serviceParams-title">
-      <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Servicios</h4>
+      <h3><img class="svg" src="/assets/icons/config.svg">Configuración de Servicios</h3>
       <p>Agrega, modifica o elimina los servicios que ofreces.</p>
     </div>
     <div class="serviceParams-btn">
@@ -42,7 +47,7 @@ const modalServices = `
             <label for="price">Precio</label>
             <input type="number" id="price" name="Precio" class="input" required>
 
-            <div class="modal-footer">
+            <div class="modal-footer modal-footer-without-padding">
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
               <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
             </div>
@@ -57,7 +62,7 @@ const configPaymentView = `
   <hr>
   <div class="paymentParams">
     <div class="paymentParams-title">
-      <h4><img class="svg" src="/assets/icons/config.svg">Configuración de Pagos</h4>
+      <h3><img class="svg" src="/assets/icons/config.svg">Configuración de Pagos</h3>
       <p>Configura los distintos porcentajes con respecto a los pagos que recibirán tus empleados.</p>
     </div>
     <div class="paymentParams-selectable">
@@ -69,18 +74,18 @@ const configPaymentView = `
 `;
 
 const tablePaymentEdit = `
-<div class="table-pay-container">
-  <table class="table-pay-light">
-    <thead class="table-pay-head">
-      <tr>
-        <th scope="col">SERVICIO</th>
-        <th scope="col">% PAGO</th>
-      </tr>
-    </thead>
-    <tbody class="table-pay-body">
-    </tbody>
-  </table>
-</div>
+  <div class="table-container table-payment-container">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">SERVICIO</th>
+          <th scope="col">% PAGO</th>
+        </tr>
+      </thead>
+      <tbody class="table-pay-body">
+      </tbody>
+    </table>
+  </div>
 `;
 
 const rows = (data) => {
@@ -146,7 +151,7 @@ const serviceData = async () => {
 
       if (data.length > 0) {
         let tableServices = `
-          <div class="table-config-container table-container">
+          <div class="table-container table-payment-container table-config-params">
             <table>
               <thead>
                 <tr>
@@ -333,27 +338,26 @@ const deleteService = (btnsDelete) => {
       
       const key = e.currentTarget.closest('tr').getAttribute('key');
       
-      //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
-      const response = await fetch(`http://localhost:3001/cutservices/${key}`);
-      
-      const data = await response.json();
+      try {
+        const confirm = await showModalConfirmDelete(modalConfirm);
 
-      const $confirm = confirm(`¿Estás seguro que quieres eliminar el servicio ${data.Nombre}?`);
-
-      if ($confirm) {
-        //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${data.Id}`, {
-        //  method: 'DELETE'
-        //});
-        const response = await fetch(`http://localhost:3001/cutservices/${data.Id}`, {
+        if (confirm) {
+          const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
             method: 'DELETE'
-        });
+          });
+          // const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
+          //   method: 'DELETE'
+          // });
 
-        if (response.ok) {
-          window.location.reload();
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Error al eliminar el servicio.');
+          };
         } else {
-          alert('Error al eliminar el servicio.');
-        };
-      };
+          console.log('Acción cancelada por el usuario.');
+        }
+      } catch (e) {};
     });
   });
 }
@@ -412,6 +416,7 @@ const rowsPay = (cutServices) => {
 
 export { 
   configParamsView,
+  infoSectionParamsView,
   configParamsInitialView,
   configPaymentView,
   serviceData,

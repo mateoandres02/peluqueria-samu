@@ -7,7 +7,7 @@ const modalElement = `
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h1>
+          <h2 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h2>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -65,6 +65,9 @@ const modalElement = `
             <div class="modal-footer">
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
               <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
+              <div class="loader-container">
+                <img src="/assets/tube-spinner.svg" alt="loading" class="loader">
+              </div>
             </div>
           </form>
         </div>
@@ -286,6 +289,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
    */
   
   const $modalFooter = document.querySelector('.modal-footer');
+  const $loader = document.querySelector('.loader-container');
   
   // Creamos la etiqueta donde se va a almacenar el resultado del envio del formulario.
   const span = document.createElement('span');
@@ -301,6 +305,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
+
+    $loader.style.display = "flex";
     
     const $nameInput = document.getElementById('input-name');
     const $numberInput = document.getElementById('input-number');
@@ -430,6 +436,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     }      
 
     if (!$modalFooter.contains(span)) {
+      $loader.style.display = "none";
       $modalFooter.appendChild(span);
     }    
     

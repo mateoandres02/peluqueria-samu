@@ -9,12 +9,8 @@ import routesUser from "./app/routes/rUser.js";
 import routesTurn from "./app/routes/rTurn.js";
 import routesCutService from "./app/routes/rCutService.js";
 import routesPaymentUsers  from "./app/routes/rPaymentUsers.js";
-<<<<<<< HEAD
 import routesTurnsDays from "./app/routes/rTurnsDays.js"
 import routesHistoryLog from "./app/routes/rHistoryLog.js";
-=======
-import routesTurnsDays from "./app/routes/rTurnsDays.js";
->>>>>>> 220d4c4909da32e51d27f2e12e2d6898d6064e9c
 
 const app = express();
 

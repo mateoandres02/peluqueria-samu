@@ -4,7 +4,6 @@ import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import { eq, like, and } from 'drizzle-orm';
 import turns_days from "../models/mTurnsDays.js";
-import logAction from "../utils/logActions.js";
 
 const getAllTurns = async (req, res) => {
     try {

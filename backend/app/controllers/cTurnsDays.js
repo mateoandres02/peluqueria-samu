@@ -5,7 +5,6 @@ import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and } from 'drizzle-orm';
-import logAction from "../utils/logActions.js";
 
 const getAllRecurrentTurns = async (req, res) => {
 

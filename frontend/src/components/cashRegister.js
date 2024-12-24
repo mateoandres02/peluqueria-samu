@@ -211,20 +211,20 @@ const handleSelectChange = (cutServices, dateValue) => {
         Service: selectedService.Id
       };
 
-      // await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
-      //   { 
-      //     method: 'PUT', 
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify(turn)
-      //   }
-      // );
-      await fetch(`http://localhost:3001/turns/${rowId}`, 
+      await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
         { 
           method: 'PUT', 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(turn)
         }
       );
+      // await fetch(`http://localhost:3001/turns/${rowId}`, 
+      //   { 
+      //     method: 'PUT', 
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(turn)
+      //   }
+      // );
 
       if (valueCalendar === today) {
         window.location.reload();

@@ -7,7 +7,7 @@ import { modalElement } from "./modalPostTurn.js";
 import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
-import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData } from './configParams.js';
+import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
 
 import "../styles/style.css";
 
@@ -139,12 +139,16 @@ const indexView = async (data) => {
             const $btnsDeleteService = document.querySelectorAll('.delete i');
             deleteService($btnsDeleteService)
 
+            //
             configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);
+            configParamsContainer.insertAdjacentHTML('beforeend', tablePaymentEdit);
 
             const $barberSelectConfigParams = document.querySelector('#barberSelectConfigParams');
-            await loadBarberSelect($barberSelectConfigParams);
+            let $tableBodyPaymentEdit = document.querySelector('.table-config-pay-body');   
+            console.log($tableBodyPaymentEdit)
 
-            // let $tableBodyPaymentEdit = document.querySelector('.table-pay-body');            
+            await loadBarberSelect($barberSelectConfigParams);
+            await handleChangeBarber($tableBodyPaymentEdit, $barberSelectConfigParams);
 
             break;
     

@@ -31,7 +31,8 @@ const tableTurnsHistory = `
     <table class="table-cash-light">
       <thead class="table-cash-head">
         <tr>
-          <th scope="col">FECHA</th>
+          <th scope="col">CREACION</th>
+          <th scope="col">FECHA TURNO</th>
           <th scope="col">HORA</th>
           <th scope="col">BARBERO</th>
           <th scope="col">CLIENTE</th>
@@ -44,35 +45,35 @@ const tableTurnsHistory = `
   </div>
 `;
 
-//const loadBarberSelect = async (barberSelect) => {
+const loadBarberSelectHistory = async (barberSelect) => {
   const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
 
   dataBarbers.forEach(barber => {
     barberSelect.innerHTML += `<option value="${barber.Nombre}">${barber.Nombre}</option>`;
   });
-//}
+}
 
-//const rows = (dataTurns) => {
+const rows = (dataTurns) => {
   let row = '';
-  //let idsPubliqued = [];
+  let idsPubliqued = [];
 
   //let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
 
   dataTurns.forEach((user, index) => {
-    //if (user.exdate == 1) {
-    //  return;
-    //}
+    if (user.exdate == 1) {
+      return;
+    }
 
-    //if (idsPubliqued.includes(user.turns.Id)) {
-    //  return;
-    //} else {
-    //  idsPubliqued.push(user.turns.Id);
-    //}
+    if (idsPubliqued.includes(user.turns.Id)) {
+      return;
+    } else {
+      idsPubliqued.push(user.turns.Id);
+    }
 
     if (index > -1) {
 
-      let costField = user.precio ? user.precio : '0'; 
+      //let costField = user.precio ? user.precio : '0'; 
 
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
       //let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
@@ -91,7 +92,7 @@ const tableTurnsHistory = `
   });
 
   return row;
-//};
+};
 
 //const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
 
@@ -152,7 +153,13 @@ const tableTurnsHistory = `
   //return responseTurns;
 //}
 
-//const historyData = async (tableBodyTurnsHistoryView, selectedDate = null, barberId = null) => {
+const getHistoryTurns = async () => {
+  const responseTurns = await fetch('http://localhost:3001/historyturns');
+
+  const dataHistoryTurns = await responseTurns.json();
+  return dataHistoryTurns;
+}
+const historyData = async (tableBodyTurnsHistoryView, selectedDate = null, barberId = null) => {
 
   /**
    * Renderiza los turnos en una tabla.
@@ -171,27 +178,29 @@ const tableTurnsHistory = `
     let responseRecurrentTurns;
     let recurrent;
 
-    if (barberParam !== null && dateParam !== null) {
-      responseTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = false);
+    const historyTurns = await getHistoryTurns();
+    
+    //if (barberParam !== null && dateParam !== null) {
+      //responseTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = false);
       //responseRecurrentTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = true);
-    } else if (barberParam === null && dateParam !== null) {
-      responseTurns = await getTurnsFilteredByDate(dateParam, recurrent = false);
+    //} else if (barberParam === null && dateParam !== null) {
+    //  responseTurns = await getTurnsFilteredByDate(dateParam, recurrent = false);
       //responseRecurrentTurns = await getTurnsFilteredByDate(dateParam, recurrent = true);
-    } else if (barberParam !== null && dateParam === null) {
-      responseTurns = await getTurnsFilteredByBarber(barberParam, recurrent = false);
+    //} else if (barberParam !== null && dateParam === null) {
+     // responseTurns = await getTurnsFilteredByBarber(barberParam, recurrent = false);
       //responseRecurrentTurns = await getTurnsFilteredByBarber(barberParam, recurrent = true);
-    }
-
-    //if (!responseTurns.ok && !responseRecurrentTurns.ok) {
-    if (!responseTurns.ok){  
+      
+      //if (!responseTurns.ok && !responseRecurrentTurns.ok) {
+    if (!historyTurns){  
       tableBodyTurnsHistoryView.innerHTML = `
-        <tr>
-          <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
-        </tr>
+      <tr>
+      <td colspan="6">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+      </tr>
       `;
       return;
     } else {
-
+        
+          
      /* PARTE DEL CONFLICTO
      
     // Llamar a usarCalcular con los datos actuales
@@ -232,11 +241,12 @@ const tableTurnsHistory = `
   } catch (error) {
     console.log(error);
   }
-//};
+};
 
 export {
   containerHistoryView,
   infoSectionHistoryTurnsView,
   tableTurnsHistory,
-  historyData
+  historyData,
+  loadBarberSelectHistory
 };

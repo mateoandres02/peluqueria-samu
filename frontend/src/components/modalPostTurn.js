@@ -1,12 +1,13 @@
 import { parseDate, addHourOfStartDate } from "./date";
 import '../styles/modal.css';
+import logAction from "../utils/logActions.js";
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h1>
+          <h2 class="modal-title fs-5" id="dateClickModalLabel"><i class="bi bi-pencil-square"></i>Registrar cliente</h2>
           <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
             <i class="bi bi-x"></i>
           </button>
@@ -64,6 +65,9 @@ const modalElement = `
             <div class="modal-footer">
               <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
               <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
+              <div class="loader-container">
+                <img src="/assets/tube-spinner.svg" alt="loading" class="loader">
+              </div>
             </div>
           </form>
         </div>
@@ -285,6 +289,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
    */
   
   const $modalFooter = document.querySelector('.modal-footer');
+  const $loader = document.querySelector('.loader-container');
   
   // Creamos la etiqueta donde se va a almacenar el resultado del envio del formulario.
   const span = document.createElement('span');
@@ -300,6 +305,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
   form.addEventListener ("submit", async (e) => {
     e.preventDefault();
+
+    $loader.style.display = "flex";
     
     const $nameInput = document.getElementById('input-name');
     const $numberInput = document.getElementById('input-number');
@@ -310,6 +317,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     const idBarber = dataUserActive.user.Id;
     const dateOutParsed = date;
     const regularCustomer = $inputRegularCostumer.value;
+    const nameBarber = dataUserActive.user.Nombre;
 
     if (!$nameInput.checkValidity() && !$numberInput.checkValidity()) {
       $nameInput.reportValidity(); 
@@ -326,8 +334,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       Service: null
     }
 
-    // const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
-    const url = 'http://localhost:3001/turns';
+    const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
+    // const url = 'http://localhost:3001/turns';
 
     const options = {
       method: 'POST',
@@ -336,6 +344,23 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     };
 
     const response = await fetch(url, options);
+
+    logAction({
+      Barbero: nameBarber,
+      Cliente: clientName,
+      FechaTurno: dateOutParsed,
+      Accion: 'POST'
+    })
+
+    if (options.method === 'DELETE') {
+      //logAction({
+      //  Barbero: nameBarber,
+      //  Cliente: clientName,
+      //  FechaTurno: dateOutParsed,
+      //  Accion: 'DELETE'
+      //})
+      console.log("hola");
+    }
 
     if (!response.ok) {
       span.style.color = 'red';
@@ -365,8 +390,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
           date: date.date
         };
 
-        // urlRegularTurn = 'http://peluqueria-invasion-backend.vercel.app/recurrent_turns';
-        urlRegularTurn = 'http://localhost:3001/recurrent_turns';
+        urlRegularTurn = 'https://peluqueria-invasion-backend.vercel.app/recurrent_turns';
+        // urlRegularTurn = 'http://localhost:3001/recurrent_turns';
 
         optionsRegularTurn = {
           method: 'POST',
@@ -377,6 +402,15 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         responseRegularTurn = await fetch(urlRegularTurn, optionsRegularTurn);
 
         responses.push(responseRegularTurn);
+
+        logAction({
+          Barbero: nameBarber,
+          Cliente: clientName,
+          FechaTurno: date.date,
+          Accion: 'POST'
+        })
+
+        console.log("asdadasdasd")
       };
       
     }
@@ -402,6 +436,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     }      
 
     if (!$modalFooter.contains(span)) {
+      $loader.style.display = "none";
       $modalFooter.appendChild(span);
     }    
     

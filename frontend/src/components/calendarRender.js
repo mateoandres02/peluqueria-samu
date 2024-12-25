@@ -1,41 +1,63 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { modalPostTurn } from "./modalPostTurn.js";
-import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js"
+import { modalGetTurn, modalTurnContent } from "./modalGetTurn.js";
 // import checkAuthentication from "./auth.js";
-import { getRecurrentTurnsByUserActive, getTurnsByUserActive, renderTurns } from "./turns.js";
-import rrulePlugin from '@fullcalendar/rrule'
-import "../styles/vistaCalendario.css";
+import { renderTurns } from "./turns.js";
+import { getTurnsByUserActive, getRecurrentTurnsByUserActive } from  "./requests.js";
+import rrulePlugin from '@fullcalendar/rrule';
+
+import "../styles/calendar.css";
 
 const d = document;
-let body = document.body;
+const body = document.body;
 
-export const removeAllModals = (modal) => {
+const getWidthDisplay = () => {
+
+  /**
+   * Obtiene los pixeles de anchura de la pantalla para saber si es un celular o una computadora.
+   * Retorna un valor exacto de las columnas que se mostrarían en el calendario en caso de ser un celular o una computadora.
+   */
+
+  let columnsCalendarViewTimeGrid;
+  const innerWidth = window.innerWidth;
+
+  if (innerWidth <= 640) {
+    columnsCalendarViewTimeGrid = 3;
+  } else {
+    columnsCalendarViewTimeGrid = 7; 
+  }
+
+  return columnsCalendarViewTimeGrid;
+}
+
+const removeAllModals = (modal) => {
+
   /**
    * Remueve todas las modales activas y devuelve el puntero a un objeto del dom para la accesibilidad.
    * param: modal -> modal activa.
    */
+
   modal.addEventListener('hidden.bs.modal', function () {
     const focusableElement = document.querySelector('.fc-button-active') || document.body;
     focusableElement.focus();
     this.remove();
   });
 }
-
-const eventInfo = (info) => {
+const eventInfo = (info, data) => {
   
   /**
    * Permite ver la información del evento almacenado en la base de datos. Hace un get del evento generado.
    * Quita todos los popovers para mostrar de manera correcta la modal.
    * param: info -> información provista por fullcalendar de la celda seleccionada.
+   * data -> información del usuario logueado.
    */
 
   document.querySelectorAll('.fc-popover').forEach(popover => popover.remove());
 
   body.insertAdjacentHTML('beforeend', modalTurnContent);
-  modalGetTurn(info);
+  modalGetTurn(info, data);
 
-  const modales = document.querySelectorAll('.modal');
-  modales.forEach(modal => removeAllModals(modal));
+  document.querySelectorAll('.modal').forEach(modal => removeAllModals(modal));
 }
 
 const dateInfo = (info, data, modalElement) => {
@@ -49,6 +71,7 @@ const dateInfo = (info, data, modalElement) => {
 
   // Preguntamos si el usuario está autenticado.
   // checkAuthentication();
+
   body.insertAdjacentHTML('beforeend', modalElement);
   modalPostTurn(info, data);
   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
@@ -71,8 +94,22 @@ const dateSetStyles = () => {
   });
 }
 
-export default async function calendarRender (modalElement, data) {
-  
+// function getMondayDate() {
+
+//   /**
+//    * Obtiene el lunes como dia inicial
+//    */
+
+//   let today = new Date();
+//   let day = today.getDay(); 
+//   let diff = day === 0 ? -6 : 1 - day;
+//   today.setDate(today.getDate() + diff);
+//   today.setHours(today.getHours() - 3);
+//   return today.toISOString().split('T')[0];
+// }
+
+async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
+
   /**
    * Renderiza el calendario.
    * param: modalElement -> element html
@@ -82,10 +119,13 @@ export default async function calendarRender (modalElement, data) {
   const turns = await getTurnsByUserActive(data);
   const recurrentTurns = await getRecurrentTurnsByUserActive(data);
   let arrayTurns = await renderTurns(turns, recurrentTurns);
+  
   let calendarEl = d.getElementById("calendar");
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
+    // initialView: "Semana",
     initialView: "timeGridWeek",
+    // initialDate: getMondayDate(),
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -99,32 +139,32 @@ export default async function calendarRender (modalElement, data) {
     slotMinTime: '08:00:00',
     editable: false,
     dayMaxEventRows: true,
+    nowIndicator: true,
     views: {
+      // Semana: {
+      //   type: 'timeGrid',
+      //   duration: { days: columnsCalendarViewTimeGrid },
+      //   buttonText: 'Semana',
+      //   dayMaxEventRows: 6,
+      // },
       timeGrid: {
-        dayMaxEventRows: 6
+        dayMaxEventRows: 6,
       },
       dayGrid: {
-        dayMaxEventRows: 3
+        dayMaxEventRows: 3,
       }
     },
     allDaySlot: false,
     headerToolbar: { 
-      left: 'dayGridMonth,timeGridWeek,timeGridDay', // agregar myCustomButton si queremos uno personalizado.
+      // left: 'dayGridMonth,Semana,timeGridDay',
+      left: 'dayGridMonth,timeGridWeek,timeGridDay',
       center: 'title',
       right: 'prev,next',
     },
     events: arrayTurns,
     eventClick: function(info) {
-      eventInfo(info)
+      eventInfo(info, data)
     },
-    // customButtons: {
-    //   myCustomButton: {
-    //     text: `boton personalizado`,
-    //     click: function() {
-    //       alert("funcionalidad del boton personalizado");
-    //     }
-    //   }
-    // },
     dateClick: function(info) {
       dateInfo(info, data, modalElement)
     },
@@ -136,8 +176,8 @@ export default async function calendarRender (modalElement, data) {
     // },
     locale: esLocale,
     eventOverlap: false,
-    datesSet: function() {
-      dateSetStyles()
+    datesSet: function(info) {
+      dateSetStyles();
     }
       
   });
@@ -145,5 +185,11 @@ export default async function calendarRender (modalElement, data) {
   calendar.render();
 
   dateSetStyles();
-  
+
 };
+
+export {
+  getWidthDisplay,
+  removeAllModals,
+  calendarRender
+}

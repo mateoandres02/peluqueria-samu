@@ -1,13 +1,15 @@
-import calendarRender from './calendarRender.js';
+import { getWidthDisplay } from './calendarRender.js';
+import { calendarRender } from './calendarRender.js';
 import calendario from "./calendario.js";
 import { menuFunction } from "./menuAdmin.js";
-import { btnHamburger, closeMenu } from "./btnHamburger.js";
+import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, getEarnedForBarber, additionalCashViewElement, addNewElementListener} from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
-import { modalServices, serviceData, configParamsView, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService,configPaymentView, paymentData, loadBarbersConfigSection } from './configParams.js';
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyData } from './historialTurnos.js';
+import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
+import "../styles/style.css";
 
 const indexView = async (data) => {
 
@@ -18,16 +20,19 @@ const indexView = async (data) => {
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
-    
+
     app.innerHTML = '';
+    app.innerHTML += header;
     app.innerHTML += menuFunction(userActive);
-    app.innerHTML += btnHamburger;
+
+    let columnsCalendarViewTimeGrid;
+    columnsCalendarViewTimeGrid = getWidthDisplay();
     
     switch (urlActive) {
         case '#calendario':
 
             app.innerHTML += calendario;
-            calendarRender(modalElement, data);
+            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
 
             break;
         
@@ -37,8 +42,7 @@ const indexView = async (data) => {
 
             let $containerCashView = document.querySelector('.containerCashView');
             $containerCashView.insertAdjacentHTML('beforeend', infoSectionCashView);
-            //$containerCashView.insertAdjacentHTML('beforeend', tableTurns);
-            //$containerCashView.insertAdjacentHTML('beforeend', paymentSection);
+            $containerCashView.insertAdjacentHTML('beforeend', tableTurns);
             
             const $barberSelect = document.querySelector('#barberSelect');
             await loadBarberSelect($barberSelect);
@@ -50,29 +54,12 @@ const indexView = async (data) => {
             
             const $dateInput = document.querySelector('#filterDateInput');
             addDateFilterListener($tableBodyTurnsCashRegister, $dateInput);
-
             addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
             
-            //$containerCashView.insertAdjacentHTML('beforeend', additionalCashViewElement());
-            //addNewElementListener();
-
             $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
 
-            // Mueve esta parte aquí para asegurarte de que el botón ya esté en el DOM
             const $payButton = document.querySelector('.pay-button');
-            if ($payButton) {
-                $payButton.addEventListener('click', async () => {
-                    try {
-                        console.log('Calculando pagos...');
-                        await getEarnedForBarber($currentDate);
-                    } catch (error) {
-                        console.error('Error al calcular los pagos:', error);
-                    }
-                });
-            } else {
-                console.error('El botón de calcular pagos no se encontró en el DOM.');
-            }
-
+            handlePaidsForBarber($payButton);
 
             break;
 
@@ -136,9 +123,10 @@ const indexView = async (data) => {
             app.innerHTML += configParamsView;
 
             let configParamsContainer = document.querySelector('.configParamsView');
+            configParamsContainer.insertAdjacentHTML('beforeend', infoSectionParamsView);
             configParamsContainer.insertAdjacentHTML('beforeend', configParamsInitialView);
 
-            const tableServices = await serviceData()
+            const tableServices = await serviceData();
             if (tableServices) {
                 configParamsContainer.insertAdjacentHTML('beforeend', tableServices);
             }
@@ -154,7 +142,6 @@ const indexView = async (data) => {
 
             const $formPostService = document.querySelector('#formPOSTService');
             const $modalFooterService = document.querySelector('.modal-footer');
-
             submitService($formPostService, $modalService, $modalFooterService);
 
             const $btnCancelService = document.querySelector('.btnCancel');
@@ -166,18 +153,22 @@ const indexView = async (data) => {
             const $btnsDeleteService = document.querySelectorAll('.delete i');
             deleteService($btnsDeleteService)
 
+            //
             configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);
+            configParamsContainer.insertAdjacentHTML('beforeend', tablePaymentEdit);
 
             const $barberSelectConfigParams = document.querySelector('#barberSelectConfigParams');
-            await loadBarbersConfigSection($barberSelectConfigParams);
+            let $tableBodyPaymentEdit = document.querySelector('.table-config-pay-body');   
+            console.log($tableBodyPaymentEdit)
 
-            let $tableBodyPaymentEdit = document.querySelector('.table-pay-body');            
+            await loadBarberSelect($barberSelectConfigParams);
+            await handleChangeBarber($tableBodyPaymentEdit, $barberSelectConfigParams);
 
             break;
     
         default:
             app.innerHTML += calendario;
-            calendarRender(modalElement, data);
+            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
             break;
     };
 

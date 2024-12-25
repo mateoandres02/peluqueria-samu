@@ -1,5 +1,3 @@
-/* Component properties */
-
 .sidebar {
     width: 280px;
     max-width: 300px;
@@ -18,6 +16,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 999;
 }
 
 .sidebar-nav {
@@ -32,7 +31,6 @@
 }
 
 .profile {
-    /* width: 80%; era para el btn de hamburguesa */
     width: 100%;
     height: 100%;
     padding: 0rem 1rem;
@@ -154,9 +152,7 @@
 @media (640px > width) {
     .sidebar {
         display: none;
+        height: calc(100vh - 80px);
+        margin: 80px auto 0rem auto;
     }
-}
-
-@media (1080px > width) {
-
 }

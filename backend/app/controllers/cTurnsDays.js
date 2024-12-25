@@ -138,7 +138,7 @@ const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
         .where(and(like(turns_days.date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
-
+        
         res.send(data);
 
     } catch (e) {
@@ -157,14 +157,36 @@ const postTurnRecurrentDay = async (req, res) => {
                 message: "¡Faltan datos para crear el registro!",
             });
         }
-
+        //console.log("cliente", turnRecurrentDayData);
+        //console.log("turnsID", turns.Id);
+        
         const newTurnDay = { id_turno, id_dia, date, exdate: 0 };
-
+            
         const response = await db.insert(turns_days).values(newTurnDay).returning();
-
+            
         res.status(201).send(response[0]);
-    } catch (error) {
-        if (error.message.includes('UNIQUE constraint')) {
+
+        const turnRecurrentDayData = await db.select({
+            cliente: turns.Nombre,
+            id: turns.Id
+        }).from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .where(eq(turns.Id, id_turno));
+
+        if (!turnRecurrentDayData.length) {
+            return res.status(404).send({
+                message: `No se encontró el turno con nro de usuario = ${id_turno}`
+            });
+        }
+
+        //logAction({
+        //    FechaTurno: date,
+        //})
+
+        console.log("id_turno", id_turno);
+
+        } catch (error) {
+            if (error.message.includes('UNIQUE constraint')) {
             return res.status(409).send({
               message: "El turno ya existe para esa fecha.",
             });
@@ -206,6 +228,12 @@ const deleteTurnOfRecurrentTurns = async (req, res) => {
 
         const response = await db.update(turns_days).set({exdate: 1}).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
 
+        const turnExists = await db.select().from(turns).where(like(turns.Date, `%${date}%`))
+
+        if (turnExists.length) {
+            await db.delete(turns).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`))).returning();
+        } 
+        
         if (response.length) {
             res.status(204).send({
                 message: "¡El registro se eliminó exitosamente!"

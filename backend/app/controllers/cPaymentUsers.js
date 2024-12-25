@@ -25,10 +25,12 @@ const getPaymentUsersById = async (req, res) => {
   try {
       const id = req.params.id;
 
-      const data = await db.select().from(paymentUsers).where(eq(paymentUsers.id, id)).all();
+      const data = await db.select().from(paymentUsers).where(eq(paymentUsers.id_usuario, id));
+
+      console.log(data)
 
       if (data.length) {
-          res.status(200).send(data[0]);
+          res.status(200).send(data);
       } else {
           res.status(404).send({
               message: `No se ha encontrado el registro del servicio con id = ${id}`

@@ -1,5 +1,5 @@
-import '/src/styles/vistaCalendario.css';
+import '/src/styles/calendar.css';
 
-const calendario = `<div class="contenedorCalendario" id="calendar"></div>`;
+const calendario = `<div class="calendar-container" id="calendar"></div>`;
 
 export default calendario;

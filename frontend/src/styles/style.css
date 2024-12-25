@@ -2,7 +2,6 @@
 
 :root {
     /* Colors */
-
     --first-color: ;
     --first-alpha-color: ;
     --second-color: ;
@@ -97,21 +96,27 @@ p {
     margin: 0 auto;
 
     display: flex;
+    flex-direction: row;
 
     font-family: var(--primary-font) !important;
 
     min-width: 320px;
 }
 
-/* Utilities */
-
-
-
-/* Media queries */
+.containerFunctionalityView {
+    width: 100%;
+    height: auto;
+    margin-left: 290px !important;
+}
 
 @media (640px > width) {
-    .sidebar {
-        display: none;
+    #app {
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .containerFunctionalityView {
+        margin-left: 0 !important;
     }
 }
 

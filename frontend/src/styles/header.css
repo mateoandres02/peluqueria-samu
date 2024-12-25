@@ -1,0 +1,83 @@
+.header {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.btnHamburger {
+    margin: 0;
+    padding: 0;
+
+    height: 100%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 1rem;
+    background-color: var(--sidebar-grey);
+}
+
+.btnHamburger button span *::after, 
+.btnHamburger button span *::before, 
+.btnHamburger button span * {
+    background-color: var(--light-grey-letter) !important;
+}
+
+.btnHamburger button {
+    height: 100%;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    outline: none;
+}
+
+@media (640px > width) {
+    .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-color: var(--sidebar-grey);
+        color: var(--light-grey-letter);
+
+        min-height: 80.5px !important;
+        width: 100%;
+        min-width: 375px;
+    }
+
+    .header-title {
+        width: 80%;
+        height: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .header-title h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-title h1 a {
+        text-decoration: none;
+        color: var(--light-grey-letter);
+    }
+
+    .header-btn {
+        width: 20%;
+        height: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btnHamburger {
+        display: block;
+    }
+}

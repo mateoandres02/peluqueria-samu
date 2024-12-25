@@ -11,7 +11,8 @@ const getAllTurns = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service));
@@ -32,7 +33,8 @@ const getAllTurnsByBarber = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
@@ -77,7 +79,8 @@ const getAllTurnsByDate = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
@@ -106,7 +109,8 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
             turns: turns,
             peluquero: users.Nombre,
             servicio: services.Nombre,
-            precio: services.Precio
+            precio: services.Precio,
+            date: turns.Date
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
@@ -139,17 +143,40 @@ const postTurn = async (req, res) => {
             NroUsuario,
             Service
         };
-
+        
         const response = await db.insert(turns).values(newTurn).returning();
-
+        
         res.status(201).send(response[0]);
+        
+        //const turnData = await db.select({
+        //    turns: turns,
+        //   peluquero: users.Nombre,
+       // }).from(turns)
+        //.leftJoin(users, eq(users.Id, turns.NroUsuario))
+        //.limit(1);
+
+        //if (!turnData.length) {
+        //    return res.status(404).send({
+        //        message: `No se encontró el turno con nro de usuario = ${NroUsuario}`
+        //    });
+        //}
+
+        //logAction({
+        //    FechaTurno: Date,
+        //    Cliente: Nombre, 
+        //    Barbero: turnData[0].peluquero,
+        //    Accion: 'POST' 
+        //});
     } catch (e) {
         res.status(500).send({
             message: e.message || "Ocurrió algún error creando un registro para los turnos."
         });
-    }
-};
 
+        if (res.status(500)) {
+            console.log("error", e)
+        }
+    };
+}
 const updateTurn = async (req, res) => {
     try {
         const id = req.params.id;
@@ -179,6 +206,30 @@ const deleteTurn = async (req, res) => {
         const { id, date } = req.params;
 
         // agregué temporalmente para no tener problemas de claves foráneas al eliminar el turno recurrente
+
+        //const turnData = await db.select({
+        //    turns: turns,
+        //    peluquero: users.Nombre,
+        //    date: turns.Date
+        //}).from(turns)
+        //.leftJoin(users, eq(users.Id, turns.NroUsuario))
+        //.where(eq(turns.Id, id)).
+        //limit(1);
+
+        //if (!turnData.length) {
+        //    return res.status(404).send({
+        //        message: `No se encontró el turno con id = ${id}`
+        //    });
+        //}
+
+       //logAction({
+       //     FechaTurno: turnData[0].date,
+       //     Cliente: turnData[0].turns.Nombre,
+       //     Barbero: turnData[0].peluquero,
+       //     Accion: 'DELETE'
+        //});
+
+        console.log("parametros", req.params)
         await db.delete(turns_days).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`)));
 
         const response = await db.delete(turns)
@@ -198,6 +249,10 @@ const deleteTurn = async (req, res) => {
         res.status(500).send({
             message: err.message || "No se pudo borrar el registro con id = " + id
         });
+
+        if (res.status(500)) {
+            console.log("error", err)
+        }
     }
 };
 
@@ -238,5 +293,4 @@ const actionsTurns = {
     updateTurn,
     deleteTurn,
 };
-
 export default actionsTurns;

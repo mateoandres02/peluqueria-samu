@@ -1,6 +1,5 @@
 import { parseDate, reformatDate, getToday } from './date';
 import { getBarbers, getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber } from "./requests"
-
 import '/src/styles/table.css';
 import '/src/styles/presentFunctionality.css'
 

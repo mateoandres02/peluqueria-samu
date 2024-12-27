@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { config } from "../config/config.js";
 import { sql, eq } from 'drizzle-orm';
 import { UserRepository, Validation } from "../models/mUserRepository.js";
+import paymentUsers from "../models/mPaymentUsers.js";
 
 const users = mUsers;
 const turns = mTurns;
@@ -123,6 +124,7 @@ const deleteUser = async (req, res) => {
         const id = req.params.id;
 
         await db.delete(turns).where(eq(turns.NroUsuario, id));
+        await db.delete(paymentUsers).where(eq(paymentUsers.id_usuario, id));
 
         const response = await db.delete(users).where(eq(users.Id, id)).returning();
 

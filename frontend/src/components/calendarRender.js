@@ -11,24 +11,14 @@ import "../styles/calendar.css";
 const d = document;
 const body = document.body;
 
+// Determina la vista inicial y los días visibles según el ancho de la pantalla.
 const getWidthDisplay = () => {
-
-  /**
-   * Obtiene los pixeles de anchura de la pantalla para saber si es un celular o una computadora.
-   * Retorna un valor exacto de las columnas que se mostrarían en el calendario en caso de ser un celular o una computadora.
-   */
-
-  let columnsCalendarViewTimeGrid;
   const innerWidth = window.innerWidth;
-
-  if (innerWidth <= 640) {
-    columnsCalendarViewTimeGrid = 3;
-  } else {
-    columnsCalendarViewTimeGrid = 7; 
-  }
-
-  return columnsCalendarViewTimeGrid;
-}
+  return {
+    days: innerWidth <= 640 ? 3 : 7,
+    isMobile: innerWidth <= 640,
+  };
+};
 
 const removeAllModals = (modal) => {
 
@@ -94,19 +84,16 @@ const dateSetStyles = () => {
   });
 }
 
-// function getMondayDate() {
-
-//   /**
-//    * Obtiene el lunes como dia inicial
-//    */
-
-//   let today = new Date();
-//   let day = today.getDay(); 
-//   let diff = day === 0 ? -6 : 1 - day;
-//   today.setDate(today.getDate() + diff);
-//   today.setHours(today.getHours() - 3);
-//   return today.toISOString().split('T')[0];
-// }
+// Obtiene el lunes o el día actual como fecha inicial.
+const getInitialDate = (isMobile) => {
+  const today = new Date();
+  if (!isMobile) {
+    const day = today.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    today.setDate(today.getDate() + diff);
+  }
+  return today.toISOString().split('T')[0];
+};
 
 async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) {
 
@@ -122,10 +109,12 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
   
   let calendarEl = d.getElementById("calendar");
 
+  const { days, isMobile } = getWidthDisplay();
+  const initialDate = getInitialDate(isMobile);
+
   let calendar = new FullCalendar.Calendar(calendarEl, {
-    // initialView: "Semana",
     initialView: "timeGridWeek",
-    // initialDate: getMondayDate(),
+    initialDate: initialDate,
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,
     plugins: [rrulePlugin],
@@ -141,23 +130,34 @@ async function calendarRender (modalElement, data, columnsCalendarViewTimeGrid) 
     dayMaxEventRows: true,
     nowIndicator: true,
     views: {
-      // Semana: {
-      //   type: 'timeGrid',
-      //   duration: { days: columnsCalendarViewTimeGrid },
-      //   buttonText: 'Semana',
-      //   dayMaxEventRows: 6,
-      // },
-      timeGrid: {
+      timeGridWeek: {
+        type: 'timeGrid',
+        duration: { days },
+        buttonText: 'Semana',
         dayMaxEventRows: 6,
+        visibleRange: (currentDate) => {
+          const start = new Date(currentDate);
+          const end = new Date(currentDate);
+          start.setDate(start.getDate() - (isMobile ? 0 : start.getDay() - 1));
+          end.setDate(start.getDate() + days - 1);
+          return { start, end };
+        },
       },
-      dayGrid: {
-        dayMaxEventRows: 3,
-      }
+      // timeGridDay: {
+      //   type: 'timeGrid',
+      //   duration: { days: 1 },
+      //   buttonText: 'Día',
+      //   // visibleRange: () => {
+      //   //   const today = new Date(); // Siempre usa el día actual.
+      //   //   const start = new Date(today);
+      //   //   const end = new Date(today);
+      //   //   return { start, end };
+      //   // },
+      // },
     },
     allDaySlot: false,
     headerToolbar: { 
-      // left: 'dayGridMonth,Semana,timeGridDay',
-      left: 'dayGridMonth,timeGridWeek,timeGridDay',
+      left: 'dayGridMonth,timeGridWeek',
       center: 'title',
       right: 'prev,next',
     },

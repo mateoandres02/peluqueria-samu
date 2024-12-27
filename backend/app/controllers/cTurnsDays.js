@@ -157,9 +157,6 @@ const postTurnRecurrentDay = async (req, res) => {
                 message: "¡Faltan datos para crear el registro!",
             });
         }
-        //console.log("cliente", turnRecurrentDayData);
-        //console.log("turnsID", turns.Id);
-        
         const newTurnDay = { id_turno, id_dia, date, exdate: 0 };
             
         const response = await db.insert(turns_days).values(newTurnDay).returning();
@@ -182,8 +179,6 @@ const postTurnRecurrentDay = async (req, res) => {
         //logAction({
         //    FechaTurno: date,
         //})
-
-        console.log("id_turno", id_turno);
 
         } catch (error) {
             if (error.message.includes('UNIQUE constraint')) {

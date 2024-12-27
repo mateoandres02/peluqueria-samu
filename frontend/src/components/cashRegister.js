@@ -437,10 +437,10 @@ const handlePaidsForBarber = ($payButton) => {
 }
 
 const getPaidForBarbers = async () => {
-  // Filtrar los turnos que tienen servicio
+  // Filtramos los turnos que tienen servicio
   const filteredTurns = registrosFinalesGlobal.filter(turn => turn.turns.Service);
-  // Crear un objeto para almacenar las ganancias por peluquero
-  const totalForBarber = {};
+
+  let barbersData = {};
 
   const paymentTableBody = document.querySelector('.table-pay-body');
 
@@ -454,40 +454,65 @@ const getPaidForBarbers = async () => {
     return;
   }
 
-  // Sumar las ganancias por cada peluquero
-  filteredTurns.forEach(turn => {
+  for (const turn of filteredTurns) {
     const barber = turn.peluquero;
     const price = turn.precio || 0;
     const nameService = turn.servicio;
 
-    if (!totalForBarber[barber]) {
-      totalForBarber[barber] = 0; // Inicializar si no existe
+    if (!barbersData[barber]) {
+      barbersData[barber] = { services: {}, percentages: {} };
+
+      // Pedimos los porcentajes de los distintos serivicios de cada barbero
+      const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`);
+      // const paymentForBarber = await fetch(`http://localhost:3001/paymentusers/${turn.turns.NroUsuario}`);
+      const dataPaymentBarber = await paymentForBarber.json();
+
+      dataPaymentBarber.forEach((item) => {
+
+        if (!barbersData[barber].percentages[item.servicio]) {
+          barbersData[barber].percentages[item.servicio] = item.porcentaje_pago || 50;
+        }
+
+      })
+
     }
 
-    // a esto lo podemos aprovechar para dividir los distintos porcentajes
-    // if (nameService === 'Corte' || nameService === 'corte') {
-    //   totalForBarber[barber] += price * 0.5; // Sumar la mitad del precio al peluquero correspondiente
-    // }
+    // Agregamos y acumulamos el costo del servicio
+    if (!barbersData[barber].services[nameService]) {
+      barbersData[barber].services[nameService] = 0;
+    }
+    barbersData[barber].services[nameService] += price;
 
-    totalForBarber[barber] += price;
-  });
+  };
+
+  // Calculamos las ganancias ajustadas por porcentaje y las ganancias totales
+  for (const barber in barbersData) {
+    const barberData = barbersData[barber];
+    barberData.adjustedEarnings = {};
+    barberData.totalAdjustedEarnings = 0;
+    barberData.totalEarnings = 0;
+
+    for (const service in barberData.services) {
+      const totalForService = barberData.services[service];
+      const percentage = barberData.percentages[service] || 50;
+
+      barberData.adjustedEarnings[service] = (totalForService * percentage) / 100;
+      barberData.totalAdjustedEarnings += barberData.adjustedEarnings[service];
+      barberData.totalEarnings += barberData.services[service];
+    }
+
+  }
 
   paymentTableBody.innerHTML = '';
 
-  for (const barber in totalForBarber) {
-    const totalEarned = totalForBarber[barber];
-
-    const paymentBarber = totalEarned * 0.5;
-    
-    // if (barber === 'Alvaro' || barber === 'alvaro') {
-
-    // }
+  for (const barber in barbersData) {
+    const barberData = barbersData[barber];
 
     paymentTableBody.innerHTML += `
-      <tr >
+      <tr>
         <td>${barber}</td>
-        <td>$${totalEarned.toFixed(2)}</td>
-        <td>$${paymentBarber.toFixed(2)}</td>
+        <td>$ ${barberData.totalEarnings}</td>
+        <td>$ ${barberData.totalAdjustedEarnings}</td>
       </tr>
     `;
   }

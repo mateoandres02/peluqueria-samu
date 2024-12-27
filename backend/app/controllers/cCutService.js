@@ -2,6 +2,7 @@ import { db } from "../database/db.js";
 import { eq, sql } from 'drizzle-orm';
 import cutServices from "../models/mCutService.js";
 import turns from "../models/mTurn.js";
+import paymentUsers from "../models/mPaymentUsers.js";
 
 
 const getAllCutServices = async (req, res) => {
@@ -114,6 +115,7 @@ const deleteCutService = async (req, res) => {
       Service: null
     }
     await db.update(turns).set(turn).where(eq(turns.Service, id)).returning();
+    await db.delete(paymentUsers).where(eq(paymentUsers.id_servicio, id));
 
     const response = await db.delete(cutServices)
       .where(eq(cutServices.Id,id))
@@ -134,31 +136,7 @@ const deleteCutService = async (req, res) => {
     });
   }
 }
-/*
-const deleteCutService = async (req, res) => {
-  try {
-    const id = req.params.id;
 
-    await db.delete(cutServices).where(eq(cutServices.Id, id));
-
-    const response = await db.delete(cutServices).where(eq(cutServices.Id, id)).returning();
-
-    if (response.length > 0) {
-      res.status(200).send({
-          message: "¡El registro se eliminó exitosamente!"
-      });
-  } else {
-      res.status(404).send({
-          message: `No se pudo borrar el registro con id = ${id}. Registro no encontrado.`
-      });
-  }
-  } catch (err) {
-    res.status(500).send({
-      message: err.message || `No se pudo borrar el registro con id = ${id}.`
-  });
-  }
-};
-*/
 const actionsCutServices = {
   getAllCutServices,
   getServiceById,

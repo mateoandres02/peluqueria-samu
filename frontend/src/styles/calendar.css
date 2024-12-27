@@ -63,4 +63,8 @@
   .fc-toolbar-chunk:first-child button {
     display: none !important;
   }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.5rem;
+  }
 }

@@ -1,14 +1,13 @@
 import { db } from "../database/db.js";
-import { eq, sql } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import paymentUsers from "../models/mPaymentUsers.js";
 import turns from "../models/mTurn.js";
+import cutServices from "../models/mCutService.js";
 
 
 const getAllPaymentUsers = async (req, res) => {
   try {
-    const data = await db.select({
-        pago: paymentUsers,
-    }).from(paymentUsers)
+    const data = await db.select().from(paymentUsers)
 
     const formattedData = data.map(item => item.pago);
 
@@ -25,9 +24,16 @@ const getPaymentUsersById = async (req, res) => {
   try {
       const id = req.params.id;
 
-      const data = await db.select().from(paymentUsers).where(eq(paymentUsers.id_usuario, id));
-
-      console.log(data)
+      const data = await db
+      .select({ 
+        id_usuario: paymentUsers.id_usuario, 
+        id_servicio: paymentUsers.id_servicio, 
+        servicio: cutServices.Nombre,
+        porcentaje_pago: paymentUsers.porcentaje_pago 
+      })
+      .from(paymentUsers)
+      .leftJoin(cutServices, eq(cutServices.Id, paymentUsers.id_servicio))
+      .where(eq(paymentUsers.id_usuario, id));
 
       if (data.length) {
           res.status(200).send(data);
@@ -44,6 +50,7 @@ const getPaymentUsersById = async (req, res) => {
   }
   
 }
+
 const postPaymentUsers = async (req, res) => {
   try {
     const { id_usuario, porcentaje_inicial, porcentaje_variado } = req.body;
@@ -76,27 +83,31 @@ const postPaymentUsers = async (req, res) => {
 
 const updatePaymentUsers = async (req, res) => {
   try {
-    const id = req.params.id;
-    const { id_usuario, porcentaje_inicial, porcentaje_variado } = req.body;
+    const id_usuario = parseInt(req.params.id_usuario);
+    const id_servicio = parseInt(req.params.id_servicio);
 
-    if ( !id_usuario || !porcentaje_inicial || !porcentaje_variado) {
+    const { porcentaje_pago } = req.body;
+    
+    if (!porcentaje_pago) {
       return res.status(400).send({
-        message: "Id de usuario, Porcentaje Estandar y Variable son requeridos."
+        message: "No hay ningun valor recibido."
       });
     }
 
     const response = await db.update(paymentUsers)
-      .set({ id_usuario, porcentaje_inicial, porcentaje_variado })
-      .where(eq(paymentUsers.id,id))
-      .returning();
+      .set(req.body)
+      .where(
+        and(
+          eq(paymentUsers.id_usuario, id_usuario),
+          eq(paymentUsers.id_servicio, id_servicio)
+        )
+      );
 
-    //if (response.length) {
-      //const updatedCutService = await db.select().from(cutServices).where(cutServices.Id.eq(id)).limit(1);
-    if (response.length) {     
+    if (response.rowsAffected > 0) {     
       res.send(response[0]);
     } else {
       res.status(404).send({
-        message: `No se pudo actualizar el registro del turno con id = ${id}`
+        message: `No se pudo actualizar el registro`
       });
     }
 

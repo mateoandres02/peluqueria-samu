@@ -6,11 +6,11 @@ const paymentUsers = sqliteTable('Usuarios_Porcentajes',
     {
         id_usuario: integer('id_usuario', { mode: 'number' }).references(() => users.Id),
         id_servicio: integer('id_servicio', { mode: 'number' }).references(() => cutServices.Id),
-        porcentaje_inicial: integer('porcentaje_inicial', { mode: 'number' }).notNull(),
-        porcentaje_final: integer('porcentaje_final', { mode: 'number' }).notNull(),
+        porcentaje_pago: integer('porcentaje_pago', { mode: 'number' }).notNull(),
     },
     (table) => {
-        table.uniqueIndex('unique_user_service').on('id_usuario', 'id_servicio');
+        // table.uniqueIndex('unique_user_service').on('id_usuario', 'id_servicio');
+        table.primaryKey('id_usuario', 'id_servicio');
     }
 );
 

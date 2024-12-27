@@ -152,4 +152,16 @@
         min-width: 600px;
         max-width: 600px;
     }
+
+    .table-config-payment-container table {
+        min-width: 350px;
+        max-width: 350px;
+    }
+
+    .table-config-payment-container th:nth-child(1), .table-config-payment-container td:nth-child(1) { 
+        white-space: nowrap; 
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }

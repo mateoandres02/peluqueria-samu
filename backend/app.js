@@ -30,8 +30,8 @@ app.get('/verify-token', verifyToken, (req, res) => {
 app.use(routesTurn);
 app.use(routesUser);
 app.use(routesCutService);
-app.use(routesPaymentUsers);
 app.use(routesTurnsDays);
+app.use(routesPaymentUsers);
 app.use(routesHistoryLog);
 
 // Levantamos el puerto.

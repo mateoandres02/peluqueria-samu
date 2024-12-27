@@ -46,7 +46,8 @@ const tableTurnsHistory = `
 `;
 
 const loadBarberSelectHistory = async (barberSelect) => {
-  const barbers = await fetch('http://localhost:3001/users');
+  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users');
+  // const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
 
   dataBarbers.forEach(barber => {
@@ -154,7 +155,8 @@ const rows = (dataTurns) => {
 //}
 
 const getHistoryTurns = async () => {
-  const responseTurns = await fetch('http://localhost:3001/historyturns');
+  // const responseTurns = await fetch('http://localhost:3001/historyturns');
+  const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns');
 
   const dataHistoryTurns = await responseTurns.json();
   return dataHistoryTurns;

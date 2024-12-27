@@ -67,7 +67,7 @@ const configPaymentView = `
       <p>Configura los distintos porcentajes con respecto a los pagos que recibirán tus empleados.</p>
     </div>
     <div class="paymentParams-selectable">
-      <select id="barberSelectConfigParams" class="barberSelect">
+      <select id="barberSelectConfigParams" class="form-select barberSelect">
         <option value="null">Seleccionar...</option>
       </select>
     </div>
@@ -75,13 +75,12 @@ const configPaymentView = `
 `;
 
 const tablePaymentEdit = `
-  <div class="table-container table-payment-container">
+  <div class="table-container table-payment-container table-config-payment-container">
     <table>
       <thead>
         <tr>
           <th scope="col">SERVICIO</th>
-          <th scope="col">% PAGO INICIAL 
-          <th scope="col">% PAGO NUEVO</th>
+          <th scope="col">% PAGO 
         </tr>
       </thead>
       <tbody class="table-config-pay-body">
@@ -91,47 +90,72 @@ const tablePaymentEdit = `
 `;
 
 const handleModifyPercentage = (links) => {
-  console.log(links)
-
   links.forEach(btn => {
     btn.addEventListener('click', async (e) => {
       
       e.preventDefault();
       
-      const key = e.currentTarget.closest('tr').getAttribute('key');
+      const linkElement = e.target;
 
       const input = document.createElement('input');
       input.type = 'number';
-      input.value = 0; // Valor inicial
-      input.id = 'input-new-percentage'; // Opcional, para identificar el input más tarde
-
-      console.log(key)
-
-      console.log(e.target.parentNode);
-      e.target.parentNode.replaceChild(input, e.target);
+      input.min = 0;
+      input.max = 100;
+      input.value = 0;
+      input.id = 'input-new-percentage';
       
-      // try {
-      //   const confirm = await showModalConfirmDelete(modalConfirm);
+      linkElement.parentNode.replaceChild(input, linkElement);
 
-      //   if (confirm) {
-      //     // const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
-      //     //   method: 'DELETE'
-      //     // });
-      //     const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
-      //       method: 'DELETE'
-      //     });
+      input.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter') {
+          const newValue = parseInt(input.value);
 
-      //     if (response.ok) {
-      //       window.location.reload();
-      //     } else {
-      //       alert('Error al eliminar el servicio.');
-      //     };
-      //   } else {
-      //     console.log('Acción cancelada por el usuario.');
-      //   }
-      // } catch (e) {};
+          if (newValue >= 0 && newValue <= 100) {
+
+            const id_usuario = parseInt(btn.getAttribute('data-user'));
+            const id_service = parseInt(btn.getAttribute('data-service'));
+
+            try {
+              // const response = await fetch(`http://localhost:3001/paymentusers/${id_usuario}/${id_service}`, {
+              //   method: 'PUT',
+              //   headers: {
+              //     'Content-Type': 'application/json'
+              //   },
+              //   body: JSON.stringify({ porcentaje_pago: newValue })
+              // });
+              const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id_usuario}/${id_service}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ porcentaje_pago: newValue })
+              });
+
+              if (response.ok) {
+                const newLink = document.createElement('a');
+                newLink.href = '#';
+                newLink.textContent = `${newValue} %`;
+                newLink.className = linkElement.className;
+
+                input.parentNode.replaceChild(newLink, input);
+
+                handleModifyPercentage([newLink]);
+              } else {
+                alert('Error al actualizar el porcentaje.');
+              }
+            } catch (err) {
+              alert('Error de conexión al actualizar el porcentaje.');
+            }
+          } else {
+            alert('El valor debe estar entre 0 y 100.');
+          }
+        }
+      });
+
+      // Enfocar el input automáticamente
+      input.focus();
+      
     });
-
   })
 }
 
@@ -143,10 +167,10 @@ const rowsService = (dataServices, dataPaymentBarber) => {
     if (service) {
       return {
         id_usuario: barber.id_usuario,
+        id_servicio: service.Id,
         service: service.Nombre,
         precio: service.Precio,
-        porcentaje_inicial: barber.porcentaje_inicial,
-        porcentaje_final: barber.porcentaje_final,
+        porcentaje_pago: barber.porcentaje_pago,
       };
     }
     return null;
@@ -154,18 +178,15 @@ const rowsService = (dataServices, dataPaymentBarber) => {
 
   array.forEach((item, index) => {
     if (index > -1) {
-      console.log(item)
       row += `
         <tr key=${index}>
           <td scope="row">${item.service}</td>
-          <td scope="row">${item.porcentaje_inicial}</td>
-          <td scope="row"><a href="#" class="modify-percentage">${item.porcentaje_final}</a></td>
+          <td scope="row"><a href="#" class="modify-percentage" data-user="${item.id_usuario}" data-service="${item.id_servicio}">${item.porcentaje_pago} %</a></td>
         </tr>
       `;
     };
   });
 
-  console.log(row)
   return row;
 }
 
@@ -207,7 +228,7 @@ const serviceData = async () => {
 
   try {
     const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
-     // const response = await fetch("http://localhost:3001/cutservices");
+    //  const response = await fetch("http://localhost:3001/cutservices");
     
     if (!response.ok) {
       alert('Hubo algun error en obtener los servicios.');
@@ -298,12 +319,12 @@ const submitService = (form, modal, modalFooter) => {
     }
 
     let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
-     // let url = 'http://localhost:3001/cutservices';
+    //  let url = 'http://localhost:3001/cutservices';
     let method = 'POST';
 
     if (mode === 'update') {
       url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
-       // url = `http://localhost:3001/cutservices/${id}`;
+      //  url = `http://localhost:3001/cutservices/${id}`;
       method = 'PUT';
     };
 
@@ -373,7 +394,7 @@ const updateService = (btnsPut, modal) => {
       const key = e.currentTarget.getAttribute('key');
 
       const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
-       // const response = await fetch(`http://localhost:3001/cutservices/${key}`);
+      // const response = await fetch(`http://localhost:3001/cutservices/${key}`);
       const data = await response.json();
 
       document.querySelector("#postServiceLabel").textContent = "Actualizar Servicio";
@@ -454,7 +475,7 @@ const paymentData = async (table, dataBarber) => {
 
     const links = document.querySelectorAll('.modify-percentage');
     handleModifyPercentage(links)
-    
+
   } catch (error) {
     console.error('Error al obtener los barberos:', error);
   }

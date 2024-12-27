@@ -25,14 +25,11 @@ const indexView = async (data) => {
     app.innerHTML += header;
     app.innerHTML += menuFunction(userActive);
 
-    let columnsCalendarViewTimeGrid;
-    columnsCalendarViewTimeGrid = getWidthDisplay();
-    
     switch (urlActive) {
         case '#calendario':
 
             app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
+            calendarRender(modalElement, data);
 
             break;
         
@@ -159,7 +156,6 @@ const indexView = async (data) => {
 
             const $barberSelectConfigParams = document.querySelector('#barberSelectConfigParams');
             let $tableBodyPaymentEdit = document.querySelector('.table-config-pay-body');   
-            console.log($tableBodyPaymentEdit)
 
             await loadBarberSelect($barberSelectConfigParams);
             await handleChangeBarber($tableBodyPaymentEdit, $barberSelectConfigParams);
@@ -168,7 +164,7 @@ const indexView = async (data) => {
     
         default:
             app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
+            calendarRender(modalElement, data);
             break;
     };
 

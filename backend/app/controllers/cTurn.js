@@ -229,7 +229,6 @@ const deleteTurn = async (req, res) => {
        //     Accion: 'DELETE'
         //});
 
-        console.log("parametros", req.params)
         await db.delete(turns_days).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`)));
 
         const response = await db.delete(turns)

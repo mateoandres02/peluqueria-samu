@@ -77,7 +77,7 @@ const rows = (data) => {
 
 const usersData = async () => {
   try {
-    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
+    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users", { credentials: 'include' });
     // const response = await fetch("http://localhost:3001/users");
     
     if (!response.ok) {
@@ -167,7 +167,7 @@ const submitEmployee = (form, modal, modalFooter) => {
     // Validación para el modo 'update'
     if (mode === 'update') {
       // const response = await fetch("http://localhost:3001/users");
-      const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users");
+      const response = await fetch("https://peluqueria-invasion-backend.vercel.app/users", { credentials: 'include' });
       const allUsers = await response.json();
 
       // Verificar si el nuevo nombre ya existe en los servicios
@@ -207,7 +207,8 @@ const submitEmployee = (form, modal, modalFooter) => {
     fetch(url, {
       method: method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user)
+      body: JSON.stringify(user),
+      credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {
@@ -273,7 +274,7 @@ const updateEmployee = (btnsPut, modal) => {
       const key = e.currentTarget.getAttribute('key');
 
       // Hacemos una request para modificar el user con el id que coincida con la key del boton apretado
-      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`);
+      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, { credentials: 'include' });
       // const response = await fetch(`http://localhost:3001/users/${key}`);
       const data = await response.json();
 
@@ -346,7 +347,8 @@ const deleteEmployee = (btnsDelete) => {
 
         if (confirm) {
           const responseDelete = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
           });
           // const responseDelete = await fetch(`http://localhost:3001/users/${key}`, {
           //     method: 'DELETE'

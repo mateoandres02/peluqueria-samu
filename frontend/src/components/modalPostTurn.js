@@ -341,6 +341,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(turn),
+      credentials: 'include'
     };
 
     const response = await fetch(url, options);
@@ -397,6 +398,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(regularTurn),
+          credentials: 'include'
         };
 
         responseRegularTurn = await fetch(urlRegularTurn, optionsRegularTurn);

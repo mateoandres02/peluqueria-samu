@@ -128,7 +128,8 @@ const handleModifyPercentage = (links) => {
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ porcentaje_pago: newValue })
+                body: JSON.stringify({ porcentaje_pago: newValue }),
+                credentials: 'include'
               });
 
               if (response.ok) {
@@ -227,7 +228,7 @@ const serviceData = async () => {
    */
 
   try {
-    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
+    const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
     //  const response = await fetch("http://localhost:3001/cutservices");
     
     if (!response.ok) {
@@ -333,7 +334,8 @@ const submitService = (form, modal, modalFooter) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(service)
+      body: JSON.stringify(service),
+      credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {
@@ -393,7 +395,7 @@ const updateService = (btnsPut, modal) => {
 
       const key = e.currentTarget.getAttribute('key');
 
-      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`);
+      const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, { credentials: 'include' });
       // const response = await fetch(`http://localhost:3001/cutservices/${key}`);
       const data = await response.json();
 
@@ -429,7 +431,8 @@ const deleteService = (btnsDelete) => {
 
         if (confirm) {
           const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
           });
           // const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
           //   method: 'DELETE'
@@ -466,7 +469,7 @@ const handleChangeBarber = async (table, selectable) => {
 const paymentData = async (table, dataBarber) => {
   try {
     // const responseCutServices = await fetch("http://localhost:3001/cutservices");
-    const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
+    const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
     const cutServices = await responseCutServices.json();
 
     if (table !== undefined) {

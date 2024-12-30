@@ -6,6 +6,7 @@ const logActions = async (data) => {
               'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
+          credentials: 'include',
       });
 
       //const response = await fetch(' http://localhost:3001/historyturns', { // Cambia la URL según tu configuración

@@ -214,7 +214,8 @@ const handleSelectChange = (cutServices, dateValue) => {
         { 
           method: 'PUT', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(turn)
+          body: JSON.stringify(turn),
+          credentials: 'include'
         }
       );
       // await fetch(`http://localhost:3001/turns/${rowId}`, 
@@ -463,7 +464,7 @@ const getPaidForBarbers = async () => {
       barbersData[barber] = { services: {}, percentages: {} };
 
       // Pedimos los porcentajes de los distintos serivicios de cada barbero
-      const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`);
+      const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`, {credentials: 'include'});
       // const paymentForBarber = await fetch(`http://localhost:3001/paymentusers/${turn.turns.NroUsuario}`);
       const dataPaymentBarber = await paymentForBarber.json();
 

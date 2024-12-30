@@ -345,6 +345,9 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
     const response = await fetch(url, options);
 
+    //console.log("bartbero", nameBarber);
+    //console.log("cliente", clientNumber);
+    //console.log("fecha", dateOutParsed);
     logAction({
       Barbero: nameBarber,
       Cliente: clientName,

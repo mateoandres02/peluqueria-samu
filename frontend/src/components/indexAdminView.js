@@ -7,7 +7,7 @@ import { modalElement } from "./modalPostTurn.js";
 import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
-import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyData } from './historialTurnos.js';
+import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
 import "../styles/style.css";
 
@@ -70,14 +70,18 @@ const indexView = async (data) => {
             let $containerHistoryView = document.querySelector('.containerHistoryView');
             $containerHistoryView.insertAdjacentHTML('beforeend', infoSectionHistoryTurnsView);
             $containerHistoryView.insertAdjacentHTML('beforeend', tableTurnsHistory);
-
+            
             const $barberSelectHistory = document.querySelector('#barberSelectHistory');
             await loadBarberSelectHistory($barberSelectHistory);
-
+            
             let $tableBodyTurnsHistoryView = document.querySelector('.table-history-body');
             let $currentDateHistory = document.querySelector('#filterDateInputHistory').value;
-
-            await historyData($tableBodyTurnsHistoryView, $currentDateHistory, null);
+            
+            // Render inicial
+            await historyTurnsRender($tableBodyTurnsHistoryView, $currentDateHistory);
+            
+            // Configurar filtros
+            setupFilters($tableBodyTurnsHistoryView);
 
             break;
         

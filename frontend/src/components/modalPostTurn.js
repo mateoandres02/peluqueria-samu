@@ -335,7 +335,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
     }
 
     const url = 'https://peluqueria-invasion-backend.vercel.app/turns';
-    // const url = 'http://localhost:3001/turns';
+    //const url = 'http://localhost:3001/turns';
 
     const options = {
       method: 'POST',
@@ -345,9 +345,6 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
     const response = await fetch(url, options);
 
-    //console.log("bartbero", nameBarber);
-    //console.log("cliente", clientNumber);
-    //console.log("fecha", dateOutParsed);
     logAction({
       Barbero: nameBarber,
       Cliente: clientName,
@@ -394,7 +391,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         };
 
         urlRegularTurn = 'https://peluqueria-invasion-backend.vercel.app/recurrent_turns';
-        // urlRegularTurn = 'http://localhost:3001/recurrent_turns';
+        //urlRegularTurn = 'http://localhost:3001/recurrent_turns';
 
         optionsRegularTurn = {
           method: 'POST',

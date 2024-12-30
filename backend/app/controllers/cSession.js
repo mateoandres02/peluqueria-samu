@@ -117,6 +117,7 @@ const login = async (req, res) => {
             secure: true, // Solo envío sobre HTTPS
             sameSite: 'None', // Solicitudes cruzadas
             path: '/', // Cookie esté disponible para todas las rutas
+            domain: 'https://peluqueria-invasion-backend.vercel.app/',
             maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
         });
         

@@ -7,6 +7,7 @@ const history_turns = sqliteTable('Historial_Turnos',
     Cliente: text('Cliente').notNull(),
     FechaTurno: text('FechaTurno').notNull(),
     FechaCreacion: text('FechaCreacion'),
+    Fijo: text("fijo"),
     Accion: text('Accion').notNull(),
   }
 );

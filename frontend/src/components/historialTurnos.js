@@ -21,7 +21,7 @@ const infoSectionHistoryTurnsView = `
       <div class="filterBarber">
         <span>Filtrar por barbero</span>
         <select id="barberSelectHistory" class="form-select">
-          <option value="null">Seleccionar...</option>
+          <option value="null">Todos</option>
         </select>
       </div>
     </div>

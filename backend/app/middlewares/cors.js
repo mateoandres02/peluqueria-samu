@@ -11,7 +11,9 @@ export const corsOptions = {
   },
   credentials: true, // Permitir el envío de cookies y credenciales
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
-  allowedHeaders: 'Content-Type,Authorization', // Encabezados permitidos
+  //allowedHeaders: 'Content-Type,Authorization',
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+  exposedHeaders: ['Set-Cookie'], // Permitir que el cliente acceda a las cookies
 };
 
 // const allowedOrigins = [

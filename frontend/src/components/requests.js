@@ -122,6 +122,31 @@ const getPaymentUsersById = async (id) => {
   return dataBarber;
 }
 
+const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) => {
+  //const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}/${barberParam}`);
+
+  const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}/${barberParam}`);
+
+  return responseHistoryturns;
+  
+}
+
+const getTurnsHistoryFilteredByDate = async (dateParam) => {
+  //const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}`);
+
+  const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}`);
+
+  return responseHistoryturns;
+}
+
+const getTurnsHistoryFilteredByBarber = async (barberParam) => {
+  //const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${barberParam}`);
+
+  const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/barber/${barberParam}`);
+
+  return responseHistoryturns;
+}
+
 export {
     getTurnsByUserActive,
     getRecurrentTurnsByUserActive,
@@ -131,5 +156,8 @@ export {
     getTurnsFilteredByDateAndBarber,
     getTurnsFilteredByDate,
     getTurnsFilteredByBarber,
-    getPaymentUsersById
+    getPaymentUsersById,
+    getTurnsHistoryFilteredByDateAndBarber,
+    getTurnsHistoryFilteredByDate,
+    getTurnsHistoryFilteredByBarber
 }

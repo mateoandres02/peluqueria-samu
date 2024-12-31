@@ -1,4 +1,4 @@
-import { parseDate, reformatDate } from './date.js';
+import { parseDate, reformatDate } from '../utils/date.js';
 import '/src/styles/historialTurnos.css';
 
 const containerHistoryView = `<div class="containerHistoryView"></div>`;

@@ -13,23 +13,3 @@ export const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
   allowedHeaders: 'Content-Type,Authorization', // Encabezados permitidos
 };
-
-// const allowedOrigins = [
-//   'https://peluqueria-invasion.vercel.app', 
-//   'http://localhost:5173'
-// ];
-
-// export const corsOptions = {
-//   origin: function (origin, callback) {
-//     // Permitir solicitudes sin origen (como en herramientas de desarrollo)
-//     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true, // Permitir cookies y credenciales
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos
-//   allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
-//   exposedHeaders: ['Set-Cookie'], // Permitir que el cliente acceda a las cookies
-// };

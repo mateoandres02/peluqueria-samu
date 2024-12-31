@@ -83,6 +83,7 @@ const turnDateEnd = (date) => {
   
 }
 
+
 const getEndOfMonth = (startDate) => {
 
   /**
@@ -92,7 +93,9 @@ const getEndOfMonth = (startDate) => {
 
   const date = new Date(startDate);
   return new Date(date.getFullYear(), date.getMonth() + 1, 1);
+  
 };
+
 
 const getToday = () => {
 
@@ -103,9 +106,35 @@ const getToday = () => {
 
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  today.setHours(today.getHours() - 3);
   const formattedDate = today.toISOString().split('T')[0];
   return formattedDate;
+
 }
+
+
+function formattedEndDate(dateString) {
+
+  /**
+   * Convertimos un string en un objeto date para poder parsearlo de mejor forma.
+   * param: dateString -> la fecha a formatear.
+   */
+
+  const date = new Date(dateString);
+
+  // Restar 30 minutos
+  date.setMinutes(date.getMinutes() - 30);
+
+  // Formatear la fecha y hora de salida
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+
+} 
 
 export { 
   parseDate, 
@@ -113,5 +142,6 @@ export {
   reformatDate, 
   turnDateEnd, 
   getEndOfMonth, 
-  getToday
+  getToday,
+  formattedEndDate
 };

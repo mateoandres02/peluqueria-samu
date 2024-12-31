@@ -1,7 +1,6 @@
 import { db } from "../database/db.js";
 import { eq, and } from 'drizzle-orm';
 import paymentUsers from "../models/mPaymentUsers.js";
-import turns from "../models/mTurn.js";
 import cutServices from "../models/mCutService.js";
 
 
@@ -36,11 +35,11 @@ const getPaymentUsersById = async (req, res) => {
       .where(eq(paymentUsers.id_usuario, id));
 
       if (data.length) {
-          res.status(200).send(data);
+        res.status(200).send(data);
       } else {
-          res.status(404).send({
-              message: `No se ha encontrado el registro del servicio con id = ${id}`
-          });
+        res.status(404).send({
+            message: `No se ha encontrado el registro del servicio con id = ${id}`
+        });
       };
 
   } catch (err) {
@@ -60,10 +59,6 @@ const postPaymentUsers = async (req, res) => {
         message: "¡No hay contenido para el post!"
       });
     }
-    //const nombreBD = await db.select().from(paymentUsers).where(sql`lower(${cutServices.Nombre}) = lower(${Nombre})`).limit(1);
-    //if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() == Nombre.toLowerCase()) {
-      //return res.status(400).send({message: "¡El nombre del servicio ya existe!"});
-    //}
 
     const newPaymentUsers = {
       id_usuario,
@@ -79,6 +74,7 @@ const postPaymentUsers = async (req, res) => {
       message: e.message || "Ocurrio algun error creando un registro de un pago de usuario"
     });
   }
+
 };
 
 const updatePaymentUsers = async (req, res) => {
@@ -120,25 +116,25 @@ const updatePaymentUsers = async (req, res) => {
 
 const deletePaymentUsers = async (req, res) => {
   try {
-      const id = req.params.id;
+    const id = req.params.id;
 
-      const response = await db.delete(paymentUsers)
-          .where(eq(paymentUsers.id, id))
-          .returning();
+    const response = await db.delete(paymentUsers)
+      .where(eq(paymentUsers.id, id))
+      .returning();
 
-      if (response.length) {
-          res.status(204).send({
-              message: "¡El registro se eliminó exitosamente!"
-          });
-      } else {
-          res.status(404).send({
-              message: `No se pudo borrar el registro con id = ${id}`
-          });
-      }
-  } catch (err) {
-      res.status(500).send({
-          message: err.message || "No se pudo borrar el registro con id = " + id
+    if (response.length) {
+      res.status(204).send({
+        message: "¡El registro se eliminó exitosamente!"
       });
+    } else {
+      res.status(404).send({
+        message: `No se pudo borrar el registro con id = ${id}`
+      });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "No se pudo borrar el registro con id = " + id
+    });
   }
 };
 

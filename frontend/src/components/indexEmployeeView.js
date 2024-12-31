@@ -1,7 +1,5 @@
-import { getWidthDisplay } from './calendarRender.js';
-import { calendarRender } from './calendarRender.js';
-import calendario from "./calendario.js";
-import { menu } from "./menuEmployee.js";
+import { calendario, calendarRender } from './calendarRender.js';
+import { menuEmployee } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
@@ -21,10 +19,7 @@ const indexView = async (data) => {
     
     app.innerHTML = '';
     app.innerHTML += header;
-    app.innerHTML += menu(userActive);
-
-    let columnsCalendarViewTimeGrid;
-    columnsCalendarViewTimeGrid = getWidthDisplay();
+    app.innerHTML += menuEmployee(userActive);
 
     switch (urlActive) {
         

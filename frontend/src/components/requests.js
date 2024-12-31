@@ -338,7 +338,7 @@ const popService = async (id) => {
 }
 
 const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) => {
-  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}/${barberParam}`, { credentials: 'include' });
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${dateParam}/${barberParam}`, { credentials: 'include' });
 
   //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}/${barberParam}`);
 
@@ -347,7 +347,7 @@ const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) =>
 }
 
 const getTurnsHistoryFilteredByDate = async (dateParam) => {
-  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}`, { credentials: 'include' });
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${dateParam}`, { credentials: 'include' });
 
   //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}`);
 
@@ -355,7 +355,7 @@ const getTurnsHistoryFilteredByDate = async (dateParam) => {
 }
 
 const getTurnsHistoryFilteredByBarber = async (barberParam) => {
-  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${barberParam}`, { credentials: 'include' });
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${barberParam}`, { credentials: 'include' });
 
   //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/barber/${barberParam}`);
 

@@ -51,7 +51,8 @@
     outline: none;
 }
 
-#barberSelect {
+#barberSelect, 
+#barberSelectHistory {
     width: 15ch;
     margin-left: 1rem;
     border: 1px solid #ced4da;

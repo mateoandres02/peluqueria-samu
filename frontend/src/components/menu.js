@@ -73,12 +73,6 @@ const menuEmployee = (data) => {
                             Administrar Calendario
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
-                            <img src="/assets/icons/share.svg" alt="Compartir calendario" class="icon">
-                            Compartir calendario
-                        </a>
-                    </li>
                 </ul>
                 <div class="button-logout-container">
                     <button id="logout">

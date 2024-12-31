@@ -3,6 +3,7 @@ import { menuEmployee } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
+import { loader } from './loader.js';
 
 import "../styles/style.css"
 
@@ -21,33 +22,44 @@ const indexView = async (data) => {
     app.innerHTML += header;
     app.innerHTML += menuEmployee(userActive);
 
-    switch (urlActive) {
+    app.innerHTML += loader;
+
+    try {
+        switch (urlActive) {
         
-        case '#calendario':
-
-            app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
-            
-            break;
-
-        case '#':
-
-            break;
+            case '#calendario':
     
-        default:
-            
-            app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
-
-            break;
-
-    };
-
-    closeMenu();
+                app.innerHTML += calendario;
+                calendarRender(modalElement, data);
+                
+                break;
     
-    const $btnLogout = document.querySelector('#logout');
-    $btnLogout.addEventListener('click', logout);
+            case '#':
     
+                break;
+        
+            default:
+                
+                app.innerHTML += calendario;
+                calendarRender(modalElement, data);
+    
+                break;
+    
+        };
+    } catch (error) {
+
+        console.error('Error loading the section:', error);
+
+    } finally {
+        const $loader = document.querySelector('.bg-loader-container');
+        if ($loader) $loader.remove();
+
+        closeMenu();
+    
+        const $btnLogout = document.querySelector('#logout');
+        $btnLogout.addEventListener('click', logout);
+    }
+
 };
 
 

@@ -77,7 +77,6 @@ function deleteTurn(info, data){
     if (response.ok) {
       const focusableElement = document.querySelector('.fc-button-active') || document.body;
       focusableElement.focus();
-      alert('tiid vuebel turno.');
       window.location.reload();
     } else {
       alert('Error al eliminar el turno.');

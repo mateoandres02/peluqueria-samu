@@ -69,9 +69,14 @@
 
 .container-btns-actions, .btns-actions { 
     white-space: nowrap; 
-    max-width: 50px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.table-manageemployees-container th:nth-child(5), .table-manageemployees-container td:nth-child(5) {
+    max-width: 65px;
+    overflow: visible;
 }
 
 .table-container .table-btns {

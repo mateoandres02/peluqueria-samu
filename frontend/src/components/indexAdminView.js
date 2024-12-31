@@ -1,7 +1,5 @@
-import { getWidthDisplay } from './calendarRender.js';
-import { calendarRender } from './calendarRender.js';
-import calendario from "./calendario.js";
-import { menuFunction } from "./menuAdmin.js";
+import { calendario, calendarRender } from './calendarRender.js';
+import { menuAdmin } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
@@ -23,7 +21,7 @@ const indexView = async (data) => {
 
     app.innerHTML = '';
     app.innerHTML += header;
-    app.innerHTML += menuFunction(userActive);
+    app.innerHTML += menuAdmin(userActive);
 
     switch (urlActive) {
         case '#calendario':

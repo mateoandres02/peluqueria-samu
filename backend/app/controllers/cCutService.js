@@ -90,8 +90,6 @@ const updateCutService = async (req, res) => {
       .where(eq(cutServices.Id,id))
       .returning();
 
-    //if (response.length) {
-      //const updatedCutService = await db.select().from(cutServices).where(cutServices.Id.eq(id)).limit(1);
     if (response.length) {     
       res.send(response[0]);
     } else {

@@ -1,5 +1,9 @@
-import '../styles/modal.css';
+import { formattedEndDate } from '../utils/date.js';
+import { modalConfirmDisplay } from '../utils/modal.js';
+import { deleteRegularCustomer, deleteNormalCustomer } from './requests.js';
 import logAction from '../utils/logActions.js';
+
+import '../styles/modal.css';
 
 const modalConfirm = `
   <div class="modal fade" id="dateClickModalConfirm" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -12,7 +16,7 @@ const modalConfirm = `
           </button>
         </div>
         <div class="modal-body">
-          <h3 class="modal-body-confirm">¿Deseas eliminar el turno?</h3>
+          <h3 class="modal-body-confirm">¿Deseas eliminar este registro?</h3>
         </div>
         <div class="modal-footer modal-footer-delete">
           <button id="confirmDeleteTurn" class="btn btn-danger btn-success">Eliminar</button>
@@ -23,36 +27,7 @@ const modalConfirm = `
   </div>
 `;
 
-function formattedEndDate(dateString) {
-  // Convertir el string en un objeto Date
-  const date = new Date(dateString);
 
-  // Restar 30 minutos
-  date.setMinutes(date.getMinutes() - 30);
-
-  // Formatear la fecha y hora de salida
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son base 0
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-
-  // Retornar la fecha formateada
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-} 
-
-function modalConfirmDisplay() {
-
-  /**
-   * Mostramos la modal de confirmación de la acción para eliminar el turno.
-   */
-
-  const $modal = new bootstrap.Modal(document.getElementById('dateClickModalConfirm'));
-  console.log($modal)
-  const modalConfirm = bootstrap.Modal.getInstance($modal._element);
-  modalConfirm.show();
-}
-  
 function deleteTurn(info, data){
 
   /**
@@ -75,26 +50,9 @@ function deleteTurn(info, data){
     const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 
     if (regularCustomer === "true") {
-      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
-       method: 'DELETE'  
-      });
-      // response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
-      logAction({
-        Barbero: userName,
-        Cliente: info.event._def.title,
-        FechaTurno: formatedStartDate,
-        Accion: 'DELETE'
-      })
-    } else {
-      response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
-       method: 'DELETE'  
-      });
-      
-      // response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
-      //   method: 'DELETE'  
-      // });
+
+
+      response = await deleteRegularCustomer(publicId, date);
 
       logAction({
         Barbero: userName,
@@ -102,11 +60,24 @@ function deleteTurn(info, data){
         FechaTurno: formatedStartDate,
         Accion: 'DELETE'
       });
+
+    } else {
+
+      response = await deleteNormalCustomer(publicId, date)
+
+      logAction({
+        Barbero: userName,
+        Cliente: info.event._def.title,
+        FechaTurno: formatedStartDate,
+        Accion: 'DELETE'
+      });
+
     }
     
     if (response.ok) {
       const focusableElement = document.querySelector('.fc-button-active') || document.body;
       focusableElement.focus();
+      alert('tiid vuebel turno.');
       window.location.reload();
     } else {
       alert('Error al eliminar el turno.');

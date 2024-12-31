@@ -1,6 +1,6 @@
-import { parseDate, reformatDate } from './date.js';
-import { getBarbers } from './requests.js';
-import { getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber } from './requests.js';
+import { parseDate, reformatDate } from '../utils/date.js';
+import { getBarbers, getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber } from './requests.js';
+
 import '/src/styles/historialTurnos.css';
 
 const containerHistoryView = `<div class="containerHistoryView"></div>`;

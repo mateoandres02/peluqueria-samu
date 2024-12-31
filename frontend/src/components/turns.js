@@ -1,4 +1,4 @@
-import { turnDateEnd, getEndOfMonth } from "./date.js";
+import { turnDateEnd, getEndOfMonth } from "../utils/date.js";
 
 
 const renderTurns = async (turns, recurrentTurns) => {
@@ -10,6 +10,7 @@ const renderTurns = async (turns, recurrentTurns) => {
   */
 
   const arrayTurns = turns.map(turn => {
+
 
     const dateEnd = turnDateEnd(turn.turns.Date);
 

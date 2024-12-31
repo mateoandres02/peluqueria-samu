@@ -18,9 +18,11 @@ const header = `
 `;
 
 const closeMenu = () => {
+
     /**
      * Cierra el menu
      */
+    
     const $btn = document.querySelector('.btnHamburger button');
     
     $btn.removeEventListener('click', toggleHamburger);
@@ -28,6 +30,7 @@ const closeMenu = () => {
 }
 
 const toggleHamburger = (e) => {
+
     /**
      * Cambia la forma del boton de hamburguesa
      */
@@ -42,6 +45,7 @@ const toggleHamburger = (e) => {
     } else {
         $sidebar.style.display = "none";
     }
+
 };
 
 export {

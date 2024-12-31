@@ -1,5 +1,4 @@
 const login = async (username, password) => {
-
   /**
    * Hace la petición de logueo.
    * param: username -> usuario que intenta loguearse.
@@ -45,7 +44,6 @@ const closeActiveSession = async () => {
   return response;
 }
 
-
 const getUserActive = async () => {
 
   /**
@@ -90,6 +88,7 @@ const getRecurrentTurnsByUserActive = async (data) => {
   return recurrentTurns;
 
 }
+
 
 const getBarbers = async () => {
 
@@ -163,6 +162,7 @@ const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent
     // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
     return responseTurns;
   }
+
 }
 
 
@@ -183,6 +183,7 @@ const getTurnsFilteredByDate = async (dateParam, recurrent) => {
     // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
     return responseTurns;
   }
+
 }
 
 
@@ -218,8 +219,8 @@ const getBarberById = async (id) => {
   // const barber = await fetch(`http://localhost:3001/users/${id}`);
   const dataBarber = await barber.json();
   return dataBarber;
-  
-}
+
+}  
 
 
 const getPaymentUsersById = async (id) => {
@@ -336,6 +337,31 @@ const popService = async (id) => {
 
 }
 
+const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) => {
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}/${barberParam}`, { credentials: 'include' });
+
+  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}/${barberParam}`);
+
+  return responseHistoryturns;
+  
+}
+
+const getTurnsHistoryFilteredByDate = async (dateParam) => {
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${dateParam}`, { credentials: 'include' });
+
+  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}`);
+
+  return responseHistoryturns;
+}
+
+const getTurnsHistoryFilteredByBarber = async (barberParam) => {
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/history_turns/${barberParam}`, { credentials: 'include' });
+
+  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/barber/${barberParam}`);
+
+  return responseHistoryturns;
+}
+
 export {
   login,
   closeActiveSession,
@@ -354,5 +380,8 @@ export {
   deleteNormalCustomer,
   putChangePercentageService,
   getServiceById,
-  popService
+  popService,
+  getTurnsHistoryFilteredByDateAndBarber,
+  getTurnsHistoryFilteredByDate,
+  getTurnsHistoryFilteredByBarber
 }

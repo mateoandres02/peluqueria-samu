@@ -172,3 +172,13 @@
 .pay-button{
   width: 80%;
 }
+
+.agregado {
+  background-color: #d4edda; /* Verde claro */
+  color: #155724; /* Verde oscuro */
+}
+
+.eliminado {
+  background-color: #f8d7da; /* Rojo claro */
+  color: #721c24; /* Rojo oscuro */
+}

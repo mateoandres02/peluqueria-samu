@@ -123,7 +123,6 @@ const handleModifyPercentage = (links) => {
             const id_service = parseInt(btn.getAttribute('data-service'));
 
             try {
-
               const response = await putChangePercentageService(id_usuario, id_service, newValue);
 
               if (response.ok) {
@@ -352,7 +351,8 @@ const submitService = (form, modal, modalFooter) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(service)
+      body: JSON.stringify(service),
+      credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {
@@ -417,6 +417,7 @@ const updateService = (btnsPut, modal) => {
     btn.addEventListener('click', async (e) => {
 
       const key = e.currentTarget.getAttribute('key');
+
 
       const data = await getServiceById(key);
 
@@ -513,6 +514,7 @@ const paymentData = async (table, dataBarber) => {
    */
 
   try {
+
     const cutServices = await getServices();
 
     if (table !== undefined) {

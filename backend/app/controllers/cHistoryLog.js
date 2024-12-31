@@ -19,6 +19,92 @@ const getAllHistory = async (req, res) => {
     }
 }
 
+const getAllTurnsHistoryByBarber = async (req,res) => {
+    try {
+        const barberName = req.params.barberName;
+
+        const data = await db.select({
+            Id: history_turns.Id,
+            Barbero: history_turns.Barbero,
+            Cliente: history_turns.Cliente,
+            FechaTurno: history_turns.FechaTurno,
+            FechaCreacion: history_turns.FechaCreacion,
+            Accion: history_turns.Accion
+        })
+        .from(history_turns)
+        .where(eq(history_turns.Barbero, barberName));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado turnos para ese día.`
+            });
+        };
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió algún error recuperando el registro de historial con nombre ${barberName}.`
+        })
+    }
+}
+
+const getAllTurnsHistoryByDate = async (req, res) => {
+    try {
+        const date = req.params.date
+        const data = await db.select({
+            Id: history_turns.Id,
+            Barbero: history_turns.Barbero,
+            Cliente: history_turns.Cliente,
+            FechaTurno: history_turns.FechaTurno,
+            FechaCreacion: history_turns.FechaCreacion,
+            Accion: history_turns.Accion
+        })
+        .from(history_turns)
+        .where(like(history_turns.FechaCreacion, `%${date}%`));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado turnos para ese día.`
+            });
+        }
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió algún error recuperando el registro de historial con la fecha de ${date}.`
+        })
+    }
+}
+
+const getAllTurnsHistoryByDateAndBarber = async (req, res) => {
+    try {
+        const date = req.params.date;
+        const barberName = req.params.barberName;
+
+        const data = await db.select({
+            Id: history_turns.Id,
+            Barbero: history_turns.Barbero,
+            Cliente: history_turns.Cliente,
+            FechaTurno: history_turns.FechaTurno,
+            FechaCreacion: history_turns.FechaCreacion,
+            Accion: history_turns.Accion
+        }).from(history_turns)
+        .where(and(like(history_turns.FechaCreacion, `%${date}%`), eq(history_turns.Barbero, barberName)));
+
+        if (data.length) {
+            res.status(200).send(data);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado turnos para ese día.`
+            });
+        }
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con el nombre de ${barberName}.`
+        });
+    }
+}
+
 const postTurnHistoryLog = async (req, res) => {
     try {
         const { Barbero, Cliente, FechaTurno, Accion } = req.body;
@@ -86,6 +172,9 @@ const deleteHistoryTurn = async (req, res) => {
     getAllHistory,
     postTurnHistoryLog,
     deleteHistoryTurn,
+    getAllTurnsHistoryByBarber,
+    getAllTurnsHistoryByDate,
+    getAllTurnsHistoryByDateAndBarber
 };
 
 export default actionsTurns;

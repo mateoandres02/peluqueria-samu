@@ -1,29 +1,50 @@
+// const login = async (username, password) => {
+//   /**
+//    * Hace la petición de logueo.
+//    * param: username -> usuario que intenta loguearse.
+//    * param: password -> contraseña del usuario que intenta loguearse.
+//    */
+
+//   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json', 
+//     },
+//     body: JSON.stringify({ Nombre: username, Contrasena: password }),
+//     credentials: 'include',
+//   });
+//   // const response = await fetch('http://localhost:3001/login', {
+//   // method: 'POST',
+//   // headers: {
+//   //     'Content-Type': 'application/json', 
+//   // },
+//   // body: JSON.stringify({ Nombre: username, Contrasena: password }),
+//   // credentials: 'include',
+//   // });
+
+//   return response;
+// }
+
+
 const login = async (username, password) => {
-  /**
-   * Hace la petición de logueo.
-   * param: username -> usuario que intenta loguearse.
-   * param: password -> contraseña del usuario que intenta loguearse.
-   */
-
   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json', 
-    },
-    body: JSON.stringify({ Nombre: username, Contrasena: password }),
-    credentials: 'include',
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ Nombre: username, Contrasena: password }),
+      credentials: 'include'
   });
-  // const response = await fetch('http://localhost:3001/login', {
-  // method: 'POST',
-  // headers: {
-  //     'Content-Type': 'application/json', 
-  // },
-  // body: JSON.stringify({ Nombre: username, Contrasena: password }),
-  // credentials: 'include',
-  // });
 
-  return response;
-}
+  const data = await response.json();
+
+  if (response.ok) {
+      localStorage.setItem('access_token', data.token); // Guarda el token en localStorage
+      return data.user;
+  } else {
+      throw new Error(data.message);
+  }
+};
 
 
 const closeActiveSession = async () => {
@@ -44,19 +65,35 @@ const closeActiveSession = async () => {
   return response;
 }
 
-const getUserActive = async () => {
+// const getUserActive = async () => {
 
-  /**
-   * Obtiene el usuario activo y su token para poder verificarlo.
-   */
+//   /**
+//    * Obtiene el usuario activo y su token para poder verificarlo.
+//    */
 
-  const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
-  // const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
+//   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
+//   // const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
 
-  return response;
+//   return response;
   
-}
+// }
 
+
+const getUserActive = async () => {
+  const token = localStorage.getItem('access_token');
+
+  const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
+      headers: {
+          'Authorization': `Bearer ${token}`, // Incluye el token en los headers
+      },
+  });
+
+  if (!response.ok) {
+      throw new Error('No autorizado');
+  }
+
+  return await response.json();
+};
 
 const getTurnsByUserActive = async (data) => {
 

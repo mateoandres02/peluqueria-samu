@@ -8,7 +8,7 @@ export default async function checkAuthentication() {
         const response = await getUserActive();
 
         if (!response.ok || response.status === 401) {
-            //window.location.href = '/login';
+            window.location.href = '/login';
             console.log("entro aca")
         } else {
           

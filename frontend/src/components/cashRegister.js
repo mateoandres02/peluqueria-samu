@@ -225,25 +225,7 @@ const handleSelectChange = (cutServices, dateValue) => {
         Service: selectedService.Id
       };
 
-<<<<<<< HEAD
-      //await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
-      //  { 
-      //    method: 'PUT', 
-      //    headers: { 'Content-Type': 'application/json' },
-      //    body: JSON.stringify(turn),
-      //    credentials: 'include'
-      //  }
-      //);
-      await fetch(`http://localhost:3001/turns/${rowId}`, 
-        { 
-          method: 'PUT', 
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(turn)
-        }
-      );
-=======
       await putChangeService(rowId, turn);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       if (valueCalendar === today) {
         window.location.reload();
@@ -490,15 +472,7 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns) => {
       barbersData[barber] = { services: {}, percentages: {} };
 
       // Pedimos los porcentajes de los distintos serivicios de cada barbero
-<<<<<<< HEAD
-      //const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`, {credentials: 'include'});
-      const paymentForBarber = await fetch(`http://localhost:3001/paymentusers/${turn.turns.NroUsuario}`);
-      const dataPaymentBarber = await paymentForBarber.json();
-
-      dataPaymentBarber.forEach((item) => {
-=======
       const paymentForBarber = await getPaymentUsersById(turn.turns.NroUsuario);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       paymentForBarber.forEach((item) => {
         if (!barbersData[barber].percentages[item.servicio]) {

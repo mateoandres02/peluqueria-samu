@@ -1,27 +1,27 @@
-import { parseDate, reformatDate } from './date.js';
-import { getBarbers } from './requests.js';
-import { getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber } from './requests.js';
+import { parseDate, reformatDate } from '../utils/date.js';
+import { getBarbers, getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber } from './requests.js';
+
 import '/src/styles/historialTurnos.css';
 
-const containerHistoryView = `<div class="containerHistoryView"></div>`;
+const containerHistoryView = `<div class="containerHistoryView containerFunctionalityView"></div>`;
 
 const today = new Date();
 today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
 const formattedDate = today.toISOString().split('T')[0];
 
 const infoSectionHistoryTurnsView = `
-  <div class="infoSectionHistoryTurnsView">
-    <h3>Historial de Turnos</h3>
-    <p>Se visualizaran registros de agregacion o eliminacion de turnos por barbero y fecha.</p>
-    <div class="cashRegisterFilterContainer">
-        <div class="cashRegisterFilter">
-          <span>Filtrar por fecha</span>
-          <input type="date" class="filter-date-cash-tracking" id="filterDateInputHistory" value="${formattedDate}">
+  <div class="present-container infoSectionHistoryTurnsView">
+    <h2>Historial de turnos</h2>
+    <p>Visualiza un historial respecto a la creación o eliminación de turnos.</p>
+    <div class="present-container-filters cashRegisterFilterContainer">
+      <div class="present-container-filter cashRegisterFilter">
+        <span>Filtrar por fecha</span>
+        <input type="date" id="filterDateInputHistory" class="filter-date-cash-tracking" value="${formattedDate}">
       </div>
-      <div class="filterBarber">
+      <div class="present-container-filter filterBarber">
         <span>Filtrar por barbero</span>
         <select id="barberSelectHistory" class="form-select">
-          <option value="null">Todos</option>
+          <option value="null">Seleccionar...</option>
         </select>
       </div>
     </div>
@@ -29,9 +29,9 @@ const infoSectionHistoryTurnsView = `
 `;
 
 const tableTurnsHistory = `
-  <div class="table-history-container">
-    <table class="table-cash-light">
-      <thead class="table-cash-head">
+  <div class="table-container table-history-container">
+    <table>
+      <thead>
         <tr>
           <th scope="col">FECHA CREACION</th>
           <th scope="col">HORARIO CREACION</th>
@@ -87,8 +87,11 @@ const rows = (dataTurns) => {
       let action = turn.Accion == 'POST' ? 'AGREGADO' : 'ELIMINADO';
       const rowClass = turn.Accion == 'POST' ? 'agregado' : 'eliminado';
 
+<<<<<<< HEAD
       console.log("Turno:", turn);
 
+=======
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
       row += `
         <tr key=${turn.Id} class="${rowClass}">
           <td scope="row">${dateCreate.dateWithoutTime}</td>

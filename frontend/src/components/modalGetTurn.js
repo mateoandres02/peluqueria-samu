@@ -1,6 +1,6 @@
-import { parseDate } from "./date";
+import { parseDate } from "../utils//date";
 import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn.js";
-import { removeAllModals } from "./calendarRender.js";
+import { removeAllModals } from "../utils/modal.js";
 
 import '../styles/modal.css';
 
@@ -36,6 +36,15 @@ const modalTurnContent = `
 `;
 
 const actionBtnDelete = ($btnDelete, modalConfirm, info, data) => {
+
+  /**
+   * Dispara la acción de eliminar un turno.
+   * param: $btnDelete -> elemento html del boton.
+   * param: modalConfirm -> modal de confirmación de eliminación del turno.
+   * param: info -> información del evento seleccionado propuesta por fullcalendar.
+   * param: data -> información del usuario activo.
+   */
+
   let body = document.body;
   $btnDelete.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -47,9 +56,20 @@ const actionBtnDelete = ($btnDelete, modalConfirm, info, data) => {
     const modales = document.querySelectorAll('.modal');
     modales.forEach(modal => removeAllModals(modal));
   });
+
 }
 
 const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
+
+  /**
+   * Dispara la acción de envio de mensaje al turno seleccionado.
+   * param: name -> nombre del cliente.
+   * param: day -> día del turno.
+   * param: startTime -> horario del turno.
+   * param: tel -> teléfono del cliente.
+   * param: $btnWsp -> elemento html del boton.
+   */
+
   const innerWidth = window.innerWidth;
   
   $btnWsp.addEventListener('click', async(e) => {
@@ -66,6 +86,7 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
     
     window.open(wspUrl, '_blank');
   });
+  
 }
 
 function modalGetTurn(info, data) {

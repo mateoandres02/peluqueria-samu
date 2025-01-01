@@ -1,10 +1,9 @@
-import { getWidthDisplay } from './calendarRender.js';
-import { calendarRender } from './calendarRender.js';
-import calendario from "./calendario.js";
-import { menu } from "./menuEmployee.js";
+import { calendario, calendarRender } from './calendarRender.js';
+import { menuEmployee } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { logout } from './logout.js';
+import { loader } from './loader.js';
 
 import "../styles/style.css"
 
@@ -21,38 +20,46 @@ const indexView = async (data) => {
     
     app.innerHTML = '';
     app.innerHTML += header;
-    app.innerHTML += menu(userActive);
+    app.innerHTML += menuEmployee(userActive);
 
-    let columnsCalendarViewTimeGrid;
-    columnsCalendarViewTimeGrid = getWidthDisplay();
+    app.innerHTML += loader;
 
-    switch (urlActive) {
+    try {
+        switch (urlActive) {
         
-        case '#calendario':
-
-            app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
-            
-            break;
-
-        case '#':
-
-            break;
+            case '#calendario':
     
-        default:
-            
-            app.innerHTML += calendario;
-            calendarRender(modalElement, data, columnsCalendarViewTimeGrid);
-
-            break;
-
-    };
-
-    closeMenu();
+                app.innerHTML += calendario;
+                calendarRender(modalElement, data);
+                
+                break;
     
-    const $btnLogout = document.querySelector('#logout');
-    $btnLogout.addEventListener('click', logout);
+            case '#':
     
+                break;
+        
+            default:
+                
+                app.innerHTML += calendario;
+                calendarRender(modalElement, data);
+    
+                break;
+    
+        };
+    } catch (error) {
+
+        console.error('Error loading the section:', error);
+
+    } finally {
+        const $loader = document.querySelector('.bg-loader-container');
+        if ($loader) $loader.remove();
+
+        closeMenu();
+    
+        const $btnLogout = document.querySelector('#logout');
+        $btnLogout.addEventListener('click', logout);
+    }
+
 };
 
 

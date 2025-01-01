@@ -1,6 +1,6 @@
 import { modalConfirm } from "./modalDeleteTurn";
 import { showModalConfirmDelete } from "./manageEmployees";
-import { getBarbers, getBarberById, getPaymentUsersById } from "./requests";
+import { getBarbers, getPaymentUsersById, putChangePercentageService, getServices, getServiceById, popService } from "./requests";
 
 import "../styles/configParams.css";
 
@@ -89,7 +89,14 @@ const tablePaymentEdit = `
   </div>
 `;
 
+
 const handleModifyPercentage = (links) => {
+
+  /**
+   * Manejamos el cambio de porcentaje a pagarle por el servicio a cada barbero.
+   * param: links -> son todos los elementos html "a" de los porcentajes de cada servicio.
+   */
+
   links.forEach(btn => {
     btn.addEventListener('click', async (e) => {
       
@@ -116,6 +123,7 @@ const handleModifyPercentage = (links) => {
             const id_service = parseInt(btn.getAttribute('data-service'));
 
             try {
+<<<<<<< HEAD
               const response = await fetch(`http://localhost:3001/paymentusers/${id_usuario}/${id_service}`, {
                  method: 'PUT',
                  headers: {
@@ -131,6 +139,9 @@ const handleModifyPercentage = (links) => {
               //  body: JSON.stringify({ porcentaje_pago: newValue }),
               //  credentials: 'include'
               //});
+=======
+              const response = await putChangePercentageService(id_usuario, id_service, newValue);
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
               if (response.ok) {
                 const newLink = document.createElement('a');
@@ -141,6 +152,7 @@ const handleModifyPercentage = (links) => {
                 input.parentNode.replaceChild(newLink, input);
 
                 handleModifyPercentage([newLink]);
+
               } else {
                 alert('Error al actualizar el porcentaje.');
               }
@@ -153,17 +165,30 @@ const handleModifyPercentage = (links) => {
         }
       });
 
-      // Enfocar el input automáticamente
+      // Enfocamos el input automáticamente después del cambio por la accesibilidad.
       input.focus();
       
     });
   })
 }
 
+
 const rowsService = (dataServices, dataPaymentBarber) => {
+
+  /**
+   * Cargamos los servicios ofrecidos por la barbería junto con los porcentajes de pago de cada servicio del barbero elegido.
+   * param: dataServices -> array con todos los servicios.
+   * param: dataPaymentBarber -> array con información de porcentajes de pago de cada servicio del barbero elegido.
+   */
+
   let row = '';
 
   const array = dataPaymentBarber.map(barber => {
+
+    /**
+     * Juntamos los dos arrays y filtramos las propiedades que solamente necesitamos guardandolas en un nuevo objeto.
+     */
+
     const service = dataServices.find(service => service.Id === barber.id_servicio);
     if (service) {
       return {
@@ -178,6 +203,11 @@ const rowsService = (dataServices, dataPaymentBarber) => {
   }).filter(Boolean);
 
   array.forEach((item, index) => {
+
+    /**
+     * Cargamos la tabla con los servicios y los porcentajes de pago del barbero elegido.
+     */
+
     if (index > -1) {
       row += `
         <tr key=${index}>
@@ -189,7 +219,9 @@ const rowsService = (dataServices, dataPaymentBarber) => {
   });
 
   return row;
+
 }
+
 
 const rows = (data) => {
 
@@ -221,6 +253,7 @@ const rows = (data) => {
   return row;
 };
 
+
 const serviceData = async () => {
 
   /**
@@ -228,42 +261,45 @@ const serviceData = async () => {
    */
 
   try {
+<<<<<<< HEAD
     //const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
       const response = await fetch("http://localhost:3001/cutservices");
     
     if (!response.ok) {
       alert('Hubo algun error en obtener los servicios.');
+=======
+    const data = await getServices();
+
+    if (data.length > 0) {
+      let tableServices = `
+        <div class="table-container table-payment-container table-config-params">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">NOMBRE DEL SERVICIO</th>
+                <th scope="col">PRECIO</th>
+                <th scope="col">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows(data)}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      return tableServices;
+
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
     } else {
-      const data = await response.json();
+      return '<p class="empty">No hay servicios registrados.</p>'
+    }
 
-      if (data.length > 0) {
-        let tableServices = `
-          <div class="table-container table-payment-container table-config-params">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">NOMBRE DEL SERVICIO</th>
-                  <th scope="col">PRECIO</th>
-                  <th scope="col">ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rows(data)}
-              </tbody>
-            </table>
-          </div>
-        `;
-
-        return tableServices;
-
-      } else {
-        return '<p class="empty">No hay servicios registrados.</p>'
-      }
-    };
   } catch (error) {
     console.log(error);
   };
 }
+
 
 const showRegisterServiceModal = (btn) => {
 
@@ -283,8 +319,11 @@ const showRegisterServiceModal = (btn) => {
 
     formService.Nombre.value = '';
     formService.Precio.value = '';
+
   });
+
 }
+
 
 const submitService = (form, modal, modalFooter) => {
 
@@ -319,6 +358,7 @@ const submitService = (form, modal, modalFooter) => {
       "Precio": precio
     }
 
+<<<<<<< HEAD
     //let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
       let url = 'http://localhost:3001/cutservices';
     let method = 'POST';
@@ -326,6 +366,19 @@ const submitService = (form, modal, modalFooter) => {
     if (mode === 'update') {
       //url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
         url = `http://localhost:3001/cutservices/${id}`;
+=======
+    /**
+     * No conviene modularizarlo a request porque está trabajada completamente como promesa y deberíamos exportar todo lo de acá.
+     */
+
+    let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
+    // let url = 'http://localhost:3001/cutservices';
+    let method = 'POST';
+
+    if (mode === 'update') {
+      url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
+      // url = `http://localhost:3001/cutservices/${id}`;
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
       method = 'PUT';
     };
 
@@ -365,10 +418,14 @@ const submitService = (form, modal, modalFooter) => {
   });
 };
 
+
 const cancelSubmitFormService = (btnCancel, form, modal) => {
 
   /**
    * Cancela el post.
+   * param: btnCancel -> elemento html del boton de cancelar.
+   * param: form -> elemento html del formulario.
+   * param: modal -> elemento html de la modal desplegada.
    */
 
   btnCancel.addEventListener('click', (e) => {
@@ -377,16 +434,18 @@ const cancelSubmitFormService = (btnCancel, form, modal) => {
     form.Nombre.value = '';
     form.Precio.value = '';
 
-
     const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
     bootstrapModalService.hide();
   });
+
 };
 
 const updateService = (btnsPut, modal) => {
 
   /**
    * Hace un update en la base de datos del servicio.
+   * param: btnsPut -> botones de actualizar.
+   * param: modal -> modal desplegada.
    */
 
   btnsPut.forEach(btn => {
@@ -395,9 +454,14 @@ const updateService = (btnsPut, modal) => {
 
       const key = e.currentTarget.getAttribute('key');
 
+<<<<<<< HEAD
       //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, { credentials: 'include' });
       const response = await fetch(`http://localhost:3001/cutservices/${key}`);
       const data = await response.json();
+=======
+
+      const data = await getServiceById(key);
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       document.querySelector("#postServiceLabel").textContent = "Actualizar Servicio";
       document.querySelector(".btnPost").textContent = "Actualizar";
@@ -411,9 +475,13 @@ const updateService = (btnsPut, modal) => {
       $putFormModalService.Precio.value = data.Precio;
 
       modal.show();
+
     });
+
   });
+  
 };
+
 
 const deleteService = (btnsDelete) => {
 
@@ -430,6 +498,7 @@ const deleteService = (btnsDelete) => {
         const confirm = await showModalConfirmDelete(modalConfirm);
 
         if (confirm) {
+<<<<<<< HEAD
           //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
           //  method: 'DELETE',
           //  credentials: 'include'
@@ -437,21 +506,33 @@ const deleteService = (btnsDelete) => {
            const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
              method: 'DELETE'
            });
+=======
+
+          const response = await popService(key);
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
           if (response.ok) {
             window.location.reload();
           } else {
             alert('Error al eliminar el servicio.');
           };
-        } else {
-          console.log('Acción cancelada por el usuario.');
         }
+
       } catch (e) {};
     });
+
   });
+
 }
 
 const handleChangeBarber = async (table, selectable) => {
+
+  /**
+   * Manejamos la selección del barbero para modificarle los porcentajes.
+   * param: table -> elemento html de la tabla donde se va a renderizar la información.
+   * param: selectable -> elemento html con todos los barberos cargados.
+   */
+
   const dataBarbers = await getBarbers();
 
   selectable.addEventListener('change', async (e) => {
@@ -460,17 +541,39 @@ const handleChangeBarber = async (table, selectable) => {
 
     if (filteredBarber.length > 0) {
       const dataBarber = await getPaymentUsersById(filteredBarber[0].Id);
-      paymentData(table, dataBarber)
+      
+      if (dataBarber.message) {
+        table.innerHTML = `
+          <tr>
+            <td scope="row" colspan="2">El barbero no tiene servicios asociados.</td>
+          </tr>
+        `;
+      } else {
+        paymentData(table, dataBarber)
+      }
+
     }
 
   });
 }
 
 const paymentData = async (table, dataBarber) => {
+
+  /**
+   * Renderización de la información de los porcentajes de los barberos.
+   * param: table -> elemento html donde se renderizará la información.
+   * param: dataBarber -> información de los porcentajes de pago de los barberos.
+   */
+
   try {
+<<<<<<< HEAD
     const responseCutServices = await fetch("http://localhost:3001/cutservices");
     //const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
     const cutServices = await responseCutServices.json();
+=======
+
+    const cutServices = await getServices();
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
     if (table !== undefined) {
       table.innerHTML = `${rowsService(cutServices, dataBarber)}`;
@@ -496,7 +599,6 @@ export {
   cancelSubmitFormService,
   updateService,
   deleteService,
-  // paymentData,
   handleChangeBarber,
   tablePaymentEdit,
   handleModifyPercentage

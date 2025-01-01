@@ -1,3 +1,5 @@
+import { login } from "./requests"
+
 const mensajeError = document.getElementsByClassName("error")[0];
 const $loader = document.querySelector('.login-loader-container');
 
@@ -10,6 +12,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+<<<<<<< HEAD
     //const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
     //    method: 'POST',
     //    headers: {
@@ -26,6 +29,9 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
          body: JSON.stringify({ Nombre: username, Contrasena: password }),
          credentials: 'include',
      });
+=======
+    const response = await login(username, password);
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
     
     if (response.ok) {
         setTimeout(() => {

@@ -1,4 +1,4 @@
-import { parseDate, addHourOfStartDate } from "./date";
+import { parseDate, addHourOfStartDate } from "../utils/date";
 import '../styles/modal.css';
 import logAction from "../utils/logActions.js";
 
@@ -416,9 +416,14 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       (regularCustomer === 'true' && allResponsesOk && response.ok) ||
       (regularCustomer === 'false' && response.ok)
     ) {
+<<<<<<< HEAD
       span.innerHTML = 'Turno creado correctamente!'
       span.style.color = '#02C028';
       console.log("turnitoo")
+=======
+      span.innerHTML = '¡Turno creado correctamente!'
+      span.style.color = '#5cb85c';
+>>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       setTimeout(() => {
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);

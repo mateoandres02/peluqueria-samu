@@ -50,32 +50,9 @@ function deleteTurn(info, data){
     const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 
     if (regularCustomer === "true") {
-<<<<<<< HEAD
-      //response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${publicId}/${date}`, {
-      // method: 'DELETE'  
-      //});
-      response = await fetch(`http://localhost:3001/recurrent_turns/turn/${publicId}/${date}`, {
-         method: 'DELETE'  
-       });
-      logAction({
-        Barbero: userName,
-        Cliente: info.event._def.title,
-        FechaTurno: formatedStartDate,
-        Accion: 'DELETE'
-      })
-    } else {
-      //response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${publicId}/${date}`, {
-      // method: 'DELETE'  
-      //});
-      
-      response = await fetch(`http://localhost:3001/turns/${publicId}/${date}`, {
-         method: 'DELETE'  
-      });
-=======
 
 
       response = await deleteRegularCustomer(publicId, date);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       logAction({
         Barbero: userName,

@@ -24,6 +24,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     if (!response.ok) {
         $loader.style.display = "none";
 
+        console.log("error en el la peticion del login", response)
         mensajeError.classList.toggle("escondido", false);
 
         setTimeout(() => {

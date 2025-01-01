@@ -5,6 +5,7 @@ const verifyToken = async (req, res, next) => {
 
     // Obtenemos el token desde las cookies.
     const token = await req.cookies.access_token;
+    console.log("TOKEN", token)
 
     if (!token) {
         return res.status(401).json({

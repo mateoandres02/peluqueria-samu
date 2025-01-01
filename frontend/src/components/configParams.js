@@ -123,25 +123,7 @@ const handleModifyPercentage = (links) => {
             const id_service = parseInt(btn.getAttribute('data-service'));
 
             try {
-<<<<<<< HEAD
-              const response = await fetch(`http://localhost:3001/paymentusers/${id_usuario}/${id_service}`, {
-                 method: 'PUT',
-                 headers: {
-                   'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({ porcentaje_pago: newValue })
-               });
-              //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id_usuario}/${id_service}`, {
-              //  method: 'PUT',
-              //  headers: {
-              //    'Content-Type': 'application/json'
-              //  },
-              //  body: JSON.stringify({ porcentaje_pago: newValue }),
-              //  credentials: 'include'
-              //});
-=======
               const response = await putChangePercentageService(id_usuario, id_service, newValue);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
               if (response.ok) {
                 const newLink = document.createElement('a');
@@ -261,13 +243,6 @@ const serviceData = async () => {
    */
 
   try {
-<<<<<<< HEAD
-    //const response = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
-      const response = await fetch("http://localhost:3001/cutservices");
-    
-    if (!response.ok) {
-      alert('Hubo algun error en obtener los servicios.');
-=======
     const data = await getServices();
 
     if (data.length > 0) {
@@ -290,7 +265,6 @@ const serviceData = async () => {
 
       return tableServices;
 
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
     } else {
       return '<p class="empty">No hay servicios registrados.</p>'
     }
@@ -358,15 +332,6 @@ const submitService = (form, modal, modalFooter) => {
       "Precio": precio
     }
 
-<<<<<<< HEAD
-    //let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
-      let url = 'http://localhost:3001/cutservices';
-    let method = 'POST';
-
-    if (mode === 'update') {
-      //url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
-        url = `http://localhost:3001/cutservices/${id}`;
-=======
     /**
      * No conviene modularizarlo a request porque está trabajada completamente como promesa y deberíamos exportar todo lo de acá.
      */
@@ -378,7 +343,6 @@ const submitService = (form, modal, modalFooter) => {
     if (mode === 'update') {
       url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
       // url = `http://localhost:3001/cutservices/${id}`;
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
       method = 'PUT';
     };
 
@@ -454,14 +418,8 @@ const updateService = (btnsPut, modal) => {
 
       const key = e.currentTarget.getAttribute('key');
 
-<<<<<<< HEAD
-      //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, { credentials: 'include' });
-      const response = await fetch(`http://localhost:3001/cutservices/${key}`);
-      const data = await response.json();
-=======
 
       const data = await getServiceById(key);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
       document.querySelector("#postServiceLabel").textContent = "Actualizar Servicio";
       document.querySelector(".btnPost").textContent = "Actualizar";
@@ -498,18 +456,8 @@ const deleteService = (btnsDelete) => {
         const confirm = await showModalConfirmDelete(modalConfirm);
 
         if (confirm) {
-<<<<<<< HEAD
-          //const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${key}`, {
-          //  method: 'DELETE',
-          //  credentials: 'include'
-          //});
-           const response = await fetch(`http://localhost:3001/cutservices/${key}`, {
-             method: 'DELETE'
-           });
-=======
 
           const response = await popService(key);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
           if (response.ok) {
             window.location.reload();
@@ -566,14 +514,8 @@ const paymentData = async (table, dataBarber) => {
    */
 
   try {
-<<<<<<< HEAD
-    const responseCutServices = await fetch("http://localhost:3001/cutservices");
-    //const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", { credentials: 'include' });
-    const cutServices = await responseCutServices.json();
-=======
 
     const cutServices = await getServices();
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
 
     if (table !== undefined) {
       table.innerHTML = `${rowsService(cutServices, dataBarber)}`;

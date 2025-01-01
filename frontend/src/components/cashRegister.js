@@ -52,6 +52,7 @@ const tableTurns = `
           <th scope="col">SERVICIO</th>
           <th scope="col">TIPO DE SERVICIO</th>
           <th scope="col">COSTO</th>
+          <th scope="col">FIJO</th>
         </tr>
       </thead>
       <tbody class="table-cash-body">
@@ -147,6 +148,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
       let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
       let hourTurn = user.date ? parseDate(user.date) : '';
+      let isRecurrent = user.turns.Regular === "true" ? 'Si' : 'No';
 
       if (user.exdate != 1) {
         row += `
@@ -165,6 +167,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
               </div>
             </td>
             <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
+            <td>${isRecurrent}</td>
           </tr>
         `;
       }
@@ -210,21 +213,21 @@ const handleSelectChange = (cutServices, dateValue) => {
         Service: selectedService.Id
       };
 
-      await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
+      //await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
+      //  { 
+      //    method: 'PUT', 
+      //    headers: { 'Content-Type': 'application/json' },
+      //    body: JSON.stringify(turn),
+      //    credentials: 'include'
+      //  }
+      //);
+      await fetch(`http://localhost:3001/turns/${rowId}`, 
         { 
           method: 'PUT', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(turn),
-          credentials: 'include'
+          body: JSON.stringify(turn)
         }
       );
-      // await fetch(`http://localhost:3001/turns/${rowId}`, 
-      //   { 
-      //     method: 'PUT', 
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify(turn)
-      //   }
-      // );
 
       if (valueCalendar === today) {
         window.location.reload();
@@ -464,8 +467,8 @@ const getPaidForBarbers = async () => {
       barbersData[barber] = { services: {}, percentages: {} };
 
       // Pedimos los porcentajes de los distintos serivicios de cada barbero
-      const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`, {credentials: 'include'});
-      // const paymentForBarber = await fetch(`http://localhost:3001/paymentusers/${turn.turns.NroUsuario}`);
+      //const paymentForBarber = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${turn.turns.NroUsuario}`, {credentials: 'include'});
+      const paymentForBarber = await fetch(`http://localhost:3001/paymentusers/${turn.turns.NroUsuario}`);
       const dataPaymentBarber = await paymentForBarber.json();
 
       dataPaymentBarber.forEach((item) => {

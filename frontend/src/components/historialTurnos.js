@@ -39,6 +39,7 @@ const tableTurnsHistory = `
           <th scope="col">HORA TURNO</th>
           <th scope="col">BARBERO</th>
           <th scope="col">CLIENTE</th>
+          <th scope="col">FIJO</th>
           <th scope="col">ACCION</th>
         </tr>
       </thead>
@@ -49,8 +50,8 @@ const tableTurnsHistory = `
 `;
 
 const loadBarberSelectHistory = async (barberSelect) => {
-  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
-  // const barbers = await fetch('http://localhost:3001/users');
+  //const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
+  const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
 
   dataBarbers.forEach(barber => {
@@ -87,11 +88,7 @@ const rows = (dataTurns) => {
       const rowClass = turn.Accion == 'POST' ? 'agregado' : 'eliminado';
 
       console.log("Turno:", turn);
-      console.log("Fecha Creación:", dateCreate);
-      console.log("Fecha Turno:", dateTurn);
-      console.log("Acción:", action);
 
-      console.log("fechaCreacion", dateTurn)
       row += `
         <tr key=${turn.Id} class="${rowClass}">
           <td scope="row">${dateCreate.dateWithoutTime}</td>
@@ -169,8 +166,8 @@ const rows = (dataTurns) => {
 //}
 
 const getHistoryTurns = async () => {
-  // const responseTurns = await fetch('http://localhost:3001/historyturns');
-  const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
+  const responseTurns = await fetch('http://localhost:3001/historyturns');
+  //const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
 
   return responseTurns;
 }

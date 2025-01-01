@@ -87,11 +87,6 @@ const rows = (dataTurns) => {
       let action = turn.Accion == 'POST' ? 'AGREGADO' : 'ELIMINADO';
       const rowClass = turn.Accion == 'POST' ? 'agregado' : 'eliminado';
 
-<<<<<<< HEAD
-      console.log("Turno:", turn);
-
-=======
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
       row += `
         <tr key=${turn.Id} class="${rowClass}">
           <td scope="row">${dateCreate.dateWithoutTime}</td>

@@ -12,26 +12,22 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-<<<<<<< HEAD
-    //const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
-    //    method: 'POST',
-    //    headers: {
-    //        'Content-Type': 'application/json', 
-    //    },
-    //    body: JSON.stringify({ Nombre: username, Contrasena: password }),
-    //    credentials: 'include',
-    //});
-     const response = await fetch('http://localhost:3001/login', {
-         method: 'POST',
-         headers: {
+    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
+        method: 'POST',
+        headers: {
             'Content-Type': 'application/json', 
-         },
-         body: JSON.stringify({ Nombre: username, Contrasena: password }),
-         credentials: 'include',
-     });
-=======
-    const response = await login(username, password);
->>>>>>> 0f81250e2fe4e644a30a896143c2259bae6b7e8b
+        },
+        body: JSON.stringify({ Nombre: username, Contrasena: password }),
+        credentials: 'include',
+    });
+    // const response = await fetch('http://localhost:3001/login', {
+    //     method: 'POST',
+    //     headers: {
+    //        'Content-Type': 'application/json', 
+    //     },
+    //     body: JSON.stringify({ Nombre: username, Contrasena: password }),
+    //     credentials: 'include',
+    // });
     
     if (response.ok) {
         setTimeout(() => {
@@ -43,6 +39,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     if (!response.ok) {
         $loader.style.display = "none";
 
+        console.log("error en el la peticion del login", response)
         mensajeError.classList.toggle("escondido", false);
 
         setTimeout(() => {

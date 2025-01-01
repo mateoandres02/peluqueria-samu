@@ -22,16 +22,18 @@ const login = async (req, res) => {
         );
 
         res.cookie('access_token', token, {
-            httpOnly: true, // Solo accesible por el servidor
-            secure: true, // Solo envío sobre HTTPS
-            sameSite: 'None', // Solicitudes cruzadas
-            path: '/', // Cookie esté disponible para todas las rutas
-            maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
-        });
+             httpOnly: true, // Solo accesible por el servidor
+             secure: true, // Solo envío sobre HTTPS
+             sameSite: 'None', // Solicitudes cruzadas
+             path: '/', // Cookie esté disponible para todas las rutas
+             maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
+         });
         
-        res.send({ user, token });
+        res.send({ user, token })
+        //res.status(200).json({ user, token });
     } catch (error) {
         res.status(401).send(error.message);
+        //res.status(401).json(error.message);
     };
 
 };

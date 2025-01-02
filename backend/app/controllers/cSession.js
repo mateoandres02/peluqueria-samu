@@ -17,16 +17,16 @@ const login = async (req, res) => {
             }, 
             config.secretJwtKey, 
             {
-                expiresIn: '1h',
+                expiresIn: '10h',
             }
         );
 
-        res.cookie('token_access', token, {
+        res.cookie('access_token', token, {
             httpOnly: true,
             secure: true,
             sameSite: 'None',
             path: '/',
-            maxAge: 1000 * 60 * 60 * 1
+            maxAge: 1000 * 60 * 60 * 10
         });
         
         res.send({ user, token });
@@ -50,12 +50,6 @@ const register = async (req, res) => {
 };
 
 const logout = (req, res) => {
-    res.clearCookie('token_access', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-        path: '/',
-    });
     res.clearCookie('access_token', {
         httpOnly: true,
         secure: true,

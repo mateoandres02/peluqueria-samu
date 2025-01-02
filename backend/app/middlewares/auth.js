@@ -6,15 +6,13 @@ const verifyToken = async (req, res, next) => {
 
     // 1. Intentar obtener el token del encabezado Authorization
     if (req.headers.authorization) {
-        token = req.headers.authorization;
+        token = req.headers.authorization || req.headers['authorization']?.split(' ')[1];
         console.log('header', token)
     }
     
-    console.log(req)
-
     // 2. Intentar obtener el token de las cookies
-    if (!token && req.cookies.access_token) {
-        token = req.cookies.access_token;
+    if (!token && req.cookies.token) {
+        token = req.cookies.token;
         console.log('cookies', token)
     }
     
@@ -30,15 +28,18 @@ const verifyToken = async (req, res, next) => {
         });
     }
 
-    jwt.verify(token, config.secretJwtKey, (err, user) => {
-        if (err) {
-            console.error('Error al verificar el token:', err);
-            return res.status(403).json({ message: 'Token inválido o expirado.' });
-        }
-        
-        req.user = user;
-        next();
-    });
+    try {
+        jwt.verify(token, config.secretJwtKey, (err, user) => {
+            if (err) {
+                return res.status(403).json({ message: 'Token inválido o expirado.' });
+            }
+            req.user = user;
+            next();
+        });
+    } catch (error) {
+        res.clearCookie("token");
+    }
+
 };
 
 export { verifyToken };

@@ -11,13 +11,13 @@ export const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true, // Permitir el envío de cookies y credenciales.
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos HTTP permitidos.
+  credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: [
     'Content-Type', 
     'Authorization', 
     'X-Requested-With', 
     'Accept'
   ],
-  exposedHeaders: ['Set-Cookie'], // Permitir que el cliente acceda a las cookies.
+  exposedHeaders: ['Set-Cookie', 'Authorization'],
 };

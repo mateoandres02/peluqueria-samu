@@ -19,5 +19,5 @@ export const corsOptions = {
     'X-Requested-With', 
     'Accept'
   ],
-  exposedHeaders: ['Set-Cookie', 'Authorization'],
+  exposedHeaders: ['Set-Cookie'],
 };

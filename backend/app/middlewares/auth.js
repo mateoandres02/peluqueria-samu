@@ -2,7 +2,13 @@ import jwt from 'jsonwebtoken';
 import { config } from "../config/config.js";
 
 const verifyToken = async (req, res, next) => {
-    const token = req.cookies.access_token;
+    let token = req.cookies['access_token'];
+    console.log('cookie', token)
+
+    if (!token) {
+        token = req.headers['authorization']?.split(' ')[1]
+        console.log('header', token)
+    }
 
     if (!token) {
         return res.status(401).json({

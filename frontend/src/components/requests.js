@@ -67,16 +67,16 @@ const getUserActive = async () => {
     const token = await getCookie('access_token');
 
     // Verificamos si el token está presente
-    if (!token) {
-      window.location.href = '/login';
-      return null;
-    }
+    // if (!token) {
+    //   window.location.href = '/login';
+    //   return null;
+    // }
 
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
+        // 'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
       },
       credentials: 'include' // Esto asegura que las cookies se envíen con la petición
     });

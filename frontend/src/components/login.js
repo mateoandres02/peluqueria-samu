@@ -31,6 +31,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
         } else {
             localStorage.removeItem('accessToken');
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 
             $loader.style.display = "none";
             mensajeError.classList.toggle("escondido", false);

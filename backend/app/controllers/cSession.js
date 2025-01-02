@@ -17,7 +17,7 @@ const login = async (req, res) => {
             }, 
             config.secretJwtKey, 
             {
-                expiresIn: '10h',
+                expiresIn: config.accessTokenDuration,
             }
         );
 
@@ -26,7 +26,7 @@ const login = async (req, res) => {
             secure: true,
             sameSite: 'None',
             path: '/',
-            maxAge: 1000 * 60 * 60 * 10
+            maxAge: 1000 * 60 * 15 // 15 minutos
         });
         
         res.send({ user, token });

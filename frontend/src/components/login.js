@@ -19,7 +19,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             const data = await response.json();
 
             // Establecer la cookie con el token de acceso y parámetros de seguridad
-            // document.cookie = `token=${data.token}; path=/; SameSite=None; Secure`;
+            document.cookie = `token=${data.token}; path=/;`;
 
             // Guarda el token en localStorage
             localStorage.setItem('accessToken', data.token);

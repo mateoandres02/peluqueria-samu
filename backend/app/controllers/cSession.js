@@ -23,7 +23,7 @@ const login = async (req, res) => {
 
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'None',
             path: '/',
             maxAge: 1000 * 60 * 15 // 15 minutos
@@ -54,7 +54,7 @@ const register = async (req, res) => {
 const logout = (req, res) => {
     res.clearCookie('access_token', {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'None',
         path: '/',
     });

@@ -65,22 +65,18 @@ const getUserActive = async () => {
 
   try {
 
-    // const token = await getCookie("access_token");
-
-    // Prioridad: Encabezado -> Cookies -> localStorage
     const tokenFromLocalStorage = localStorage.getItem('accessToken');
 
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
       method: 'GET',
       headers: {
-        Authorization: tokenFromLocalStorage ? `Bearer ${tokenFromLocalStorage}` : undefined,
         'Content-Type': 'application/json',
+        'Authorization': tokenFromLocalStorage ? `Bearer ${tokenFromLocalStorage}` : undefined,
       },
-      credentials: 'include', // Para enviar cookies si están configuradas
+      credentials: 'include',
     });
 
     return response;
-
 
     // const token = await getCookie('access_token');
 

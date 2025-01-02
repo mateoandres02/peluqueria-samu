@@ -51,14 +51,27 @@ function deleteTurn(info, data){
     const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 
     if (regularCustomer === "true") {
-
-
-      response = await deleteRegularCustomer(publicId, date, regularCustomer, formatedStartDate, cliente, userName);
-
+      
+      logAction({
+        Barbero: userName,
+        Cliente: cliente,
+        FechaTurno: formatedStartDate,
+        Fijo: `${regularCustomer}`,
+        Accion: 'DELETE'
+      });
+      
+      response = await deleteRegularCustomer(publicId, date);
     } else {
 
-      response = await deleteNormalCustomer(publicId, date, regularCustomer, formatedStartDate, cliente, userName);
+      logAction({
+        Barbero: userName,
+        Cliente: cliente,
+        FechaTurno: formatedStartDate,
+        Fijo: `${regularCustomer}`,
+        Accion: 'DELETE'
+      });
 
+      response = await deleteNormalCustomer(publicId, date);
     }
     
     if (response.ok) {

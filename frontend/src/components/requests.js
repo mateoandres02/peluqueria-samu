@@ -308,18 +308,12 @@ const deleteRegularCustomer = async (id, date, regularCustomer, formatedStartDat
   //  method: 'DELETE'  
   //});
 
-  logAction({
-    Barbero: userName,
-    Cliente: cliente,
-    FechaTurno: formatedStartDate,
-    Fijo: `${regularCustomer}`,
-    Accion: 'DELETE'
-  });
+  
 
   return response;
 }
 
-const deleteNormalCustomer = async (id, date, regularCustomer, formatedStartDate, cliente, userName) => {
+const deleteNormalCustomer = async (id, date) => {
 
   /**
    * Eliminamos un turno normal.
@@ -334,16 +328,7 @@ const deleteNormalCustomer = async (id, date, regularCustomer, formatedStartDate
   //  method: 'DELETE'  
   //});
 
-  logAction({
-    Barbero: userName,
-    Cliente: cliente,
-    FechaTurno: formatedStartDate,
-    Fijo: `${regularCustomer}`,
-    Accion: 'DELETE'
-  });
-
   return response;
-
 }
 
 

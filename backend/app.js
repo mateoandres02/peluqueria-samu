@@ -15,10 +15,10 @@ import routesHistoryLog from "./app/routes/rHistoryLog.js";
 const app = express();
 
 // Middlewares.
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(corsOptions));
 
@@ -27,20 +27,17 @@ app.use(routesSession);
 
 // Ruta protegida para verificar el token
 app.get('/verify-token', verifyToken, (req, res) => {
-  console.log(req.headers);
-  console.log(req.cookies);
-
   const user = req.user;
   res.status(200).send({ user });
 });
 
 // Otras rutas de tu aplicación
-app.use(routesTurn);
-app.use(routesUser);
-app.use(routesCutService);
-app.use(routesTurnsDays);
-app.use(routesPaymentUsers);
-app.use(routesHistoryLog);
+app.use(verifyToken, routesTurn);
+app.use(verifyToken, routesUser);
+app.use(verifyToken, routesCutService);
+app.use(verifyToken, routesTurnsDays);
+app.use(verifyToken, routesPaymentUsers);
+app.use(verifyToken, routesHistoryLog);
 
 // Iniciar el servidor en el puerto configurado
 app.listen(config.port, () => {

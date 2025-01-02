@@ -66,12 +66,13 @@ const getUserActive = async () => {
   try {
 
     const tokenFromLocalStorage = localStorage.getItem('accessToken');
+    const token = await getCookie('token')
 
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': tokenFromLocalStorage ? `Bearer ${tokenFromLocalStorage}` : undefined,
+        'Authorization': tokenFromLocalStorage || token ? `Bearer ${tokenFromLocalStorage || token}` : undefined,
       },
       credentials: 'include',
     });

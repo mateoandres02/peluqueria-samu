@@ -21,12 +21,14 @@ const login = async (req, res) => {
             }
         );
 
-        res.cookie('access_token', token, {
+        console.log('token', token);
+
+        res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'None',
             path: '/',
-            maxAge: 1000 * 60 * 15 // 15 minutos
+            maxAge: 1000 * 60 * 60 * 10 
         });
         
         res.send({ user, token })
@@ -52,9 +54,9 @@ const register = async (req, res) => {
 };
 
 const logout = (req, res) => {
-    res.clearCookie('access_token', {
+    res.clearCookie('token', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
         sameSite: 'None',
         path: '/',
     });

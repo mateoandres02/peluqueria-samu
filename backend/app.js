@@ -15,9 +15,9 @@ import routesHistoryLog from "./app/routes/rHistoryLog.js";
 const app = express();
 
 // Middlewares.
-app.use(express.json()); // Para manejar JSON en las solicitudes
-app.use(cookieParser()); // Para manejar cookies en las solicitudes
-app.use(cors(corsOptions)); // Middleware de CORS
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors(corsOptions));
 
 // Endpoints.
 app.use(routesSession);

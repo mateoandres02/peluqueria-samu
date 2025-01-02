@@ -12,39 +12,33 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
-       method: 'POST',
-       headers: {
-           'Content-Type': 'application/json', 
-       },
-       body: JSON.stringify({ Nombre: username, Contrasena: password }),
-       credentials: 'include',
-    });
-    // const response = await fetch('http://localhost:3001/login', {
-    //     method: 'POST',
-    //     headers: {
-    //        'Content-Type': 'application/json', 
-    //     },
-    //     body: JSON.stringify({ Nombre: username, Contrasena: password }),
-    //     credentials: 'include',
-    // });
+    try {
+        const response = await login(username, password);
+        
+        if (response.ok) {
+
+            const data = await response.json();
+
+            document.cookie = `token=${data.token}; path=/; max-age=300`;
+
+            setTimeout(() => {
+                history.replaceState(null, '', '/');
+                window.location.href = '/';
+            }, 3000);
+        }
+
+        if (!response.ok) {
+            $loader.style.display = "none";
     
-    if (response.ok) {
-        setTimeout(() => {
-            history.replaceState(null, '', '/');
-            window.location.href = '/';
-        }, 3000);
-    } 
+            mensajeError.classList.toggle("escondido", false);
+    
+            setTimeout(() => {
+                mensajeError.classList.toggle("escondido");
+            }, 2500);
+        }
 
-    if (!response.ok) {
-        $loader.style.display = "none";
-
-        console.log("error en el la peticion del login", response)
-        mensajeError.classList.toggle("escondido", false);
-
-        setTimeout(() => {
-            mensajeError.classList.toggle("escondido");
-        }, 2500);
+    } catch (error) {
+        alert("Error during login: " + error.message);
     }
 
 });

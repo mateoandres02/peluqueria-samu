@@ -1,63 +1,31 @@
 import logAction from "../utils/logActions";
 
-
-// const login = async (username, password) => {
-//   /**
-//    * Hace la petición de logueo.
-//    * param: username -> usuario que intenta loguearse.
-//    * param: password -> contraseña del usuario que intenta loguearse.
-//    */
-
-//   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json', 
-//     },
-//     body: JSON.stringify({ Nombre: username, Contrasena: password }),
-//     credentials: 'include',
-//   });
-//   // const response = await fetch('http://localhost:3001/login', {
-//   // method: 'POST',
-//   // headers: {
-//   //     'Content-Type': 'application/json', 
-//   // },
-//   // body: JSON.stringify({ Nombre: username, Contrasena: password }),
-//   // credentials: 'include',
-//   // });
-
-//   return response;
-// }
-
-
 const login = async (username, password) => {
+  /**
+   * Hace la petición de logueo.
+   * param: username -> usuario que intenta loguearse.
+   * param: password -> contraseña del usuario que intenta loguearse.
+   */
+
   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/login', {
-     method: 'POST',
-     headers: {
-         'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({ Nombre: username, Contrasena: password }),
-     credentials: 'include'
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json', 
+    },
+    body: JSON.stringify({ Nombre: username, Contrasena: password }),
+    credentials: 'include'
   });
+  // const response = await fetch('http://localhost:3001/login', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json', 
+  //   },
+  //   body: JSON.stringify({ Nombre: username, Contrasena: password }),
+  //   credentials: 'include',
+  // });
 
-  //const response = await fetch('http://localhost:3001/login', {
-  //  method: 'POST',
-  //  headers: {
-  //      'Content-Type': 'application/json',
-  //  },
-  //  body: JSON.stringify({ Nombre: username, Contrasena: password }),
-  //  credentials: 'include'
-  //});
-
-  const data = await response.json();
-
-  if (response.ok) {
-      localStorage.setItem('access_token', data.token); // Guarda el token en localStorage
-      return data.user;
-  } else {
-      throw new Error(data.message);
-  }
-};
-
+  return response;
+}
 
 const closeActiveSession = async () => {
 
@@ -66,52 +34,75 @@ const closeActiveSession = async () => {
    */
 
   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/logout', {
-   method: 'POST',
-   credentials: 'include'
+    method: 'POST',
+    credentials: 'include'
   });
-  //const response = await fetch('http://localhost:3001/logout', {
-  //    method: 'POST',
-  //    credentials: 'include'
-  //});
+  // const response = await fetch('http://localhost:3001/logout', {
+  //   method: 'POST',
+  //   credentials: 'include'
+  // });
 
   return response;
 }
 
-// const getUserActive = async () => {
-
-//   /**
-//    * Obtiene el usuario activo y su token para poder verificarlo.
-//    */
-
-//   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
-//   // const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
-
-//   return response;
-  
-// }
-
+async function getCookie(name) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
 
 const getUserActive = async () => {
-  const token = localStorage.getItem('access_token');
 
-  const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
-     headers: {
-         'Authorization': `Bearer ${token}`, // Incluye el token en los headers
-     },
-  });
+  /**
+   * Obtiene el usuario activo y su token para poder verificarlo.
+   */
 
-  //const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
-  //  headers: {
-  //      'Authorization': `Bearer ${token}`, // Incluye el token en los headers
-  //  },
-  //});
+  // // const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
+  // const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
 
-  if (!response.ok) {
-      throw new Error('No autorizado');
+  // return response;
+
+  try {
+    const token = await getCookie('token');
+
+    // console.log(token)
+
+    // const response = await fetch('http://localhost:3001/verify-token', {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
+    //   },
+    //   credentials: 'include'
+    // })
+
+    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
+      },
+      credentials: 'include'
+    })
+
+    if (response.status === 401) {
+      // Token inválido o expirado
+      window.location.href = '/login';
+      return null;
+    }
+    return response;
+    
+  } catch (error) {
+    console.error("Error getting user active:", error);
+    window.location.href = '/login';
   }
-
-  return await response.json();
-};
+  
+}
 
 const getTurnsByUserActive = async (data) => {
 
@@ -120,13 +111,14 @@ const getTurnsByUserActive = async (data) => {
    * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
    */ 
 
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`);
-  //const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${data.user.Id}`, { credentials: 'include' });
+  // const response = await fetch(`http://localhost:3001/turns/barber/${data.user.Id}`);
   const turns = await response.json();
 
   return turns;
 
 }
+
 
 
 const getRecurrentTurnsByUserActive = async (data) => {
@@ -136,8 +128,8 @@ const getRecurrentTurnsByUserActive = async (data) => {
    * param: data -> de acá sacamos la información necesaria para saber el id del usuario activo.
    */
 
-  const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`);
-  //const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
+  const responseRecurrentsTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${data.user.Id}`, { credentials: 'include' });
+  // const responseRecurrentsTurns = await fetch(`http://localhost:3001/recurrent_turns/${data.user.Id}`);
   const recurrentTurns = await responseRecurrentsTurns.json();
 
   return recurrentTurns;
@@ -151,8 +143,15 @@ const getBarbers = async () => {
    * Obtenemos los barberos disponibles en nuestro sistema.
    */
 
-  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users');
-  //const barbers = await fetch('http://localhost:3001/users');
+
+const getBarbers = async () => {
+
+  /**
+   * Obtenemos los barberos disponibles en nuestro sistema.
+   */
+
+  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', {credentials: 'include'});
+  // const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
   return dataBarbers;
 
@@ -168,22 +167,22 @@ const putChangeService = async (rowId, turn) => {
    */
 
   await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${rowId}`, 
-   { 
-     method: 'PUT', 
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(turn)
-   }
+    { 
+      method: 'PUT', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(turn),
+      credentials: 'include'
+    }
   );
-  //await fetch(`http://localhost:3001/turns/${rowId}`, 
-  //  { 
-  //    method: 'PUT', 
-  //    headers: { 'Content-Type': 'application/json' },
-  //    body: JSON.stringify(turn)
-  //  }
-  //);
+  // await fetch(`http://localhost:3001/turns/${rowId}`, 
+  //   { 
+  //     method: 'PUT', 
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(turn)
+  //   }
+  // );
 
 };
-
 
 const getServices = async () => {
 
@@ -191,12 +190,13 @@ const getServices = async () => {
    * Obtenemos los servicios a través de una solicitud al backend.
    */
   
-  const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices");
-  //const responseCutServices = await fetch("http://localhost:3001/cutservices");
+  const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/cutservices", {credentials: 'include'});
+  // const responseCutServices = await fetch("http://localhost:3001/cutservices");
   const cutServices = await responseCutServices.json();
   return cutServices;
 
 }
+
 
 
 const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
@@ -209,12 +209,12 @@ const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}/${dateParam}`);
-    //const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}/${dateParam}`, {credentials: 'include'});
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}/${barberParam}`);
-    //const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}/${barberParam}`, {credentials: 'include'});
+    // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
     return responseTurns;
   }
 
@@ -230,17 +230,16 @@ const getTurnsFilteredByDate = async (dateParam, recurrent) => {
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/date/${dateParam}`);
-    //const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/date/${dateParam}`, {credentials: 'include'});
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}`);
-    //const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}`, {credentials: 'include'});
+    // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
     return responseTurns;
   }
 
 }
-
 
 const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
 
@@ -251,12 +250,12 @@ const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
    */
 
   if (recurrent) {
-    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}`);
-    //const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
+    const responseRecurrentTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}`, {credentials: 'include'});
+    // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
     return responseRecurrentTurns;
   } else {
-    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${barberParam}`);
-    //const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
+    const responseTurns = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/barber/${barberParam}`, {credentials: 'include'});
+    // const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
     return responseTurns;
   }
 
@@ -270,8 +269,8 @@ const getBarberById = async (id) => {
    * param: id -> id del barbero seleccionado.
    */
 
-  const barber = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${id}`);
-  //const barber = await fetch(`http://localhost:3001/users/${id}`);
+  const barber = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${id}`, {credentials: 'include'});
+  // const barber = await fetch(`http://localhost:3001/users/${id}`);
   const dataBarber = await barber.json();
   return dataBarber;
 
@@ -285,8 +284,8 @@ const getPaymentUsersById = async (id) => {
    * param: id -> id del barbero.
    */
   
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id}`);
-  //const response = await fetch(`http://localhost:3001/paymentusers/${id}`);
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id}`, {credentials: 'include'});
+  // const response = await fetch(`http://localhost:3001/paymentusers/${id}`);
   const dataBarber = await response.json();
   return dataBarber;
 
@@ -302,15 +301,14 @@ const deleteRegularCustomer = async (id, date, regularCustomer, formatedStartDat
    */
 
   let response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${id}/${date}`, {
-    method: 'DELETE'  
+    method: 'DELETE',
+    credentials: 'include' 
   });
   //let response = await fetch(`http://localhost:3001/recurrent_turns/turn/${id}/${date}`, {
   //  method: 'DELETE'  
   //});
-
-  
-
   return response;
+  
 }
 
 const deleteNormalCustomer = async (id, date) => {
@@ -322,7 +320,8 @@ const deleteNormalCustomer = async (id, date) => {
    */
 
   let response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${id}/${date}`, {
-   method: 'DELETE'  
+   method: 'DELETE',
+   credentials: 'include' 
   });
   //let response = await fetch(`http://localhost:3001/turns/${id}/${date}`, {
   //  method: 'DELETE'  
@@ -340,19 +339,20 @@ const putChangePercentageService = async (id_usuario, id_service, newValue) => {
    * param: id_service -> id del servicio a actualizar.
    */
 
-  //const response = await fetch(`http://localhost:3001/paymentusers/${id_usuario}/${id_service}`, {
-  //  method: 'PUT',
-  //  headers: {
-  //    'Content-Type': 'application/json'
-  //  },
-  //  body: JSON.stringify({ porcentaje_pago: newValue })
-  //});
+  // const response = await fetch(`http://localhost:3001/paymentusers/${id_usuario}/${id_service}`, {
+  //   method: 'PUT',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify({ porcentaje_pago: newValue })
+  // });
   const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/paymentusers/${id_usuario}/${id_service}`, {
-   method: 'PUT',
-   headers: {
-     'Content-Type': 'application/json'
-   },
-   body: JSON.stringify({ porcentaje_pago: newValue })
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ porcentaje_pago: newValue }),
+    credentials: 'include'
   });
 
   return response;
@@ -367,13 +367,12 @@ const getServiceById = async (id) => {
    * param: id -> id del servicio a buscar.
    */
 
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`);
-  //const response = await fetch(`http://localhost:3001/cutservices/${id}`);
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`, {credentials: 'include'});
+  // const response = await fetch(`http://localhost:3001/cutservices/${id}`);
   const data = await response.json();
   return data;
 
 };
-
 
 const popService = async (id) => {
 
@@ -383,20 +382,22 @@ const popService = async (id) => {
    */
 
   const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`, {
-    method: 'DELETE'
+    method: 'DELETE',
+    credentials: 'include'
   });
-  //const response = await fetch(`http://localhost:3001/cutservices/${id}`, {
-  //  method: 'DELETE'
-  //});
+  // const response = await fetch(`http://localhost:3001/cutservices/${id}`, {
+  //   method: 'DELETE'
+  // });
 
   return response;
 
 }
 
+
 const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) => {
   const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${dateParam}/${barberParam}`, { credentials: 'include' });
 
-  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}/${barberParam}`);
+  // const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}/${barberParam}`);
 
   return responseHistoryturns;
   
@@ -405,7 +406,7 @@ const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) =>
 const getTurnsHistoryFilteredByDate = async (dateParam) => {
   const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${dateParam}`, { credentials: 'include' });
 
-  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}`);
+  // const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/${dateParam}`);
 
   return responseHistoryturns;
 }
@@ -413,7 +414,7 @@ const getTurnsHistoryFilteredByDate = async (dateParam) => {
 const getTurnsHistoryFilteredByBarber = async (barberParam) => {
   const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${barberParam}`, { credentials: 'include' });
 
-  //const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/barber/${barberParam}`);
+  // const responseHistoryturns = await fetch(`http://localhost:3001/historyturns/barber/${barberParam}`);
 
   return responseHistoryturns;
 }

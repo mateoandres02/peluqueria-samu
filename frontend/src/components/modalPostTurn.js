@@ -385,7 +385,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         };
 
         urlRegularTurn = 'https://peluqueria-invasion-backend.vercel.app/recurrent_turns';
-        //urlRegularTurn = 'http://localhost:3001/recurrent_turns';
+        // urlRegularTurn = 'http://localhost:3001/recurrent_turns';
 
         optionsRegularTurn = {
           method: 'POST',

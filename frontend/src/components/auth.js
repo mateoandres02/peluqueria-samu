@@ -8,7 +8,8 @@ export default async function checkAuthentication() {
 
   // Si la respuesta no es válida o el token es inválido, redirigir al login
   if (!response || !response.ok || response.status === 401) {
-    window.location.href = '/login';
+    console.log('response', response)
+    // window.location.href = '/login';
   } else {
     const data = await response.json(); 
 

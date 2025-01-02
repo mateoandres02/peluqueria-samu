@@ -25,7 +25,7 @@ const menuAdmin = (user) => {
                     </li>
                     <li>
                         <a href="#historial-de-registro">
-                            <img src="/assets/icons/share.svg" alt="Historial de registro" class="icon">
+                            <img src="/assets/icons/history-log.svg" alt="Historial de registro" class="icon">
                             Registro de Turnos
                         </a>
                     </li>

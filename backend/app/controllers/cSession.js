@@ -17,16 +17,16 @@ const login = async (req, res) => {
             }, 
             config.secretJwtKey, 
             {
-                expiresIn: '10h',
+                expiresIn: config.accessTokenDuration,
             }
         );
 
         res.cookie('access_token', token, {
-            httpOnly: true, // Solo accesible por el servidor
-            secure: true, // Solo envío sobre HTTPS
-            sameSite: 'None', // Solicitudes cruzadas
-            path: '/', // Cookie esté disponible para todas las rutas
-            maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+            path: '/',
+            maxAge: 1000 * 60 * 5
         });
         
         res.send({ user, token });

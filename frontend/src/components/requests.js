@@ -64,86 +64,41 @@ const getUserActive = async () => {
    */
 
   try {
-    const token = await getCookie('access_token');
 
-    // Verificamos si el token está presente
-    // if (!token) {
-    //   window.location.href = '/login';
-    //   return null;
-    // }
+    // const token = await getCookie("access_token");
+
+    // Prioridad: Encabezado -> Cookies -> localStorage
+    const tokenFromLocalStorage = localStorage.getItem('accessToken');
 
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
       method: 'GET',
       headers: {
+        Authorization: tokenFromLocalStorage ? `Bearer ${tokenFromLocalStorage}` : undefined,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
       },
-      credentials: 'include' // Esto asegura que las cookies se envíen con la petición
+      credentials: 'include', // Para enviar cookies si están configuradas
     });
-
-    if (response.status === 401) {
-      // Token inválido o expirado
-      window.location.href = '/login';
-      return null;
-    }
 
     return response;
 
+
+    // const token = await getCookie('access_token');
+
+    // const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
+    //   },
+    //   credentials: 'include' // Esto asegura que las cookies se envíen con la petición
+    // });
+
+    // return response;
+
   } catch (error) {
-    console.error("Error getting user active:", error);
     window.location.href = '/login';
   }
 }
-
-
-// const getUserActive = async () => {
-
-//   /**
-//    * Obtiene el usuario activo y su token para poder verificarlo.
-//    */
-
-//   // // const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
-//   // const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
-
-//   // return response;
-
-//   try {
-//     const token = await getCookie('access_token');
-
-//     console.log(token)
-
-//     // const response = await fetch('http://localhost:3001/verify-token', {
-//     //   method: 'GET',
-//     //   headers: {
-//     //     'Content-Type': 'application/json',
-//     //     'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
-//     //   },
-//     //   credentials: 'include'
-//     // })
-
-//     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
-//       },
-//       credentials: 'include'
-//     })
-
-//     if (response.status === 401) {
-//       // Token inválido o expirado
-//       window.location.href = '/login';
-//       return null;
-//     }
-//     return response;
-    
-//   } catch (error) {
-//     console.error("Error getting user active:", error);
-//     window.location.href = '/login';
-//   }
-  
-// }
-
 
 const getTurnsByUserActive = async (data) => {
 

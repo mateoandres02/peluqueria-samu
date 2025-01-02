@@ -32,6 +32,9 @@ const closeActiveSession = async () => {
    * Procesamos el cierre de sesión.
    */
 
+  document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+
+  
   const response = await fetch('https://peluqueria-invasion-backend.vercel.app/logout', {
     method: 'POST',
     credentials: 'include'
@@ -65,15 +68,18 @@ const getUserActive = async () => {
 
   try {
 
-    const tokenFromLocalStorage = localStorage.getItem('accessToken');
-    const token = await getCookie('token')
+    const tokenFromLocalStorage = localStorage.getItem('token');
+    const token = await getCookie('token');
+
+    console.log('tfls', tokenFromLocalStorage)
+    console.log('token', token)
 
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization': tokenFromLocalStorage || token ? `Bearer ${tokenFromLocalStorage || token}` : undefined,
-        Authorization: `Bearer ${token}`, 
+        // Authorization: `Bearer ${token}`, 
       },
       credentials: 'include',
     });

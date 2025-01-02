@@ -41,7 +41,7 @@ function deleteTurn(info, data){
   $deleteTurn.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    const infoTurn = info
+    const cliente = info.event._def.title;
     const publicId = info.event._def.publicId;
     const date = new Date(info.event._instance.range.start).toISOString().split("T")[0];
     const regularCustomer = info.event._def.extendedProps.regular;
@@ -53,15 +53,11 @@ function deleteTurn(info, data){
     if (regularCustomer === "true") {
 
 
-      response = await deleteRegularCustomer(publicId, date, regularCustomer, formatedStartDate, infoTurn, userName);
-
-      
+      response = await deleteRegularCustomer(publicId, date, regularCustomer, formatedStartDate, cliente, userName);
 
     } else {
 
-      response = await deleteNormalCustomer(publicId, date, regularCustomer)
-
-      
+      response = await deleteNormalCustomer(publicId, date, regularCustomer, formatedStartDate, cliente, userName);
 
     }
     

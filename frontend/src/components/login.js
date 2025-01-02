@@ -16,20 +16,20 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         const response = await login(username, password);
         
         if (response.ok) {
-
             const data = await response.json();
 
-            document.cookie = `token=${data.token}; path=/; max-age=300`;
+            console.log(data);
+            
+            // Establecer la cookie con el token de acceso y parámetros de seguridad
+            document.cookie = `access_token=${data.token}; path=/; SameSite=None; Secure`;
 
             setTimeout(() => {
                 history.replaceState(null, '', '/');
                 window.location.href = '/';
             }, 3000);
-        }
 
-        if (!response.ok) {
+        } else {
             $loader.style.display = "none";
-    
             mensajeError.classList.toggle("escondido", false);
     
             setTimeout(() => {
@@ -38,6 +38,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
         }
 
     } catch (error) {
+        $loader.style.display = "none";
         alert("Error during login: " + error.message);
     }
 

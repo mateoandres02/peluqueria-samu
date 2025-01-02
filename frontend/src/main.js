@@ -1,7 +1,7 @@
 import checkAuthentication from "./components/auth.js";
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await checkAuthentication();
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthentication();
 });
 
 window.addEventListener('popstate', () => {

@@ -1,3 +1,4 @@
+import { presentation } from './presentation.js';
 import { calendario, calendarRender } from './calendarRender.js';
 import { menuAdmin } from "./menu.js";
 import { header, closeMenu } from "./header.js";
@@ -157,7 +158,6 @@ const indexView = async (data) => {
                 const $btnsDeleteService = document.querySelectorAll('.delete i');
                 deleteService($btnsDeleteService)
     
-                //
                 configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);
                 configParamsContainer.insertAdjacentHTML('beforeend', tablePaymentEdit);
     
@@ -170,10 +170,14 @@ const indexView = async (data) => {
                 break;
         
             default:
-                app.innerHTML += calendario;
-                calendarRender(modalElement, data);
+                // app.innerHTML += calendario;
+                // calendarRender(modalElement, data);
+
+                app.innerHTML += presentation;
+                
                 break;
         };
+
     } catch (error) {
         console.error('Error loading the section:', error);
     } finally {

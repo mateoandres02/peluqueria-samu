@@ -72,7 +72,8 @@ const getUserActive = async () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': tokenFromLocalStorage || token ? `Bearer ${tokenFromLocalStorage || token}` : undefined,
+        // 'Authorization': tokenFromLocalStorage || token ? `Bearer ${tokenFromLocalStorage || token}` : undefined,
+        'Authorization': `Bearer ${tokenFromLocalStorage || token}`, 
       },
       credentials: 'include',
     });

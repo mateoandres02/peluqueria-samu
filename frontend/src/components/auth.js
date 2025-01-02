@@ -5,8 +5,8 @@ import { getUserActive } from "./requests.js";
 export default async function checkAuthentication() {
     try {
 
-        const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
-        //const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
+        //const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', { credentials: 'include' });
+        const response = await fetch('http://localhost:3001/verify-token', { credentials: 'include' });
         //const response = await getUserActive();
 
         if (!response.ok || response.status === 401) {

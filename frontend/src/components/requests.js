@@ -74,6 +74,7 @@ const getUserActive = async () => {
       method: 'GET',
       headers: {
         Authorization: tokenFromLocalStorage ? `Bearer ${tokenFromLocalStorage}` : undefined,
+        'Content-Type': 'application/json',
       },
       credentials: 'include', // Para enviar cookies si están configuradas
     });

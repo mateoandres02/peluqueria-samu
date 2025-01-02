@@ -39,6 +39,7 @@ const tableTurnsHistory = `
           <th scope="col">HORA TURNO</th>
           <th scope="col">BARBERO</th>
           <th scope="col">CLIENTE</th>
+          <th scope="col">FIJO</th>
           <th scope="col">ACCION</th>
         </tr>
       </thead>
@@ -84,6 +85,7 @@ const rows = (dataTurns) => {
 
 
       let action = turn.Accion == 'POST' ? 'AGREGADO' : 'ELIMINADO';
+      let fijo = turn.Fijo == 'true' ? 'SI' : 'NO';
       const rowClass = turn.Accion == 'POST' ? 'agregado' : 'eliminado';
 
       row += `
@@ -94,6 +96,7 @@ const rows = (dataTurns) => {
           <td>${dateTurn.timeWithoutSeconds}</td>
           <td>${turn.Barbero}</td>
           <td>${turn.Cliente}</td>
+          <td>${fijo}</td>
           <td>${action}</td>
         </tr>
       `;

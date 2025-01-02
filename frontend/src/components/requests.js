@@ -1,3 +1,5 @@
+import logAction from "../utils/logActions";
+
 const login = async (username, password) => {
   /**
    * Hace la petición de logueo.
@@ -24,7 +26,6 @@ const login = async (username, password) => {
 
   return response;
 }
-
 
 const closeActiveSession = async () => {
 
@@ -103,7 +104,6 @@ const getUserActive = async () => {
   
 }
 
-
 const getTurnsByUserActive = async (data) => {
 
   /** 
@@ -120,6 +120,7 @@ const getTurnsByUserActive = async (data) => {
 }
 
 
+
 const getRecurrentTurnsByUserActive = async (data) => {
 
   /**
@@ -134,6 +135,13 @@ const getRecurrentTurnsByUserActive = async (data) => {
   return recurrentTurns;
 
 }
+
+
+const getBarbers = async () => {
+
+  /**
+   * Obtenemos los barberos disponibles en nuestro sistema.
+   */
 
 
 const getBarbers = async () => {
@@ -176,7 +184,6 @@ const putChangeService = async (rowId, turn) => {
 
 };
 
-
 const getServices = async () => {
 
   /**
@@ -189,6 +196,7 @@ const getServices = async () => {
   return cutServices;
 
 }
+
 
 
 const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
@@ -232,7 +240,6 @@ const getTurnsFilteredByDate = async (dateParam, recurrent) => {
   }
 
 }
-
 
 const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
 
@@ -285,7 +292,7 @@ const getPaymentUsersById = async (id) => {
 }
 
 
-const deleteRegularCustomer = async (id, date) => {
+const deleteRegularCustomer = async (id, date, regularCustomer, formatedStartDate, cliente, userName) => {
 
   /**
    * Eliminamos un cliente recurrente.
@@ -297,11 +304,11 @@ const deleteRegularCustomer = async (id, date) => {
     method: 'DELETE',
     credentials: 'include' 
   });
-  // let response = await fetch(`http://localhost:3001/recurrent_turns/turn/${id}/${date}`, {
-  //   method: 'DELETE'  
-  // });
-
+  //let response = await fetch(`http://localhost:3001/recurrent_turns/turn/${id}/${date}`, {
+  //  method: 'DELETE'  
+  //});
   return response;
+  
 }
 
 const deleteNormalCustomer = async (id, date) => {
@@ -316,12 +323,11 @@ const deleteNormalCustomer = async (id, date) => {
    method: 'DELETE',
    credentials: 'include' 
   });
-  // let response = await fetch(`http://localhost:3001/turns/${id}/${date}`, {
-  //   method: 'DELETE'  
-  // });
+  //let response = await fetch(`http://localhost:3001/turns/${id}/${date}`, {
+  //  method: 'DELETE'  
+  //});
 
   return response;
-
 }
 
 
@@ -368,7 +374,6 @@ const getServiceById = async (id) => {
 
 };
 
-
 const popService = async (id) => {
 
   /**
@@ -387,6 +392,7 @@ const popService = async (id) => {
   return response;
 
 }
+
 
 const getTurnsHistoryFilteredByDateAndBarber = async (dateParam, barberParam) => {
   const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/historyturns/${dateParam}/${barberParam}`, { credentials: 'include' });

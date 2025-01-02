@@ -29,6 +29,7 @@ const getAllTurnsHistoryByBarber = async (req,res) => {
             Cliente: history_turns.Cliente,
             FechaTurno: history_turns.FechaTurno,
             FechaCreacion: history_turns.FechaCreacion,
+            Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         })
         .from(history_turns)
@@ -57,6 +58,7 @@ const getAllTurnsHistoryByDate = async (req, res) => {
             Cliente: history_turns.Cliente,
             FechaTurno: history_turns.FechaTurno,
             FechaCreacion: history_turns.FechaCreacion,
+            Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         })
         .from(history_turns)
@@ -87,6 +89,7 @@ const getAllTurnsHistoryByDateAndBarber = async (req, res) => {
             Cliente: history_turns.Cliente,
             FechaTurno: history_turns.FechaTurno,
             FechaCreacion: history_turns.FechaCreacion,
+            Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         }).from(history_turns)
         .where(and(like(history_turns.FechaCreacion, `%${date}%`), eq(history_turns.Barbero, barberName)));
@@ -107,7 +110,7 @@ const getAllTurnsHistoryByDateAndBarber = async (req, res) => {
 
 const postTurnHistoryLog = async (req, res) => {
     try {
-        const { Barbero, Cliente, FechaTurno, Accion } = req.body;
+        const { Barbero, Cliente, FechaTurno, Fijo, Accion } = req.body;
 
         if (!Barbero || !Cliente || !FechaTurno || !Accion) {
             return res.status(400).send({
@@ -126,6 +129,7 @@ const postTurnHistoryLog = async (req, res) => {
             Cliente,
             FechaTurno,
             FechaCreacion: fechaCreacionFormateada,
+            Fijo,
             Accion
         };
 

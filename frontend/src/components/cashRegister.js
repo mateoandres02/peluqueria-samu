@@ -52,6 +52,7 @@ const tableTurns = `
           <th scope="col">SERVICIO</th>
           <th scope="col">TIPO DE SERVICIO</th>
           <th scope="col">COSTO</th>
+          <th scope="col">FIJO</th>
         </tr>
       </thead>
       <tbody class="table-cash-body">
@@ -157,6 +158,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
       let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
       let hourTurn = user.date ? parseDate(user.date) : '';
+      let isRecurrent = user.turns.Regular === "true" ? 'Si' : 'No';
 
       if (user.exdate != 1) {
         row += `
@@ -175,6 +177,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
               </div>
             </td>
             <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
+            <td>${isRecurrent}</td>
           </tr>
         `;
       }

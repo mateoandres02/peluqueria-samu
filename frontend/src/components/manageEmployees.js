@@ -347,11 +347,11 @@ const deleteEmployee = (btnsDelete) => {
 
         if (confirm) {
           const responseDelete = await fetch(`https://peluqueria-invasion-backend.vercel.app/users/${key}`, {
-            method: 'DELETE',
-            credentials: 'include'
+           method: 'DELETE',
+           credentials: 'include'
           });
           // const responseDelete = await fetch(`http://localhost:3001/users/${key}`, {
-          //     method: 'DELETE'
+          //      method: 'DELETE'
           // });
 
           if (responseDelete.ok) {

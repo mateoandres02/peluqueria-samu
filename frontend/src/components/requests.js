@@ -293,7 +293,7 @@ const getPaymentUsersById = async (id) => {
 }
 
 
-const deleteRegularCustomer = async (id, date, regularCustomer) => {
+const deleteRegularCustomer = async (id, date, regularCustomer, formatedStartDate, infoTurn, userName) => {
 
   /**
    * Eliminamos un cliente recurrente.
@@ -310,7 +310,7 @@ const deleteRegularCustomer = async (id, date, regularCustomer) => {
 
   logAction({
     Barbero: userName,
-    Cliente: info.event._def.title,
+    Cliente: infoTurn.event._def.title,
     FechaTurno: formatedStartDate,
     Fijo: `${regularCustomer}`,
     Accion: 'DELETE'
@@ -319,7 +319,7 @@ const deleteRegularCustomer = async (id, date, regularCustomer) => {
   return response;
 }
 
-const deleteNormalCustomer = async (id, date, regularCustomer) => {
+const deleteNormalCustomer = async (id, date, regularCustomer, formatedStartDate, infoTurn, userName) => {
 
   /**
    * Eliminamos un turno normal.
@@ -336,7 +336,7 @@ const deleteNormalCustomer = async (id, date, regularCustomer) => {
 
   logAction({
     Barbero: userName,
-    Cliente: info.event._def.title,
+    Cliente: infoTurn.event._def.title,
     FechaTurno: formatedStartDate,
     Fijo: `${regularCustomer}`,
     Accion: 'DELETE'

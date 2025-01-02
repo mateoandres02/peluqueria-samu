@@ -63,7 +63,7 @@ const modalElement = `
             </div>
 
             <div class="modal-footer">
-              <button type="submit" id="saveTurn" class="btn btn-success">Guardar</button>
+              <button type="submit" id="saveTurn" class="btn btn-success btnPost">Guardar</button>
               <button id="closeModal" class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
               <div class="loader-container">
                 <img src="/assets/tube-spinner.svg" alt="loading" class="loader">
@@ -308,6 +308,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
     $loader.style.display = "flex";
     
+    const submitBtn = form.querySelector('.btnPost');
+
     const $nameInput = document.getElementById('input-name');
     const $numberInput = document.getElementById('input-number');
     const $inputRegularCostumer = document.getElementById("regular-customer");
@@ -350,18 +352,9 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       Barbero: nameBarber,
       Cliente: clientName,
       FechaTurno: dateOutParsed,
+      Fijo: `${regularCustomer}`,
       Accion: 'POST'
     })
-
-    if (options.method === 'DELETE') {
-      //logAction({
-      //  Barbero: nameBarber,
-      //  Cliente: clientName,
-      //  FechaTurno: dateOutParsed,
-      //  Accion: 'DELETE'
-      //})
-      console.log("hola");
-    }
 
     if (!response.ok) {
       span.style.color = 'red';
@@ -409,6 +402,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
           Barbero: nameBarber,
           Cliente: clientName,
           FechaTurno: date.date,
+          Fijo: `${regularCustomer}`,
           Accion: 'POST'
         })
 
@@ -441,6 +435,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       $loader.style.display = "none";
       $modalFooter.appendChild(span);
     }    
+
+    submitBtn.setAttribute('disabled', 'true');
     
   });
 

@@ -28,10 +28,15 @@ const login = async (req, res) => {
             path: '/',
             maxAge: 1000 * 60 * 60 * 1
         });
+            // maxAge: 1000 * 60 * 5
+            // maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
+         });
         
-        res.send({ user, token });
+        res.send({ user, token })
+        //res.status(200).json({ user, token });
     } catch (error) {
         res.status(401).send(error.message);
+        //res.status(401).json(error.message);
     };
 
 };

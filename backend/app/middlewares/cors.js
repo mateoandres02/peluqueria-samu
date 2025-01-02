@@ -19,5 +19,5 @@ export const corsOptions = {
     'X-Requested-With', 
     'Accept'
   ],
-  exposedHeaders: ['Set-Cookie'], // Permitir que el cliente acceda a las cookies.
+  exposedHeaders: ['Set-Cookie', 'Authorization'], // Permitir que el cliente acceda a las cookies.
 };

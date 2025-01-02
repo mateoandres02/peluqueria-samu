@@ -52,27 +52,15 @@ function deleteTurn(info, data){
     if (regularCustomer === "true") {
 
 
-      response = await deleteRegularCustomer(publicId, date);
+      response = await deleteRegularCustomer(publicId, date, regularCustomer);
 
-      logAction({
-        Barbero: userName,
-        Cliente: info.event._def.title,
-        FechaTurno: formatedStartDate,
-        Fijo: `${regularCustomer}`,
-        Accion: 'DELETE'
-      });
+      
 
     } else {
 
-      response = await deleteNormalCustomer(publicId, date)
+      response = await deleteNormalCustomer(publicId, date, regularCustomer)
 
-      logAction({
-        Barbero: userName,
-        Cliente: info.event._def.title,
-        FechaTurno: formatedStartDate,
-        Fijo: `${regularCustomer}`,
-        Accion: 'DELETE'
-      });
+      
 
     }
     

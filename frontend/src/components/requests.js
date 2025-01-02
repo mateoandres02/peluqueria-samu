@@ -1,3 +1,6 @@
+import logAction from "../utils/logActions";
+
+
 // const login = async (username, password) => {
 //   /**
 //    * Hace la petición de logueo.
@@ -290,7 +293,7 @@ const getPaymentUsersById = async (id) => {
 }
 
 
-const deleteRegularCustomer = async (id, date) => {
+const deleteRegularCustomer = async (id, date, regularCustomer) => {
 
   /**
    * Eliminamos un cliente recurrente.
@@ -305,10 +308,18 @@ const deleteRegularCustomer = async (id, date) => {
   //  method: 'DELETE'  
   //});
 
+  logAction({
+    Barbero: userName,
+    Cliente: info.event._def.title,
+    FechaTurno: formatedStartDate,
+    Fijo: `${regularCustomer}`,
+    Accion: 'DELETE'
+  });
+
   return response;
 }
 
-const deleteNormalCustomer = async (id, date) => {
+const deleteNormalCustomer = async (id, date, regularCustomer) => {
 
   /**
    * Eliminamos un turno normal.
@@ -322,6 +333,14 @@ const deleteNormalCustomer = async (id, date) => {
   //let response = await fetch(`http://localhost:3001/turns/${id}/${date}`, {
   //  method: 'DELETE'  
   //});
+
+  logAction({
+    Barbero: userName,
+    Cliente: info.event._def.title,
+    FechaTurno: formatedStartDate,
+    Fijo: `${regularCustomer}`,
+    Accion: 'DELETE'
+  });
 
   return response;
 

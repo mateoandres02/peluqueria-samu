@@ -50,8 +50,8 @@ const tableTurnsHistory = `
 `;
 
 const loadBarberSelectHistory = async (barberSelect) => {
-  //const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
-  const barbers = await fetch('http://localhost:3001/users');
+  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
+  // const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
 
   dataBarbers.forEach(barber => {
@@ -85,6 +85,7 @@ const rows = (dataTurns) => {
 
 
       let action = turn.Accion == 'POST' ? 'AGREGADO' : 'ELIMINADO';
+      let fijo = turn.Fijo == 'true' ? 'SI' : 'NO';
       const rowClass = turn.Accion == 'POST' ? 'agregado' : 'eliminado';
 
       row += `
@@ -95,6 +96,7 @@ const rows = (dataTurns) => {
           <td>${dateTurn.timeWithoutSeconds}</td>
           <td>${turn.Barbero}</td>
           <td>${turn.Cliente}</td>
+          <td>${fijo}</td>
           <td>${action}</td>
         </tr>
       `;
@@ -164,8 +166,8 @@ const rows = (dataTurns) => {
 //}
 
 const getHistoryTurns = async () => {
-  const responseTurns = await fetch('http://localhost:3001/historyturns');
-  //const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
+  // const responseTurns = await fetch('http://localhost:3001/historyturns');
+  const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
 
   return responseTurns;
 }

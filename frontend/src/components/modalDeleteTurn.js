@@ -58,6 +58,7 @@ function deleteTurn(info, data){
         Barbero: userName,
         Cliente: info.event._def.title,
         FechaTurno: formatedStartDate,
+        Fijo: `${regularCustomer}`,
         Accion: 'DELETE'
       });
 
@@ -69,6 +70,7 @@ function deleteTurn(info, data){
         Barbero: userName,
         Cliente: info.event._def.title,
         FechaTurno: formatedStartDate,
+        Fijo: `${regularCustomer}`,
         Accion: 'DELETE'
       });
 

@@ -76,7 +76,7 @@ const getUserActive = async () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
+        'Authorization': `Bearer ${token}`, // Agregar el token en el encabezado
       },
       credentials: 'include' // Esto asegura que las cookies se envíen con la petición
     });

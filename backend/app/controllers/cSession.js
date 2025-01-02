@@ -27,10 +27,9 @@ const login = async (req, res) => {
             sameSite: 'None',
             path: '/',
             maxAge: 1000 * 60 * 60 * 10
-        });
             // maxAge: 1000 * 60 * 5
             // maxAge: 1000 * 60 * 60 * 10 // 10 horas de duración para la cookie
-         });
+        });
         
         res.send({ user, token })
         //res.status(200).json({ user, token });

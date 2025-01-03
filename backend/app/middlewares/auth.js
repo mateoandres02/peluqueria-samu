@@ -4,8 +4,13 @@ import { config } from "../config/config.js";
 const verifyToken = async (req, res, next) => {
     let token = null;
 
+    if (req.query.token) {
+        token = req.query.token;
+        console.log('Token desde query parameter:', token);
+    }    
+    
     // 1. Intentar obtener el token del encabezado Authorization
-    if (req.headers.authorization) {
+    if (!token && req.headers.authorization) {
         token = req.headers.authorization || req.headers['authorization']?.split(' ')[1];
         console.log('header', token)
     }

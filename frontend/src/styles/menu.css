@@ -58,7 +58,6 @@
 }
 
 .menu {
-    border: 1px solid red;
     grid-area: "menu";
 
     width: 100%;
@@ -124,10 +123,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-    border: 1px solid red;
-
-    position: relative;
 }
 
 #logout {
@@ -145,8 +140,6 @@
     cursor: pointer;
     
     transition: background-color 0.2s ease, color 0.3s ease;
-    position: absolute;
-    top: -5rem;
 }
 
 #logout:hover {
@@ -161,5 +154,14 @@
         display: none;
         height: calc(100vh - 80px);
         margin: 80px auto 0rem auto;
+    }
+
+    .button-logout-container {
+        position: relative;
+    }
+    
+    #logout {
+        position: absolute;
+        top: -5rem;
     }
 }

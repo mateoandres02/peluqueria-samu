@@ -55,7 +55,6 @@ async function calendarRender (modalElement, data) {
           determinateRangeOfDays(currentDate, isMobile)
         },
         // visibleRange: (currentDate) => {
-        //   console.log(currentDate)
         //   const start = new Date(currentDate);
         //   const end = new Date(currentDate);
         //   start.setDate(start.getDate() - (isMobile ? 0 : start.getDay() - 1));

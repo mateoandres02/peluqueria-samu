@@ -36,11 +36,7 @@
 
     display: flex;
     align-items: center;
-    justify-content: center;
-}
-
-.present-container-filter span {
-    margin-right: 1rem;
+    justify-content: space-evenly;
 }
 
 .present-container-filter input {
@@ -54,7 +50,6 @@
 #barberSelect, 
 #barberSelectHistory {
     width: 15ch;
-    margin-left: 1rem;
     border: 1px solid #ced4da;
     display: inline-block;
 }
@@ -72,6 +67,10 @@
 .totalEarnedInfo {
     margin-left: 2rem;
     text-align: center;
+}
+
+.totalEarnedInfo-br {
+    display: none;
 }
 
 .present-container-btn {
@@ -99,7 +98,7 @@
 
     .totalEarned {
         justify-content: center;
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .totalEarnedBtn {
@@ -114,5 +113,8 @@
     
     .totalEarnedInfo {
         margin-left: 0rem;
+    }
+    .totalEarnedInfo-br {
+        display: block;
     }
 }

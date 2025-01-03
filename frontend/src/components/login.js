@@ -19,10 +19,10 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             const data = await response.json();
 
             // Establecer la cookie con el token de acceso y parámetros de seguridad
-            // document.cookie = `token=${data.token}; path=/; SameSite=None; Secure`;
+            document.cookie = `token=${data.token}; path=/; SameSite=None; Secure`;
 
             // Guarda el token en localStorage
-            localStorage.setItem('accessToken', data.token);
+            localStorage.setItem('token', data.token);
 
             setTimeout(() => {
                 history.replaceState(null, '', '/');
@@ -30,7 +30,8 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             }, 3000);
 
         } else {
-            localStorage.removeItem('accessToken');
+            localStorage.removeItem('token');
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 
             $loader.style.display = "none";
             mensajeError.classList.toggle("escondido", false);

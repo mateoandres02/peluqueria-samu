@@ -8,6 +8,8 @@ export default async function checkAuthentication() {
 
   // Si la respuesta no es válida o el token es inválido, redirigir al login
   if (!response || !response.ok || response.status === 401) {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    localStorage.removeItem('token');
     window.location.href = '/login';
   } else {
     const data = await response.json(); 

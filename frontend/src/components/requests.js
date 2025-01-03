@@ -74,7 +74,7 @@ const getUserActive = async () => {
     console.log('tfls', tokenFromLocalStorage)
     console.log('token', token)
 
-    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/verify-token', {
+   const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/verify-token?token=${tokenFromLocalStorage}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

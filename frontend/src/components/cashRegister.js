@@ -34,7 +34,7 @@ const infoSectionCashView = `
         <button class="btn btn-primary">Calcular Total</button>
       </div>
       <div class="totalEarnedInfo">
-        <h5 id="totalEarnedDisplay">Total ganado: <b>$ 0.00</b></h5>
+        <h5 id="totalEarnedDisplay">Total ganado: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
       </div>
     </div>
   </div>

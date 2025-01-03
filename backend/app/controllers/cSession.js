@@ -21,8 +21,6 @@ const login = async (req, res) => {
             }
         );
 
-        console.log('token', token);
-
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
@@ -32,10 +30,8 @@ const login = async (req, res) => {
         });
         
         res.send({ user, token })
-        //res.status(200).json({ user, token });
     } catch (error) {
         res.status(401).send(error.message);
-        //res.status(401).json(error.message);
     };
 
 };

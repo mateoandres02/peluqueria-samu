@@ -107,6 +107,7 @@ p {
     width: 100%;
     height: auto;
     margin-left: 290px !important;
+    padding-right: 10px;
 }
 
 @media (640px > width) {

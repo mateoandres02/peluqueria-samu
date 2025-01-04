@@ -8,15 +8,15 @@ const path2 = `<path transform="translate(1154,629)" d="m0 0h7l-1 11-5 14-7 14-1
 const path3 = `<path transform="translate(877,1474)" d="m0 0 4 3v2l4 2 41 1v1h-42l-6-5z"/>`;
 const presentation = (username) =>
 `
-<div class="containerFunctionalityView">
-  <div class="presentation-content" style="display: flex; align-items: center; gap: 10px; flex-direction: column;">
+<div class="containerFunctionalityView presentation-container">
+  <div class="presentation-content">
     <svg class="neon-svg" version="1.1" viewBox="0 0 2041 2048" width="635" height="637" xmlns="http://www.w3.org/2000/svg">
      ${path1}
      ${path2}
      ${path3}
     </svg>
     <div class="presentation-text">
-      <h1 style="font-size: 2rem; font-weight: bold;">¡Bienvenido ${username} a Peluqueria Invasion!</h1>
+      <h1>¡Bienvenido ${username} a Peluqueria Invasion!</h1>
     </div>
   </div>
 </div>

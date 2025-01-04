@@ -6,14 +6,20 @@ svg {
   fill: orange;
 }
 
+.presentation-container {
+  width: 100%;
+  padding: 1rem;
+
+  min-width: 375px;
+}
+
 .presentation-content {
   width: 100%;
   height: 95vh;
-}
-/* General SVG style */
-.neon-svg {
-  filter: drop-shadow(0 0 5px #515151) drop-shadow(0 0 15px #515151);
-  animation: neon-intensity 5s infinite;
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  flex-direction: column;
 }
 
 .presentation-text {
@@ -22,12 +28,34 @@ svg {
   margin-bottom: 2rem;
 }
 
-/* Keyframes for light pulsation */
+.presentation-text h1 {
+  font-size: 2rem; 
+  font-weight: bold;
+  text-align: center;
+}
+
+.neon-svg {
+  filter: drop-shadow(0 0 5px #515151) drop-shadow(0 0 15px #515151);
+  animation: neon-intensity 5s infinite;
+  margin-right: 0;
+}
+
 @keyframes neon-intensity {
   0%, 100% {
     filter: drop-shadow(0 0 5px #515151) drop-shadow(0 0 15px #515151);
   }
   50% {
     filter: drop-shadow(0 0 15px #515151) drop-shadow(0 0 30px #515151);
+  }
+}
+
+@media (640px > width) {
+  .presentation-content {
+    height: 80vh;
+  }
+  
+  .presentation-text h1 {
+    font-size: 1.5rem !important;
+    text-align: center;
   }
 }

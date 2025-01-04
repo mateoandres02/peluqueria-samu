@@ -1,4 +1,5 @@
 import '/src/styles/menu.css';
+import { path1, path2, path3 } from './presentation.js';
 
 const menuAdmin = (user) => {
 
@@ -6,7 +7,11 @@ const menuAdmin = (user) => {
         <aside class="sidebar">
             <div class="sidebar-nav">
                 <div class="profile">
-                    <img src="/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <svg version="1.1" viewBox="0 0 2041 2048" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                        ${path1}
+                        ${path2}
+                        ${path3}
+                    </svg>
                     <span class="profile-name">${user}</span>
                 </div>
             </div>
@@ -61,7 +66,11 @@ const menuEmployee = (data) => {
         <aside class="sidebar">
             <div class="sidebar-nav">
                 <div class="profile">
-                    <img src="/assets/icons/profile.svg" alt="Profile Icon" class="profile-icon">
+                    <svg version="1.1" viewBox="0 0 2041 2048" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+                        ${path1}
+                        ${path2}
+                        ${path3}
+                    </svg>
                     <span class="profile-name">${data}</span>
                 </div>
             </div>

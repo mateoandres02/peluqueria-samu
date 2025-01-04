@@ -1,3 +1,4 @@
+import { presentation } from './presentation.js';
 import { calendario, calendarRender } from './calendarRender.js';
 import { menuEmployee } from "./menu.js";
 import { header, closeMenu } from "./header.js";
@@ -40,8 +41,10 @@ const indexView = async (data) => {
         
             default:
                 
-                app.innerHTML += calendario;
-                calendarRender(modalElement, data);
+                // app.innerHTML += calendario;
+                // calendarRender(modalElement, data);
+                app.innerHTML += presentation(userActive);
+                
     
                 break;
     

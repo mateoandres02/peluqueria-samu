@@ -173,7 +173,7 @@ const indexView = async (data) => {
                 // app.innerHTML += calendario;
                 // calendarRender(modalElement, data);
 
-                app.innerHTML += presentation;
+                app.innerHTML += presentation(userActive);
                 
                 break;
         };

@@ -256,7 +256,7 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
     
     const dateInput = document.querySelector('input[type="date"]');
-    const selectedDate = dateInput ? dateInput.value : null;
+    const selectedDate = dateInput ? dateInput.value : null
 
     if (!filteredBarber.length > 0) {
       await cashData(tableBodyTurnsCashRegister, selectedDate, null)
@@ -422,7 +422,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
       }
 
-      if (dataFinalsTurns.length == 0) {
+      if (dataFinalsTurns === undefined || dataFinalsTurns.length == 0) {
         tableBodyTurnsCashRegister.innerHTML = `
           <tr>
             <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
@@ -474,11 +474,13 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns) => {
       // Pedimos los porcentajes de los distintos serivicios de cada barbero
       const paymentForBarber = await getPaymentUsersById(turn.turns.NroUsuario);
 
-      paymentForBarber.forEach((item) => {
-        if (!barbersData[barber].percentages[item.servicio]) {
-          barbersData[barber].percentages[item.servicio] = item.porcentaje_pago || 50;
-        }
-      })
+      if (!paymentForBarber.message) {
+        paymentForBarber.forEach((item) => {
+          if (!barbersData[barber].percentages[item.servicio]) {
+            barbersData[barber].percentages[item.servicio] = item.porcentaje_pago || 50;
+          }
+        })
+      }
 
     }
 

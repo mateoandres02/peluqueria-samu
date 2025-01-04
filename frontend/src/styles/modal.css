@@ -53,9 +53,9 @@
     margin-bottom: .5rem;
 
     font-size: 1.2rem;
-    white-space: nowrap;
+    /* white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; */
 }
 
 .modal-body-confirm {

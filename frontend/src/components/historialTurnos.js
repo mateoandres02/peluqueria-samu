@@ -50,8 +50,8 @@ const tableTurnsHistory = `
 `;
 
 const loadBarberSelectHistory = async (barberSelect) => {
-  const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
-  // const barbers = await fetch('http://localhost:3001/users');
+  // const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
+  const barbers = await fetch('http://localhost:3001/users');
   const dataBarbers = await barbers.json();
 
   dataBarbers.forEach(barber => {
@@ -61,7 +61,7 @@ const loadBarberSelectHistory = async (barberSelect) => {
 
 const rows = (dataTurns) => {
   let row = '';
-  //let idsPubliqued = [];
+  let idsTurnHistoryPubliqued = [];
 
   //let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
 
@@ -69,12 +69,12 @@ const rows = (dataTurns) => {
     //if (user.exdate == 1) {
     //  return;
     //}
-
-    //if (idsPubliqued.includes(user.turns.Id)) {
-    //  return;
-    //} else {
-    //  idsPubliqued.push(user.turns.Id);
-    //}
+    console.log("TURNOS", turn)
+    if (idsTurnHistoryPubliqued.includes(turn.FechaTurno)) {
+     return;
+    } else {
+      idsTurnHistoryPubliqued.push(turn.FechaTurno);
+    }
 
     if (index > -1) {
 
@@ -106,68 +106,9 @@ const rows = (dataTurns) => {
   return row;
 };
 
-//const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por fecha y por barbero.
-   * param: dateParam -> fecha elegida.
-   * param: barberParam -> barbero elegido.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  //if (recurrent) {
-    //  const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
-    //  return responseRecurrentTurns;
-    //} else {
-      //  const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-      //  return responseTurns;
-      //}
-  //const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
-      
-  //return responseTurns;
-//}
-
-//const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por barbero.
-   * param: barberParam -> barbero elegido.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  //if (recurrent) {
-  //  const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}`);
-  //  return responseRecurrentTurns;
-  //} else {
-  //  const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-   // return responseTurns;
-  //}
-  //const responseTurns = await fetch(`http://localhost:3001/turns/barber/${barberParam}`);
-    //return responseTurns;
-//}
-
-//const getTurnsFilteredByDate = async (dateParam, recurrent) => {
-
-  /**
-   * Obtenemos los turnos filtrando por fecha.
-   * param: dateParam -> fecha elegida.
-   * param: recurrent -> un parámetro por defecto para diferenciar si es filtrado por recurrencia o por turnos normales.
-   */
-
-  //if (recurrent) {
-  //  const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/turn/date/${dateParam}`);
-  //  return responseRecurrentTurns;
-  //} else {
-  //  const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-  //  return responseTurns;
-  //}
-  //const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}`);
-  //return responseTurns;
-//}
-
 const getHistoryTurns = async () => {
-  // const responseTurns = await fetch('http://localhost:3001/historyturns');
-  const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
+  const responseTurns = await fetch('http://localhost:3001/historyturns');
+  // const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
 
   return responseTurns;
 }
@@ -232,59 +173,6 @@ const historyTurnsRender = async (tableBodyTurnsHistoryView, selectedDate = null
     console.error("Error al renderizar el historial de turnos:", error);
   }
 };
-const filterTurnsByCalendar = async (tableBodyTurnsHistoryView, dateSelect) => {
-
-  /**
-   * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
-   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
-   * param: barberSelect -> elemento html del selectable para elegir algun barbero.
-   */
-
-  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
-  const dataBarbers = await getBarbers();
-  
-  dateSelect.addEventListener('change', async (e) => {
-    
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
-    
-    const dateInput = document.querySelector('input[type="date"]');
-    const selectedDate = dateInput ? dateInput.value : null;
-
-    if (!filteredBarber.length > 0) {
-      await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, null)
-    } else {
-      await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, filteredBarber[0].Id);
-    }
-
-  });
-};
-
-const filterTurnsByBarbers = async (tableBodyTurnsHistoryView, dateInput) => {
-
-  /**
-   * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
-   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
-   * param: dateInput -> dia elegido en el filtro.
-   */
-  
-  // registrosFinalesGlobal.splice(0, registrosFinalesGlobal.length);
-
-  const dataBarbers = await getBarbers();
-  
-  dateInput.removeEventListener('change', handleDateChange); 
-  dateInput.addEventListener('change', handleDateChange);
-  
-  async function handleDateChange(e) {
-    let selectedDate = e.target.value;
-
-    const barberInput = document.querySelector('#barberSelectHistory');
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
-    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
-
-    await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, selectedBarber);
-  };
-};
-
 
 export {
   containerHistoryView,
@@ -292,7 +180,5 @@ export {
   tableTurnsHistory,
   loadBarberSelectHistory,
   historyTurnsRender,
-  //filterTurnsByCalendar,
-  //filterTurnsByBarbers,
   setupFilters
 };

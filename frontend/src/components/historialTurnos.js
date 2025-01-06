@@ -69,7 +69,6 @@ const rows = (dataTurns) => {
     //if (user.exdate == 1) {
     //  return;
     //}
-    console.log("TURNOS", turn)
     if (idsTurnHistoryPubliqued.includes(turn.FechaTurno)) {
      return;
     } else {
@@ -157,7 +156,7 @@ const historyTurnsRender = async (tableBodyTurnsHistoryView, selectedDate = null
     if (!responseHistoryTurns.ok) {
       tableBodyTurnsHistoryView.innerHTML = `
         <tr>
-          <td colspan="7">No se encontraron turnos para los filtros aplicados.</td>
+          <td colspan="8">No se encontraron turnos para los filtros aplicados.</td>
         </tr>`;
       return;
     }
@@ -167,7 +166,7 @@ const historyTurnsRender = async (tableBodyTurnsHistoryView, selectedDate = null
     tableBodyTurnsHistoryView.innerHTML = dataHistoryTurns.length
       ? rows(dataHistoryTurns)
       : `<tr>
-           <td colspan="7">No se encontraron turnos para los filtros aplicados.</td>
+           <td colspan="8">No se encontraron turnos para los filtros aplicados.</td>
          </tr>`;
   } catch (error) {
     console.error("Error al renderizar el historial de turnos:", error);

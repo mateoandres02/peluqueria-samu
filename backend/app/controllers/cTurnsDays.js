@@ -34,6 +34,7 @@ const getRecurrentTurnById = async (req, res) => {
                 id_turno: turns_days.id_turno,
                 id_dia: turns_days.id_dia,
                 date: turns.Date,
+                forma_pago: turns.Forma_Pago
             })
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
@@ -64,7 +65,8 @@ const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
                 turno: turns.Id,
                 dia: days.dia,
                 date: turns_days.date,
-                exdate: turns_days.exdate
+                exdate: turns_days.exdate,
+                forma_pago: turns.Forma_Pago
             })
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
@@ -100,7 +102,8 @@ const getAllRecurrentTurnsDaysByDate = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             exdate: turns_days.exdate,
-            date: turns_days.date
+            date: turns_days.date,
+            forma_pago: turns.Forma_Pago
         }).from(turns_days)
         .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
@@ -132,7 +135,8 @@ const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             exdate: turns_days.exdate,
-            date: turns_days.date
+            date: turns_days.date,
+            forma_pago: turns.Forma_Pago
         }).from(turns_days)
         .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))

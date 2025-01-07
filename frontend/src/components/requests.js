@@ -398,6 +398,7 @@ const getTurnsHistoryFilteredByBarber = async (barberParam) => {
   return responseHistoryturns;
 }
 
+
 export {
   login,
   getCookie,
@@ -420,5 +421,5 @@ export {
   popService,
   getTurnsHistoryFilteredByDateAndBarber,
   getTurnsHistoryFilteredByDate,
-  getTurnsHistoryFilteredByBarber
+  getTurnsHistoryFilteredByBarber,
 }

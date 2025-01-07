@@ -64,13 +64,26 @@
     width: 100%;
 }
 
+.totalEarnedBtn {
+    width: 20%;
+}
+
 .totalEarnedInfo {
-    margin-left: 2rem;
     text-align: center;
+    width: 80%;
+
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.totalEarnedInfo h5 {
+    display: flex;
+    flex-direction: column;
 }
 
 .totalEarnedInfo-br {
     display: none;
+    margin-bottom: .5rem;
 }
 
 .present-container-btn {
@@ -97,12 +110,13 @@
     }
 
     .totalEarned {
-        justify-content: center;
+        width: 100%;
+        justify-content: space-evenly;
         flex-direction: row;
     }
     
     .totalEarnedBtn {
-        width: 100%;
+        width: 40%;
         margin-bottom: 1rem;
     
         display: flex;
@@ -112,9 +126,17 @@
     }
     
     .totalEarnedInfo {
-        margin-left: 0rem;
+        width: 40%;
+
+        flex-direction: column;
     }
+
+    .totalEarnedInfo h5 {
+        margin-bottom: .5rem;
+    }
+
     .totalEarnedInfo-br {
         display: block;
     }
+    
 }

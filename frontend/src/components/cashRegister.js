@@ -6,7 +6,12 @@ import '/src/styles/presentFunctionality.css';
 const today = getToday();
 
 let totalEarned = 0;
+let totalEarnedEfect = 0;
+let totalEarnedTransf = 0;
+
 let totalEarnedTurns = 0;
+let totalEarnedEfectTurns = 0;
+let totalEarnedTransfTurns = 0;
 
 let dataFinalsTurns;
 let globalDataFinalTurns = [];
@@ -35,6 +40,8 @@ const infoSectionCashView = `
       </div>
       <div class="totalEarnedInfo">
         <h5 id="totalEarnedDisplay">Total ganado: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
+        <h5 id="totalEarnedForEfectDisplay">Efectivo: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
+        <h5 id="totalEarnedForTransfDisplay">Transferencia: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
       </div>
     </div>
   </div>
@@ -53,6 +60,8 @@ const tableTurns = `
           <th scope="col">TIPO DE SERVICIO</th>
           <th scope="col">COSTO</th>
           <th scope="col">FIJO</th>
+          <th scope="col">PAGO</th>
+          <th scope="col">FORMA PAGO</th>
         </tr>
       </thead>
       <tbody class="table-cash-body">
@@ -137,6 +146,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
   sortArrayByHour(dataTurnsConcats);
 
   dataTurnsConcats.forEach((user, index) => {
+
     if (user.exdate == 1) {
       return;
     }
@@ -152,6 +162,8 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
       let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
 
       let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
+
+      let paymentField = user.forma_pago ? `<span>${user.forma_pago}</span>` : `<span class="span-red">Sin pago</span>`;
 
       let costField = user.precio ? user.precio : '0'; 
 
@@ -178,6 +190,16 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
             </td>
             <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
             <td>${isRecurrent}</td>
+            <td>${paymentField}</td>
+            <td id="tdPaymentMethod">
+              <div>
+                <select class="form-select payment-method" data-id="${user.turns.Id}" data-date="${user.date}" aria-label="Forma de pago">
+                  <option selected value="null">Seleccionar...</option>
+                  <option value="Efec.">EFECTIVO</option>
+                  <option value="Transf.">TRANSFERENCIA</option>
+                </select>
+              </div>
+            </td>
           </tr>
         `;
       }
@@ -189,6 +211,29 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
   return { row, registrosFinales };
 
 };
+
+
+const hanldeSelectPaymentMethod = (selectedDate) => {
+
+  document.querySelectorAll('.payment-method').forEach(select => {
+    select.addEventListener('change', async (e) => {
+      const selectedPaymentMethod = e.target.value;
+      const rowId = e.target.dataset.id;
+
+      const turn = {
+        Forma_Pago: selectedPaymentMethod
+      };
+
+      await putChangeService(rowId, turn);
+
+      if (selectedDate === today) {
+        window.location.reload();
+      }
+    })
+  });
+
+}
+
 
 const handleSelectChange = (cutServices, dateValue) => {
 
@@ -246,11 +291,15 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
 
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
+  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
+  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
   
   barberSelect.addEventListener('change', async (e) => {
     
     totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
+    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
+    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
     paymentTableBody.innerHTML = '';
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
@@ -277,6 +326,8 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   
   const dataBarbers = await getBarbers();
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
+  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
+  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
   const paymentTableBody = document.querySelector('.table-pay-body');
   
   dateInput.removeEventListener('change', handleDateChange); 
@@ -284,6 +335,8 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   
   async function handleDateChange(e) {
     totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
+    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
+    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
     paymentTableBody.innerHTML = '';
 
     let selectedDate = e.target.value;
@@ -297,7 +350,7 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
 
 };
 
-const calculateTotal = (dataFinalsTurns, totalEarnedDisplay) => {
+const calculateTotal = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay) => {
 
   /**
    * Calcula el total hecho en el dia.
@@ -307,15 +360,26 @@ const calculateTotal = (dataFinalsTurns, totalEarnedDisplay) => {
    */
 
   totalEarnedTurns = dataFinalsTurns.reduce((acc, turn) => {
+    if (turn.forma_pago === "Efec.") {
+      totalEarnedEfectTurns += (turn.precio || 0);
+    };
+    if (turn.forma_pago === "Transf.") {
+      totalEarnedTransfTurns += (turn.precio || 0);
+    }
     return acc + (turn.precio || 0);
   }, 0);
+  
   totalEarned = totalEarnedTurns;
+  totalEarnedEfect = totalEarnedEfectTurns;
+  totalEarnedTransf = totalEarnedTransfTurns;
 
-  totalEarnedDisplay.innerHTML = `Total ganado: <b>$ ${totalEarned.toFixed(2)}</b>`;
+  totalEarnedDisplay.innerHTML = `Total ganado: <br class="totalEarnedInfo-br"> <b>$ ${totalEarned.toFixed(2)}</b>`;
+  totalEarnedEfectDisplay.innerHTML = `Efectivo: <br class="totalEarnedInfo-br"> <b>$ ${totalEarnedEfect.toFixed(2)}</b>`;
+  totalEarnedTransfDisplay.innerHTML = `Transferencia: <br class="totalEarnedInfo-br"> <b>$ ${totalEarnedTransf.toFixed(2)}</b>`;
 
 }
 
-const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay) => {
+const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay) => {
 
   /**
    * Handle del listener del boton que calcula el total realizado en el dia.
@@ -323,7 +387,15 @@ const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay) => {
    * param: totalEarnedDisplay -> elemento html para poder mostrar el total hecho en el dia.
    */
 
-  calculateTotal(dataFinalsTurns, totalEarnedDisplay);
+  totalEarned = 0;
+  totalEarnedEfect = 0;
+  totalEarnedTransf = 0;
+
+  totalEarnedTurns = 0;
+  totalEarnedEfectTurns = 0;
+  totalEarnedTransfTurns = 0;
+
+  calculateTotal(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay);
 
 };
 
@@ -335,14 +407,16 @@ const usarCalcular = (dataFinalsTurns) => {
    * param: dataRecurrentTurns -> array con los turnos recurrentes.
    */
 
-  const $boton = document.querySelector('.btn-primary');
+  const $boton = document.querySelector('.totalEarnedBtn button');
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
+  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
+  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
 
   // Eliminar todos los event listeners anteriores
   $boton.replaceWith($boton.cloneNode(true));
-  const $nuevoBoton = document.querySelector('.btn-primary');
+  const $nuevoBoton = document.querySelector('.totalEarnedBtn button');
 
-  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay));
+  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay));
 
 };
 
@@ -380,7 +454,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+          <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
         </tr>
       `;
       globalDataFinalTurns.splice(0, globalDataFinalTurns.length);
@@ -402,7 +476,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
-              <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+              <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
             </tr>
           `;
 
@@ -425,7 +499,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       if (dataFinalsTurns === undefined || dataFinalsTurns.length == 0) {
         tableBodyTurnsCashRegister.innerHTML = `
           <tr>
-            <td colspan="7">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+            <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
           </tr>
         `;
       }
@@ -433,6 +507,8 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       usarCalcular(dataFinalsTurns); 
 
       handleSelectChange(cutServices, selectedDate);
+
+      hanldeSelectPaymentMethod(selectedDate);
 
     }
     

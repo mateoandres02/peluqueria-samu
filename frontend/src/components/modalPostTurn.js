@@ -259,12 +259,13 @@ const addDatesOfMonth = (date, dateOutParsed, datesOfMonth, checksActivated) => 
    */
 
   const actualDate = new Date(date);
+  const actualDay = actualDate.getDate();
   const actualMonth = actualDate.getMonth();
   const actualYear = actualDate.getFullYear();
   const { timeOfTurn } = parseDate(dateOutParsed);
 
   for (const day of checksActivated) {
-    const newDate = new Date(actualYear, actualMonth, 1);
+    const newDate = new Date(actualYear, actualMonth, actualDay);
     while (newDate.getMonth() === actualMonth) {
       if (newDate.getDay() === day) {
         datesOfMonth.push({
@@ -423,7 +424,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       setTimeout(() => {
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
         bootstrapModal.hide();
-        window.location.reload();
+        // window.location.reload();
       }, 1500);
 
     } else {

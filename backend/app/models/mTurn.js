@@ -10,7 +10,8 @@ const turns = sqliteTable('Turnos',
         Date: text('Date').notNull(),
         Regular: text('Regular').notNull(),
         NroUsuario: integer('NroUsuario', { mode: 'number' }).references(() => users.Id),
-        Service: integer('Service', { mode: "number" }).references(() => services.Id)
+        Service: integer('Service', { mode: "number" }).references(() => services.Id),
+        Forma_Pago: text('Forma_Pago')
     }
 );
 

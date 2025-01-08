@@ -3,7 +3,7 @@ import { calendario, calendarRender } from './calendarRender.js';
 import { menuAdmin } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber, handleWeekFilterChange} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
@@ -51,11 +51,13 @@ const indexView = async (data) => {
                 let $tableBodyTurnsCashRegister = document.querySelector('.table-cash-body');            
                 let $currentDate = document.querySelector('#filterDateInput').value;
     
-                await cashData($tableBodyTurnsCashRegister, $currentDate, null);
+                await cashData($tableBodyTurnsCashRegister, $currentDate, null, null, null);
                 
                 const $dateInput = document.querySelector('#filterDateInput');
-                addDateFilterListener($tableBodyTurnsCashRegister, $dateInput);
-                addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect);
+                const $weekInput = document.getElementById('filterWeekInput');
+                addDateFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput);
+                addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect, $dateInput, $weekInput);
+                handleWeekFilterChange($tableBodyTurnsCashRegister, $dateInput, $weekInput);
                 
                 $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
     

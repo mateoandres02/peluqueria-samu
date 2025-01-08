@@ -2,7 +2,7 @@ import { db } from "../database/db.js";
 import turns from "../models/mTurn.js";
 import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
-import { eq, like, and } from 'drizzle-orm';
+import { eq, like, and, sql } from 'drizzle-orm';
 import turns_days from "../models/mTurnsDays.js";
 
 const getAllTurns = async (req, res) => {
@@ -129,6 +129,58 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
     }
 }
 
+const getAllTurnsByWeek = async (req, res) => {
+    try {
+
+        const { startWeek, endWeek } = req.params;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            date: turns.Date,
+            forma_pago: turns.Forma_Pago
+        })
+        .from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek}`);
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+        })
+    }
+}
+
+const getAllTurnsByWeekAndBarber = async (req, res) => {
+    try {
+
+        const { startWeek, endWeek, barberId } = req.params;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            date: turns.Date,
+            forma_pago: turns.Forma_Pago
+        })
+        .from(turns)
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+        })
+    }
+}
+
 const postTurn = async (req, res) => {
     try {
         const { Nombre, Telefono, Date, Regular, NroUsuario, Service } = req.body;
@@ -214,8 +266,11 @@ const actionsTurns = {
     getAllTurnsByDate,
     getAllTurnsByDateAndBarber,
     getTurnById,
+    getAllTurnsByWeek,
+    getAllTurnsByWeekAndBarber,
     postTurn,
     updateTurn,
     deleteTurn,
 };
+
 export default actionsTurns;

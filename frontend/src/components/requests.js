@@ -399,6 +399,31 @@ const getTurnsHistoryFilteredByBarber = async (barberParam) => {
 }
 
 
+const getTurnsByWeek = async (startWeek, endWeek, recurrent) => {
+  if (recurrent) {
+    // const response = await fetch(`http://localhost:3001/recurrent_turns/week/${startWeek}/${endWeek}`);
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/week/${startWeek}/${endWeek}`);
+    return response;
+  } else {
+    // const response = await fetch(`http://localhost:3001/turns/week/${startWeek}/${endWeek}`);
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/week/${startWeek}/${endWeek}`);
+    return response;
+  }
+}
+
+
+const getTurnsByWeekAndBarber = async (startWeek, endWeek, barberId, recurrent) => {
+  if (recurrent) {
+    // const response = await fetch(`http://localhost:3001/recurrent_turns/week/${startWeek}/${endWeek}/${barberId}`);
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/week/${startWeek}/${endWeek}/${barberId}`);
+    return response;
+  } else {
+    // const response = await fetch(`http://localhost:3001/turns/week/${startWeek}/${endWeek}/${barberId}`);
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/week/${startWeek}/${endWeek}/${barberId}`);
+    return response;
+  }
+}
+
 export {
   login,
   getCookie,
@@ -422,4 +447,6 @@ export {
   getTurnsHistoryFilteredByDateAndBarber,
   getTurnsHistoryFilteredByDate,
   getTurnsHistoryFilteredByBarber,
+  getTurnsByWeek,
+  getTurnsByWeekAndBarber
 }

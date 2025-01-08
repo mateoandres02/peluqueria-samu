@@ -30,6 +30,7 @@ async function calendarRender (modalElement, data) {
 
   let calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "timeGridWeek",
+    firstDay: 1,
     initialDate: initialDate,
     timeZone: 'America/Argentina/Cordoba',
     eventMaxStack: true,

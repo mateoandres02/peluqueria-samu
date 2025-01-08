@@ -22,7 +22,7 @@ const modalTurnContent = `
           <h3 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h3>
           <h3 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h3>
           <div class="modal-footer modal-footer-calendar">
-            <a id="contactWsp" class="btn btn-success" href="https://web.whatsapp.com/" target="_blank">
+            <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>
             </a>
             <button id="deleteTurn" class="btn btn-danger btnCancel" data-bs-dismiss="modal">
@@ -76,12 +76,8 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
     e.preventDefault();
 
     const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`;
-    let wspUrl;
-    if (innerWidth < 640) {
-      wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
-    } else {
-      wspUrl = `https://web.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
-    }
+    let wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
+
     $btnWsp.href = wspUrl;
     
     window.open(wspUrl, '_blank');

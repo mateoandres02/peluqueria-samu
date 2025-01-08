@@ -424,7 +424,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       setTimeout(() => {
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
         bootstrapModal.hide();
-        // window.location.reload();
+        window.location.reload();
       }, 1500);
 
     } else {

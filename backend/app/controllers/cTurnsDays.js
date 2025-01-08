@@ -4,7 +4,7 @@ import turns_days from "../models/mTurnsDays.js";
 import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
-import { eq, like, and } from 'drizzle-orm';
+import { eq, like, and, sql } from 'drizzle-orm';
 
 const getAllRecurrentTurns = async (req, res) => {
 
@@ -152,6 +152,62 @@ const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
     }
 }
 
+const getAllTurnsByWeek = async (req, res) => {
+    try {
+
+        const { startWeek, endWeek } = req.params;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date,
+            forma_pago: turns.Forma_Pago
+        })
+        .from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek}`);
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+        })
+    }
+}
+
+const getAllTurnsByWeekAndBarber = async (req, res) => {
+    try {
+
+        const { startWeek, endWeek, barberId } = req.params;
+
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            exdate: turns_days.exdate,
+            date: turns_days.date,
+            forma_pago: turns.Forma_Pago
+        })
+        .from(turns_days)
+        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
+
+        res.send(data);
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+        })
+    }
+}
+
 const postTurnRecurrentDay = async (req, res) => {
     try {
         const { id_turno, id_dia, date } = req.body;
@@ -273,6 +329,8 @@ const actionsTurns = {
     getAllRecurrentTurnsDaysByBarber,
     getAllRecurrentTurnsDaysByDate,
     getAllRecurrentTurnsByDateAndBarber,
+    getAllTurnsByWeek,
+    getAllTurnsByWeekAndBarber,
     postTurnRecurrentDay,
     deleteTurnOfRecurrentTurns
 };

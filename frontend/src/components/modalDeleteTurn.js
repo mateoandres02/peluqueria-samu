@@ -16,7 +16,7 @@ const modalConfirm = `
           </button>
         </div>
         <div class="modal-body">
-          <h3 class="modal-body-confirm">¿Deseas eliminar este registro?</h3>
+          <h4 class="modal-body-confirm">¿Deseas eliminar este registro?</h4>
         </div>
         <div class="modal-footer modal-footer-delete">
           <button id="confirmDeleteTurn" class="btn btn-danger btn-success">Eliminar</button>

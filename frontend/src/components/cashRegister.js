@@ -1,9 +1,10 @@
 import { parseDate, reformatDate, getToday } from '../utils/date';
-import { getBarbers, putChangeService, getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById } from "./requests"
+import { getBarbers, putChangeService, getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById, getTurnsByWeek, getTurnsByWeekAndBarber } from "./requests"
 import '/src/styles/table.css';
 import '/src/styles/presentFunctionality.css';
 
 const today = getToday();
+
 
 let totalEarned = 0;
 let totalEarnedEfect = 0;
@@ -24,8 +25,12 @@ const infoSectionCashView = `
     <p>Visualiza los cobros realizados y los pagos por realizar.</p>
     <div class="present-container-filters">
       <div class="present-container-filter">
-        <span>Filtrar por fecha</span>
+        <span>Fecha Inicio</span>
         <input type="date" id="filterDateInput" value="${today}">
+      </div>
+      <div class="present-container-filter">
+        <span>Fecha Fin</span>
+        <input type="date" id="filterWeekInput">
       </div>
       <div class="present-container-filter">
         <span>Filtrar por barbero</span>
@@ -94,6 +99,52 @@ const paymentSection = `
   </div>
 `;
 
+const handleWeekFilterChange = async (tableBodyTurnsCashRegister, $dateInput, $weekInput) => {
+  
+  /**
+   * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
+   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
+   * param: dateInput -> dia elegido en el filtro.
+   */
+    
+  const dataBarbers = await getBarbers();
+  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
+  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
+  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
+  const paymentTableBody = document.querySelector('.table-pay-body');
+
+  $weekInput.removeEventListener('change', handleDateChange); 
+  $weekInput.addEventListener('change', handleDateChange);
+
+  async function handleDateChange(e) {
+
+    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
+    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
+    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
+    paymentTableBody.innerHTML = '';
+
+    let startWeekDate = $dateInput.value;
+    let endWeekDate = e.target.value;
+    let endWeekDatePlusOne;
+
+    if (endWeekDate) {
+      const endDate = new Date(endWeekDate);
+      endDate.setDate(endDate.getDate() + 1);
+      endWeekDatePlusOne = endDate.toISOString().split('T')[0];
+    } else {
+      endWeekDatePlusOne = e.target.value;
+    }
+
+    const barberInput = document.querySelector('#barberSelect');
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
+    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
+
+    await cashData(tableBodyTurnsCashRegister, startWeekDate, selectedBarber, endWeekDatePlusOne);
+
+  };
+};
+
+
 const loadBarberSelect = async (barberSelect) => {
   
   /**
@@ -109,6 +160,28 @@ const loadBarberSelect = async (barberSelect) => {
 
 };
 
+
+const sortArrayByDate = (array) => {
+  
+  /**
+   * Ordenamos los turnos por hora (de forma ascendente).
+   * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
+   */
+
+  array.sort((a, b) => {
+
+    const dateA = a.date ? parseDate(a.date).completeDate : '';
+    const dateB = b.date ? parseDate(b.date).completeDate : '';
+    
+    if (dateA && dateB) {
+      return new Date(dateA) - new Date(dateB);
+    }
+    return 0;
+  });
+
+}
+
+
 const sortArrayByHour = (array) => {
   
   /**
@@ -120,7 +193,6 @@ const sortArrayByHour = (array) => {
     const dateA = a.date ? parseDate(a.date).timeWithoutSeconds : '';
     const dateB = b.date ? parseDate(b.date).timeWithoutSeconds : '';
     
-    // Convertimos las horas a formato comparable
     if (dateA && dateB) {
       return new Date(`1970-01-01T${dateA}`) - new Date(`1970-01-01T${dateB}`);
     }
@@ -129,7 +201,8 @@ const sortArrayByHour = (array) => {
 
 }
 
-const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
+
+const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 
   /**
    * Carga la tabla con los registros de los turnos generados en el calendario.
@@ -143,7 +216,11 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
   let registrosFinales = [];
   let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
 
-  sortArrayByHour(dataTurnsConcats);
+  if (endDateParam !== null) {
+    sortArrayByDate(dataTurnsConcats);
+  } else {
+    sortArrayByHour(dataTurnsConcats);
+  }
 
   dataTurnsConcats.forEach((user, index) => {
 
@@ -213,7 +290,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices) => {
 };
 
 
-const hanldeSelectPaymentMethod = (selectedDate) => {
+const handleSelectPaymentMethod = (selectedDate, endDateParam) => {
 
   document.querySelectorAll('.payment-method').forEach(select => {
     select.addEventListener('change', async (e) => {
@@ -226,7 +303,7 @@ const hanldeSelectPaymentMethod = (selectedDate) => {
 
       await putChangeService(rowId, turn);
 
-      if (selectedDate === today) {
+      if (selectedDate === today && endDateParam === null) {
         window.location.reload();
       }
     })
@@ -235,7 +312,7 @@ const hanldeSelectPaymentMethod = (selectedDate) => {
 }
 
 
-const handleSelectChange = (cutServices, dateValue) => {
+const handleSelectChange = (cutServices, dateValue, endDateParam) => {
 
   /**
    * Hacemos un put al backend con el filtro elegido del selectable de servicio. De esta forma logramos actualizar los precios del corte.
@@ -272,7 +349,7 @@ const handleSelectChange = (cutServices, dateValue) => {
 
       await putChangeService(rowId, turn);
 
-      if (valueCalendar === today) {
+      if (valueCalendar === today && endDateParam === null) {
         window.location.reload();
       }
 
@@ -281,7 +358,7 @@ const handleSelectChange = (cutServices, dateValue) => {
 };
 
 
-const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect) => {
+const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect, $dateInput, $weekInput) => {
 
   /**
    * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
@@ -304,19 +381,19 @@ const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect)
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
     
-    const dateInput = document.querySelector('input[type="date"]');
-    const selectedDate = dateInput ? dateInput.value : null
+    let selectedDate = $dateInput.value;
+    let endDateWeek = $weekInput.value;
 
     if (!filteredBarber.length > 0) {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, null)
+      await cashData(tableBodyTurnsCashRegister, selectedDate, null, endDateWeek)
     } else {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, filteredBarber[0].Id);
+      await cashData(tableBodyTurnsCashRegister, selectedDate, filteredBarber[0].Id, endDateWeek);
     }
 
   });
 }
 
-const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
+const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput, $weekInput) => {
 
   /**
    * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
@@ -334,18 +411,27 @@ const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput) => {
   dateInput.addEventListener('change', handleDateChange);
   
   async function handleDateChange(e) {
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
-    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
-    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
-    paymentTableBody.innerHTML = '';
-
-    let selectedDate = e.target.value;
-
-    const barberInput = document.querySelector('#barberSelect');
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
-    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
-
-    await cashData(tableBodyTurnsCashRegister, selectedDate, selectedBarber);
+    
+    if ($weekInput.value != "" && e.target.value > $weekInput.value) {
+      alert("La fecha inicial no puede ser mayor a la final.");
+      // dateInput.value = new Date($weekInput.value).toISOString().split("T")[0];
+      dateInput.value = today;
+    } else {
+      totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
+      totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
+      totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
+      paymentTableBody.innerHTML = '';
+  
+      let selectedDate = e.target.value;
+      let endWeekDate = $weekInput.value;
+  
+      const barberInput = document.querySelector('#barberSelect');
+      const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
+      const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
+  
+      await cashData(tableBodyTurnsCashRegister, selectedDate, selectedBarber, endWeekDate);
+    }
+    
   };
 
 };
@@ -420,7 +506,7 @@ const usarCalcular = (dataFinalsTurns) => {
 
 };
 
-const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null) => {
+const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberId = null, endWeekDate = null) => {
 
   /**
    * Renderiza los turnos en una tabla.
@@ -431,22 +517,30 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
   try {
     const cutServices = await getServices();
-    const dateParam = selectedDate ? `${selectedDate}` : null;
+    const dateParam = selectedDate ? `${selectedDate}` : today;
     const barberParam = barberId ? `${barberId}` : null;
+    const endDateParam = endWeekDate ? `${endWeekDate}` : null;
 
-    let dateReformated = reformatDate(selectedDate);
+    let dateReformated;
+    if (selectedDate !== null) dateReformated = reformatDate(selectedDate);
 
     let responseTurns;
     let responseRecurrentTurns;
     let recurrent = false;
-    
-    if (barberParam !== null && dateParam !== null) {
+
+    if (endDateParam !== null && dateParam !== null && barberParam === null) {
+      responseTurns = await getTurnsByWeek(dateParam, endDateParam, recurrent = false);
+      responseRecurrentTurns = await getTurnsByWeek(dateParam, endDateParam, recurrent = true);
+    } else if (endDateParam !== null && dateParam !== null && barberParam !== null) {
+      responseTurns = await getTurnsByWeekAndBarber(dateParam, endDateParam, barberParam, recurrent = false);
+      responseRecurrentTurns = await getTurnsByWeekAndBarber(dateParam, endDateParam, barberParam, recurrent = true);
+    } else if (endDateParam === null && barberParam !== null && dateParam !== null) {
       responseTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = false);
       responseRecurrentTurns = await getTurnsFilteredByDateAndBarber(dateParam, barberParam, recurrent = true);
-    } else if (barberParam === null && dateParam !== null) {
+    } else if (endDateParam === null && barberParam === null && dateParam !== null) {
       responseTurns = await getTurnsFilteredByDate(dateParam, recurrent = false);
       responseRecurrentTurns = await getTurnsFilteredByDate(dateParam, recurrent = true);
-    } else if (barberParam !== null && dateParam === null) {
+    } else if (endDateParam === null && barberParam !== null && dateParam === null) {
       responseTurns = await getTurnsFilteredByBarber(barberParam, recurrent = false);
       responseRecurrentTurns = await getTurnsFilteredByBarber(barberParam, recurrent = true);
     }
@@ -481,15 +575,15 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
           `;
 
         } else if (dataTurns.message && !dataRecurrentTurns.message) {
-          let { row, registrosFinales } = rows(dataTurns = [], dataRecurrentTurns, cutServices);
+          let { row, registrosFinales } = rows(dataTurns = [], dataRecurrentTurns, cutServices, endDateParam);
           dataFinalsTurns = registrosFinales;
           tableBodyTurnsCashRegister.innerHTML += row;
         } else if (!dataTurns.message && dataRecurrentTurns.message) {
-          let { row, registrosFinales } = rows(dataTurns, dataRecurrentTurns = [], cutServices)
+          let { row, registrosFinales } = rows(dataTurns, dataRecurrentTurns = [], cutServices, endDateParam)
           dataFinalsTurns = registrosFinales;
           tableBodyTurnsCashRegister.innerHTML += row;
         } else {
-          let { row, registrosFinales } = rows(dataTurns, dataRecurrentTurns, cutServices)
+          let { row, registrosFinales } = rows(dataTurns, dataRecurrentTurns, cutServices, endDateParam)
           dataFinalsTurns = registrosFinales;
           tableBodyTurnsCashRegister.innerHTML += row;
         }
@@ -506,9 +600,9 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
   
       usarCalcular(dataFinalsTurns); 
 
-      handleSelectChange(cutServices, selectedDate);
+      handleSelectChange(cutServices, selectedDate, endDateParam);
 
-      hanldeSelectPaymentMethod(selectedDate);
+      handleSelectPaymentMethod(selectedDate, endDateParam);
 
     }
     
@@ -662,4 +756,5 @@ export {
   loadBarberSelect,
   addBarberFilterListener,
   handlePaidsForBarber,
+  handleWeekFilterChange
 };

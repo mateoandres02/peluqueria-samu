@@ -8,6 +8,7 @@ import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
+import { voucherView, infoSectionVoucherView, voucherAddView, vouchersData } from './voucher.js';
 import { loader } from "./loader.js";
 
 import "../styles/style.css";
@@ -124,7 +125,7 @@ const indexView = async (data) => {
                 deleteEmployee($btnsDelete)
     
                 break;
-    
+                
             case '#configuracion':
     
                 app.innerHTML += configParamsView;
@@ -170,7 +171,21 @@ const indexView = async (data) => {
                 await handleChangeBarber($tableBodyPaymentEdit, $barberSelectConfigParams);
     
                 break;
-        
+            case '#recuento-vales':
+                console.log("entre en recuento de vales")
+                app.innerHTML += voucherView;
+
+                let voucherViewContainer = document.querySelector('.voucherView');
+                voucherViewContainer.insertAdjacentHTML('beforeend', infoSectionVoucherView);
+                voucherViewContainer.insertAdjacentHTML('beforeend', voucherAddView);
+
+                const tableVouchers = await vouchersData();
+                if (tableVouchers) {
+                    voucherViewContainer.insertAdjacentHTML('beforeend', tableVouchers);
+                }
+
+                
+                break;
             default:
                 // app.innerHTML += calendario;
                 // calendarRender(modalElement, data);

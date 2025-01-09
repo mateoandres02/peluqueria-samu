@@ -46,6 +46,12 @@ const menuAdmin = (user) => {
                             Configurar parametros
                         </a>
                     </li>
+                    <li>
+                        <a href="#recuento-vales">
+                            <img src="/assets/icons/vale.svg" alt="Administrar empleados" class="icon">
+                            Recuento de vales y descuentos
+                        </a>
+                    </li>
                 </ul>
                 <div class="button-logout-container">
                     <button id="logout">

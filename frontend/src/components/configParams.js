@@ -9,7 +9,7 @@ const configParamsView = `<div class="configParamsView containerFunctionalityVie
 const infoSectionParamsView = `
   <div class="present-container">
     <h2>Configuración de Parametros</h2>
-    <p class="configParamsView-p">Establece distintas configuraciones para distintas funcionalidades de la aplicación.</p>
+    <p class="configParamsView-p">Establece configuraciones para distintas funcionalidades de la aplicación.</p>
   </div>
 `;
 
@@ -338,13 +338,13 @@ const submitService = (form, modal, modalFooter) => {
      * No conviene modularizarlo a request porque está trabajada completamente como promesa y deberíamos exportar todo lo de acá.
      */
 
-    let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
-    // let url = 'http://localhost:3001/cutservices';
+    // let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
+    let url = 'http://localhost:3001/cutservices';
     let method = 'POST';
 
     if (mode === 'update') {
-      url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
-      // url = `http://localhost:3001/cutservices/${id}`;
+      // url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
+      url = `http://localhost:3001/cutservices/${id}`;
       method = 'PUT';
     };
 

@@ -8,7 +8,7 @@ import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
-import { voucherView, infoSectionVoucherView, voucherAddView, vouchersData } from './voucher.js';
+import { voucherView, infoSectionVoucherView, voucherAddView, showRegisterVoucherModal, modalVoucher, submitVoucher, cancelSubmitVoucherForm, updateVoucher, deleteVoucher, tableVouchersColumns, vouchersRender, setupFiltersVouchers } from './voucher.js';
 import { loader } from "./loader.js";
 
 import "../styles/style.css";
@@ -172,18 +172,47 @@ const indexView = async (data) => {
     
                 break;
             case '#recuento-vales':
-                console.log("entre en recuento de vales")
                 app.innerHTML += voucherView;
 
                 let voucherViewContainer = document.querySelector('.voucherView');
                 voucherViewContainer.insertAdjacentHTML('beforeend', infoSectionVoucherView);
                 voucherViewContainer.insertAdjacentHTML('beforeend', voucherAddView);
+                voucherViewContainer.insertAdjacentHTML('beforeend',tableVouchersColumns)
+                voucherViewContainer.insertAdjacentHTML('beforeend', modalVoucher);
 
-                const tableVouchers = await vouchersData();
-                if (tableVouchers) {
-                    voucherViewContainer.insertAdjacentHTML('beforeend', tableVouchers);
-                }
+                const $barberVoucherSelect = document.querySelector('#barberSelectHistory');
+                await loadBarberSelect($barberVoucherSelect);
+                
+                let $tableBodyVouchers = document.querySelector('.table-vouchers-body');
+                let $currentDateVoucher = document.querySelector('#filterDateInputHistory').value;
 
+                //renderizacion de vales
+                await vouchersRender($tableBodyVouchers, $currentDateVoucher);
+
+                const $btnPostVoucher = document.querySelector('.postService-btn');
+                $btnPostVoucher.setAttribute('data-bs-toggle', 'modal');
+                $btnPostVoucher.setAttribute('data-bs-target', '#postService');
+
+                const $modalVoucher = new bootstrap.Modal(document.getElementById('postService'));
+
+                showRegisterVoucherModal($btnPostVoucher);
+
+                const $barberModalSelect = document.querySelector('#barber-select');
+                await loadBarberSelect($barberModalSelect);
+                const $formPostVoucher = document.querySelector("#formPOSTService");
+                const $modalFooterVoucher = document.querySelector('.modal-footer');
+                submitVoucher($formPostVoucher, $modalVoucher, $modalFooterVoucher, $barberVoucherSelect);
+
+                const $btnCancelVoucher = document.querySelector('.btnCancel');
+                cancelSubmitVoucherForm($btnCancelVoucher, $formPostVoucher, $modalVoucher);
+
+                const $btnPutVoucher = document.querySelectorAll('.modify i');
+                updateVoucher($btnPutVoucher, $modalVoucher);
+
+                const $btnDeleteVoucher = document.querySelectorAll('.delete i');
+                deleteVoucher($btnDeleteVoucher);
+
+                setupFiltersVouchers($tableBodyVouchers);
                 
                 break;
             default:

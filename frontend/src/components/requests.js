@@ -174,17 +174,17 @@ const getServices = async () => {
   return cutServices;
 };
 
-const getVouchers = async () => {
+// const getVouchers = async () => {
 
-  /**
-   * Obtenemos los vales a través de una solicitud al backend.
-   */
+//   /**
+//    * Obtenemos los vales a través de una solicitud al backend.
+//    */
   
-  // const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/vouchers", {credentials: 'include'});
-  const responseVouchers = await fetch("http://localhost:3001/vouchers");
-  const vouchers = await responseVouchers.json();
-  return vouchers;
-};
+//   // const responseCutServices = await fetch("https://peluqueria-invasion-backend.vercel.app/vouchers", {credentials: 'include'});
+//   const responseVouchers = await fetch("http://localhost:3001/vouchers");
+//   const vouchers = await responseVouchers.json();
+//   return vouchers;
+// };
 
 
 
@@ -436,6 +436,38 @@ const getTurnsByWeekAndBarber = async (startWeek, endWeek, barberId, recurrent) 
   }
 }
 
+const getVouchersFilteredByDateAndBarber = async (dateParam, barberParam) => {
+  // const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/vouchers/${dateParam}/${barberParam}`, { credentials: 'include' });
+
+  const responseVouchers = await fetch(`http://localhost:3001/vouchers/params/${dateParam}/${barberParam}`);
+
+  return responseVouchers;
+  
+}
+
+const getVouchersFilteredByDate = async (dateParam) => {
+  // const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/vouchers/${dateParam}`, { credentials: 'include' });
+
+  const responseVouchers = await fetch(`http://localhost:3001/vouchers/params/${dateParam}`);
+
+  return responseVouchers;
+}
+
+const getVouchersFilteredByBarber = async (barberParam) => {
+  // const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/vouchers/${barberParam}`, { credentials: 'include' });
+
+  const responseVouchers = await fetch(`http://localhost:3001/vouchers/params/barber/${barberParam}`);
+
+  return responseVouchers;
+}
+
+const getVouchers = async () => {
+  const responseVouchers = await fetch('http://localhost:3001/vouchers');
+  // const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/vouchers', { credentials: 'include' });
+
+  return responseVouchers;
+}
+
 export {
   login,
   getCookie,
@@ -461,5 +493,8 @@ export {
   getTurnsHistoryFilteredByBarber,
   getTurnsByWeek,
   getTurnsByWeekAndBarber,
-  getVouchers
+  getVouchers,
+  getVouchersFilteredByDateAndBarber,
+  getVouchersFilteredByDate,
+  getVouchersFilteredByBarber
 };

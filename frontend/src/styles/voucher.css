@@ -1,0 +1,5 @@
+.voucher-params {
+  border: thin solid red;
+  display: flex;
+  width: 70vw;
+}

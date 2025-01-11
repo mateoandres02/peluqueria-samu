@@ -47,7 +47,6 @@ const getUserById = async (req, res) => {
             message: err.message || `Ocurrió un error al recuperar el registro del usuario con id = ${id}`
         });
     }
-    
 }
 
 const postUser = async (req, res) => {

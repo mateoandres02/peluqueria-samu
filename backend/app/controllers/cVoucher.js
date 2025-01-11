@@ -24,7 +24,7 @@ const getAllVouchers = async (req, res) => {
         const formattedData = data.map(item => ({
           ...item.vale,
           Barbero: item.barbero || null 
-      }));
+        }));
     
         res.send(formattedData);
     } catch (error) {
@@ -55,128 +55,116 @@ const getAllTurnsByBarber = async (req, res) => {
     }
 };
 
-// const getTurnById = async (req, res) => {
-//     try {
-//         const id = req.params.id;
+const getVoucherById = async (req, res) => {
 
-//         const data = await db.select()
-//         .from(turns)
-//         .where(turns.Id == id);
-
-//         if (data.length) {
-//             res.status(200).send(data[0]);
-//         } else {
-//             res.status(404).send({
-//                 message: `No se ha encontrado el registro del turno con id = ${id}`
-//             });
-//         }
-//     } catch (err) {
-//         res.status(500).send({
-//             message: err.message || `Ocurrió un error al recuperar el registro del turno con id = ${id}`
-//         });
-//     }
-// };
-
-const getAllTurnsByDate = async (req, res) => {
     try {
-        const date = req.params.date;
+        const id = req.params.id;
 
-        const data = await db.select({
-          voucher: voucher,
-          peluquero: users.Nombre,
-        }).from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(like(turns.Date, `%${date}%`));
+        const data = await db.select().from(vouchers).where(eq(vouchers.Id, id)).all();
 
         if (data.length) {
-            res.status(200).send(data);
+            res.status(200).send(data[0]);
         } else {
             res.status(404).send({
-                message: `No se han encontrado turnos para ese día.`
+                message: `No se ha encontrado el registro del vale con id = ${id}`
             });
-        }
-    } catch (e) {
+        };
+
+    } catch (err) {
         res.status(500).send({
-            message: e.message || "Ocurrió un error al recuperar los registros que correspondan a ese día"
-        })
-    }
-}
-
-const getAllTurnsByDateAndBarber = async (req, res) => {
-    try {
-        const date = req.params.date;
-        const idUserActive = req.params.idUserActive;
-
-        const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio,
-            date: turns.Date,
-            forma_pago: turns.Forma_Pago
-        }).from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(and(like(turns.Date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
-
-        res.send(data);
-
-    } catch (e) {
-        res.status(500).send({
-            message: e.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con id ${idUserActive}.`
+            message: err.message || `Ocurrió un error al recuperar el registro del vale con id = ${id}`
         });
     }
 }
 
-const getAllTurnsByWeek = async (req, res) => {
+const getVouchersByDateAndBarber = async (req, res) => {
     try {
-
-        const { startWeek, endWeek } = req.params;
+        const date = req.params.date;
+        const barberName = req.params.barberName;
 
         const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio,
-            date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            vale: vouchers,
+            barbero: users.Nombre,
         })
-        .from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek}`);
+        .from(vouchers)
+        .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+        .where(and(like(vouchers.FechaCreacion, `%${date}%`), eq(users.Nombre, barberName)));
 
-        res.send(data);
+        const formattedData = data.map(item => ({
+            ...item.vale,
+            Barbero: item.barbero || null
+        }));
+
+        if (formattedData.length) {
+            res.status(200).send(formattedData);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado vales para ese día.`
+            });
+        }
     } catch (error) {
         res.status(500).send({
-            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+            message: error.message || `Ocurrió un error al recuperar los turnos para el día ${date} y el peluquero con el nombre de ${barberName}.`
+        });
+    }
+}
+
+const getVouchersByBarber = async (req,res) => {
+    try {
+        const barberName = req.params.barberName;
+
+        const data = await db.select({
+            vale: vouchers,
+            barbero: users.Nombre,
+        })
+        .from(vouchers)
+        .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+        .where(eq(users.Nombre, barberName));
+
+        const formatedData = data.map(item => ({
+            ...item.vale,
+            Barbero: item.barbero || null
+        }))
+
+        if (formatedData.length) {
+            res.status(200).send(formatedData);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado vales para ese día.`
+            });
+        };
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || `Ocurrió algún error recuperando el registro de historial con nombre ${barberName}.`
         })
     }
 }
 
-const getAllTurnsByWeekAndBarber = async (req, res) => {
+const getVouchersByDate = async (req, res) => {
     try {
-
-        const { startWeek, endWeek, barberId } = req.params;
-
+        const date = req.params.date
         const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio,
-            date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            vale: vouchers,
+            barbero: users.Nombre,
         })
-        .from(turns)
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
+        .from(vouchers).leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+        .where(like(vouchers.FechaCreacion, `%${date}%`));
 
-        res.send(data);
+        const formattedData = data.map(item => ({
+            ...item.vale,
+            Barbero: item.barbero || null
+        }));
+
+        if (formattedData.length) {
+            res.status(200).send(formattedData);
+        } else {
+            res.status(404).send({
+                message: `No se han encontrado vales para ese día.`
+            });
+        }
     } catch (error) {
         res.status(500).send({
-            message: error.message || `Ocurrió un error al recuperar los turnos de la semana.`
+            message: error.message || `Ocurrió algún error recuperando el registro de historial con la fecha de ${date}.`
         })
     }
 }
@@ -244,9 +232,10 @@ const deleteVoucher = async (req, res) => {
       const id = req.params.id;
 
       const response = await db.delete(vouchers).where(eq(vouchers.Id, id)).returning();
-
       if (response.length) {
-          res.status(204);
+        res.status(200).send({
+            message: "¡El registro se eliminó exitosamente!"
+        });
       } else {
           res.status(404).send({
               message: `No se pudo borrar el registro con id = ${id}`
@@ -263,7 +252,11 @@ const actionsTurns = {
   getAllVouchers,
   postVoucher,
   deleteVoucher,
-  updateVoucher
+  updateVoucher,
+  getVoucherById,
+  getVouchersByDateAndBarber,
+  getVouchersByDate,
+  getVouchersByBarber
 };
 
 export default actionsTurns;

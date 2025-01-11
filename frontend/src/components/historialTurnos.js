@@ -21,7 +21,7 @@ const infoSectionHistoryTurnsView = `
       <div class="present-container-filter filterBarber">
         <span>Filtrar por barbero</span>
         <select id="barberSelectHistory" class="form-select">
-          <option value="null">Seleccionar...</option>
+          <option value="null">Todos</option>
         </select>
       </div>
     </div>
@@ -124,18 +124,18 @@ const applyFilters = async (tableBodyTurnsHistoryView) => {
   await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, selectedBarber);
 };
 
-const setupFilters = (tableBodyTurnsHistoryView) => {
+const setupFilters = (tableBody) => {
   const dateInput = document.querySelector('#filterDateInputHistory');
   const barberSelect = document.querySelector('#barberSelectHistory');
 
   // Listener para el filtro por fecha
   dateInput.addEventListener('change', async () => {
-    await applyFilters(tableBodyTurnsHistoryView);
+    await applyFilters(tableBody);
   });
 
   // Listener para el filtro por barbero
   barberSelect.addEventListener('change', async () => {
-    await applyFilters(tableBodyTurnsHistoryView);
+    await applyFilters(tableBody);
   });
 };
 

@@ -155,7 +155,7 @@ const loadBarberSelect = async (barberSelect) => {
   const barbers = await getBarbers();
 
   barbers.forEach(barber => {
-    barberSelect.innerHTML += `<option value="${barber.Nombre}">${barber.Nombre}</option>`;
+    barberSelect.innerHTML += `<option value="${barber.Nombre}" data-barberId="${barber.Id}">${barber.Nombre}</option>`;
   });
 
 };

@@ -222,7 +222,7 @@ const submitEmployee = (form, modal, modalFooter) => {
 
         // Configuramos el mensaje del resultado del submit para caso positivo, dado que entró a este else.
         span.innerHTML = mode === 'create' ? '¡Usuario creado correctamente!' : '¡Usuario actualizado correctamente!';
-        span.style.color = 'green';
+        span.style.color = '#5cb85c';
 
         // Configuramos el tiempo de presentación del span y la salida de la modal a través de una instancia de la clase modal de bootstrap.
         setTimeout(() => {
@@ -338,6 +338,7 @@ const showModalConfirmDelete = (modal) => {
 
 const deleteEmployee = (btnsDelete) => {
   btnsDelete.forEach(btn => {
+    console.log("btn",btn)
     btn.addEventListener('click', async (e) => {                    
       const key = e.currentTarget.closest('tr').getAttribute('key');
 

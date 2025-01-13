@@ -8,7 +8,6 @@ import { loader } from './loader.js';
 
 import "../styles/style.css"
 
-// param: data -> user active.
 const indexView = async (data) => {
 
      /**
@@ -34,25 +33,15 @@ const indexView = async (data) => {
                 calendarRender(modalElement, data);
                 
                 break;
-    
-            case '#':
-    
-                break;
         
             default:
-                
-                // app.innerHTML += calendario;
-                // calendarRender(modalElement, data);
                 app.innerHTML += presentation(userActive);
-                
     
                 break;
     
         };
     } catch (error) {
-
-        console.error('Error loading the section:', error);
-
+        alert('Error al renderizar la sección.')
     } finally {
         const $loader = document.querySelector('.bg-loader-container');
         if ($loader) $loader.remove();

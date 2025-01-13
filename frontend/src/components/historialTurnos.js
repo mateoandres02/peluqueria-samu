@@ -1,13 +1,12 @@
-import { parseDate, reformatDate } from '../utils/date.js';
-import { getBarbers, getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber } from './requests.js';
+import { getToday, parseDate } from '../utils/date.js';
+
+import { getTurnsHistoryFilteredByDate, getTurnsHistoryFilteredByDateAndBarber, getTurnsHistoryFilteredByBarber, getHistoryTurns } from './requests.js';
 
 import '/src/styles/historialTurnos.css';
 
-const containerHistoryView = `<div class="containerHistoryView containerFunctionalityView"></div>`;
+const today = getToday() 
 
-const today = new Date();
-today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-const formattedDate = today.toISOString().split('T')[0];
+const containerHistoryView = `<div class="containerHistoryView containerFunctionalityView"></div>`;
 
 const infoSectionHistoryTurnsView = `
   <div class="present-container infoSectionHistoryTurnsView">
@@ -16,7 +15,7 @@ const infoSectionHistoryTurnsView = `
     <div class="present-container-filters cashRegisterFilterContainer">
       <div class="present-container-filter cashRegisterFilter">
         <span>Filtrar por fecha</span>
-        <input type="date" id="filterDateInputHistory" class="filter-date-cash-tracking" value="${formattedDate}">
+        <input type="date" id="filterDateInputHistory" class="filter-date-cash-tracking" value="${today}">
       </div>
       <div class="present-container-filter filterBarber">
         <span>Filtrar por barbero</span>
@@ -49,26 +48,13 @@ const tableTurnsHistory = `
   </div>
 `;
 
-const loadBarberSelectHistory = async (barberSelect) => {
-  // const barbers = await fetch('https://peluqueria-invasion-backend.vercel.app/users', { credentials: 'include' });
-  const barbers = await fetch('http://localhost:3001/users');
-  const dataBarbers = await barbers.json();
-
-  dataBarbers.forEach(barber => {
-    barberSelect.innerHTML += `<option value="${barber.Nombre}">${barber.Nombre}</option>`;
-  });
-}
 
 const rows = (dataTurns) => {
   let row = '';
   let idsTurnHistoryPubliqued = [];
 
-  //let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
-
   dataTurns.forEach((turn, index) => {
-    //if (user.exdate == 1) {
-    //  return;
-    //}
+
     if (idsTurnHistoryPubliqued.includes(turn.FechaTurno)) {
      return;
     } else {
@@ -77,11 +63,8 @@ const rows = (dataTurns) => {
 
     if (index > -1) {
 
-      //let costField = user.precio ? user.precio : '0'; 
-
       let dateCreate = turn.FechaCreacion ? parseDate(turn.FechaCreacion) : '';
       let dateTurn = turn.FechaTurno ? parseDate(turn.FechaTurno) : '';
-
 
       let action = turn.Accion == 'POST' ? 'AGREGADO' : 'ELIMINADO';
       let fijo = turn.Fijo == 'true' ? 'SI' : 'NO';
@@ -105,39 +88,6 @@ const rows = (dataTurns) => {
   return row;
 };
 
-const getHistoryTurns = async () => {
-  const responseTurns = await fetch('http://localhost:3001/historyturns');
-  // const responseTurns = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { credentials: 'include' });
-
-  return responseTurns;
-}
-
-const applyFilters = async (tableBodyTurnsHistoryView) => {
-  const dateInput = document.querySelector('#filterDateInputHistory');
-  const barberSelect = document.querySelector('#barberSelectHistory');
-
-  // Obtener los valores seleccionados
-  const selectedDate = dateInput ? dateInput.value : null;
-  const selectedBarber = barberSelect && barberSelect.value !== 'null' ? barberSelect.value : null;
-
-  // Llamar a la función de renderizado con los filtros aplicados
-  await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, selectedBarber);
-};
-
-const setupFilters = (tableBody) => {
-  const dateInput = document.querySelector('#filterDateInputHistory');
-  const barberSelect = document.querySelector('#barberSelectHistory');
-
-  // Listener para el filtro por fecha
-  dateInput.addEventListener('change', async () => {
-    await applyFilters(tableBody);
-  });
-
-  // Listener para el filtro por barbero
-  barberSelect.addEventListener('change', async () => {
-    await applyFilters(tableBody);
-  });
-};
 
 const historyTurnsRender = async (tableBodyTurnsHistoryView, selectedDate = null, barberId = null) => {
   try {
@@ -169,15 +119,38 @@ const historyTurnsRender = async (tableBodyTurnsHistoryView, selectedDate = null
            <td colspan="8">No se encontraron turnos para los filtros aplicados.</td>
          </tr>`;
   } catch (error) {
-    console.error("Error al renderizar el historial de turnos:", error);
+    alert("Error al renderizar el historial de turnos");
   }
 };
+
+
+const applyFilters = async (tableBodyTurnsHistoryView, dateInput, barberSelect) => {
+
+  const selectedDate = dateInput ? dateInput.value : null;
+  const selectedBarber = barberSelect && barberSelect.value !== 'null' ? barberSelect.value : null;
+
+  await historyTurnsRender(tableBodyTurnsHistoryView, selectedDate, selectedBarber);
+
+};
+
+
+const setupFilters = (tableBody, dateInput, barberSelect) => {
+
+  dateInput.addEventListener('change', async () => {
+    await applyFilters(tableBody, dateInput, barberSelect);
+  });
+
+  barberSelect.addEventListener('change', async () => {
+    await applyFilters(tableBody, dateInput, barberSelect);
+  });
+
+};
+
 
 export {
   containerHistoryView,
   infoSectionHistoryTurnsView,
   tableTurnsHistory,
-  loadBarberSelectHistory,
   historyTurnsRender,
   setupFilters
 };

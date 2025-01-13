@@ -1,6 +1,7 @@
 import { db } from "../database/db.js";
 import mUsers from "../models/mUser.js";
-import mTurns from "../models/mTurn.js"
+import mTurns from "../models/mTurn.js";
+import vouchers from "../models/mVoucher.js";
 import bcrypt from "bcrypt";
 import { config } from "../config/config.js";
 import { sql, eq } from 'drizzle-orm';
@@ -122,6 +123,7 @@ const deleteUser = async (req, res) => {
     try {
         const id = req.params.id;
 
+        await db.delete(vouchers).where(eq(vouchers.IdUsuario, id));
         await db.delete(turns).where(eq(turns.NroUsuario, id));
         await db.delete(paymentUsers).where(eq(paymentUsers.id_usuario, id));
 

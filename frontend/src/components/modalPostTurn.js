@@ -327,6 +327,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       $numberInput.reportValidity();
     }
 
+    submitBtn.setAttribute('disabled', 'true');
+
     // Trabajamos con el turno normal.
     const turn = {
       Nombre: clientName,
@@ -346,6 +348,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       body: JSON.stringify(turn),
       credentials: 'include'
     };
+
 
     const response = await fetch(url, options);
 
@@ -424,6 +427,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       setTimeout(() => {
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
         bootstrapModal.hide();
+        submitBtn.removeAttribute('disabled');
         window.location.reload();
       }, 1500);
 
@@ -436,7 +440,6 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       $modalFooter.appendChild(span);
     }    
 
-    submitBtn.setAttribute('disabled', 'true');
     
   });
 

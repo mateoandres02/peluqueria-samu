@@ -1,10 +1,14 @@
 import { parseDate, reformatDate, getToday } from '../utils/date';
-import { getBarbers, putChangeService, getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById, getTurnsByWeek, getTurnsByWeekAndBarber } from "./requests"
+import { sortArrayByDate, sortArrayByHour } from '../utils/arrays';
+import { handleSelectPaymentMethod, handleSelectServiceChange } from '../utils/selectables';
+
+import { getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById, getTurnsByWeek, getTurnsByWeekAndBarber } from "./requests";
+
 import '/src/styles/table.css';
 import '/src/styles/presentFunctionality.css';
 
-const today = getToday();
 
+const today = getToday();
 
 let totalEarned = 0;
 let totalEarnedEfect = 0;
@@ -99,108 +103,6 @@ const paymentSection = `
   </div>
 `;
 
-const handleWeekFilterChange = async (tableBodyTurnsCashRegister, $dateInput, $weekInput) => {
-  
-  /**
-   * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
-   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
-   * param: dateInput -> dia elegido en el filtro.
-   */
-    
-  const dataBarbers = await getBarbers();
-  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
-  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
-  const paymentTableBody = document.querySelector('.table-pay-body');
-
-  $weekInput.removeEventListener('change', handleDateChange); 
-  $weekInput.addEventListener('change', handleDateChange);
-
-  async function handleDateChange(e) {
-
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
-    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
-    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
-    paymentTableBody.innerHTML = '';
-
-    let startWeekDate = $dateInput.value;
-    let endWeekDate = e.target.value;
-    let endWeekDatePlusOne;
-
-    if (endWeekDate) {
-      const endDate = new Date(endWeekDate);
-      endDate.setDate(endDate.getDate() + 1);
-      endWeekDatePlusOne = endDate.toISOString().split('T')[0];
-    } else {
-      endWeekDatePlusOne = e.target.value;
-    }
-
-    const barberInput = document.querySelector('#barberSelect');
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
-    const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
-
-    await cashData(tableBodyTurnsCashRegister, startWeekDate, selectedBarber, endWeekDatePlusOne);
-
-  };
-};
-
-
-const loadBarberSelect = async (barberSelect) => {
-  
-  /**
-   * Carga el selector de barberos con los barberos disponibles en la aplicación.
-   * param: barberSelect -> elemento html del selectable de barberos.
-   */
-  
-  const barbers = await getBarbers();
-
-  barbers.forEach(barber => {
-    barberSelect.innerHTML += `<option value="${barber.Nombre}" data-barberId="${barber.Id}">${barber.Nombre}</option>`;
-  });
-
-};
-
-
-const sortArrayByDate = (array) => {
-  
-  /**
-   * Ordenamos los turnos por hora (de forma ascendente).
-   * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
-   */
-
-  array.sort((a, b) => {
-
-    const dateA = a.date ? parseDate(a.date).completeDate : '';
-    const dateB = b.date ? parseDate(b.date).completeDate : '';
-    
-    if (dateA && dateB) {
-      return new Date(dateA) - new Date(dateB);
-    }
-    return 0;
-  });
-
-}
-
-
-const sortArrayByHour = (array) => {
-  
-  /**
-   * Ordenamos los turnos por hora (de forma ascendente).
-   * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
-   */
-
-  array.sort((a, b) => {
-    const dateA = a.date ? parseDate(a.date).timeWithoutSeconds : '';
-    const dateB = b.date ? parseDate(b.date).timeWithoutSeconds : '';
-    
-    if (dateA && dateB) {
-      return new Date(`1970-01-01T${dateA}`) - new Date(`1970-01-01T${dateB}`);
-    }
-    return 0;
-  });
-
-}
-
 
 const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 
@@ -238,7 +140,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
     if (index > -1) {
       let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
 
-      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin selección</span>`;
+      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin servicio</span>`;
 
       let paymentField = user.forma_pago ? `<span>${user.forma_pago}</span>` : `<span class="span-red">Sin pago</span>`;
 
@@ -289,152 +191,6 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 
 };
 
-
-const handleSelectPaymentMethod = (selectedDate, endDateParam) => {
-
-  document.querySelectorAll('.payment-method').forEach(select => {
-    select.addEventListener('change', async (e) => {
-      const selectedPaymentMethod = e.target.value;
-      const rowId = e.target.dataset.id;
-
-      const turn = {
-        Forma_Pago: selectedPaymentMethod
-      };
-
-      await putChangeService(rowId, turn);
-
-      if (selectedDate === today && endDateParam === null) {
-        window.location.reload();
-      }
-    })
-  });
-
-}
-
-
-const handleSelectChange = (cutServices, dateValue, endDateParam) => {
-
-  /**
-   * Hacemos un put al backend con el filtro elegido del selectable de servicio. De esta forma logramos actualizar los precios del corte.
-   * param: cutServices -> array con los servicios disponibles en la aplicación.
-   * param: dateValue -> fecha elegida del calendario.
-   */
-
-  document.querySelectorAll('.cut-service-select').forEach(select => {
-
-    select.addEventListener('change', async (e) => {
-
-      const selectedServiceName = e.target.value;
-      let valueCalendar = dateValue;
-      const rowId = e.target.dataset.id;
-
-      if (selectedServiceName === "Seleccionar tipo de servicio") {
-        const priceCell = document.getElementById(`precio-${rowId}`);
-        if (priceCell) {
-          priceCell.textContent = '';
-        }
-        return;
-      }
-
-      const selectedService = cutServices.find(service => service.Nombre === selectedServiceName);
-
-      if (selectedService) {
-        const priceCell = document.getElementById(`precio-${rowId}`);
-        priceCell.textContent = `$ ${selectedService.Precio}`;
-      }
-
-      const turn = {
-        Service: selectedService.Id
-      };
-
-      await putChangeService(rowId, turn);
-
-      if (valueCalendar === today && endDateParam === null) {
-        window.location.reload();
-      }
-
-    });
-  });
-};
-
-
-const addBarberFilterListener = async (tableBodyTurnsCashRegister, barberSelect, $dateInput, $weekInput) => {
-
-  /**
-   * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
-   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
-   * param: barberSelect -> elemento html del selectable para elegir algun barbero.
-   */
-
-  const dataBarbers = await getBarbers();
-  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
-  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
-  const paymentTableBody = document.querySelector('.table-pay-body');
-  
-  barberSelect.addEventListener('change', async (e) => {
-    
-    totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
-    totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
-    totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
-    paymentTableBody.innerHTML = '';
-
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
-    
-    let selectedDate = $dateInput.value;
-    let endDateWeek = $weekInput.value;
-
-    if (!filteredBarber.length > 0) {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, null, endDateWeek)
-    } else {
-      await cashData(tableBodyTurnsCashRegister, selectedDate, filteredBarber[0].Id, endDateWeek);
-    }
-
-  });
-}
-
-const addDateFilterListener = async (tableBodyTurnsCashRegister, dateInput, $weekInput) => {
-
-  /**
-   * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
-   * param: tableBodyTurnsCashRegister -> elemento html de la tabla en donde se visualizarán los turnos.
-   * param: dateInput -> dia elegido en el filtro.
-   */
-  
-  const dataBarbers = await getBarbers();
-  const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
-  const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
-  const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
-  const paymentTableBody = document.querySelector('.table-pay-body');
-  
-  dateInput.removeEventListener('change', handleDateChange); 
-  dateInput.addEventListener('change', handleDateChange);
-  
-  async function handleDateChange(e) {
-    
-    if ($weekInput.value != "" && e.target.value > $weekInput.value) {
-      alert("La fecha inicial no puede ser mayor a la final.");
-      // dateInput.value = new Date($weekInput.value).toISOString().split("T")[0];
-      dateInput.value = today;
-    } else {
-      totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
-      totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
-      totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
-      paymentTableBody.innerHTML = '';
-  
-      let selectedDate = e.target.value;
-      let endWeekDate = $weekInput.value;
-  
-      const barberInput = document.querySelector('#barberSelect');
-      const filteredBarber = dataBarbers.filter(barber => barber.Nombre === barberInput.value);
-      const selectedBarber = barberInput.value !== 'null' ? filteredBarber[0].Id : null;
-  
-      await cashData(tableBodyTurnsCashRegister, selectedDate, selectedBarber, endWeekDate);
-    }
-    
-  };
-
-};
 
 const calculateTotal = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay) => {
 
@@ -545,10 +301,14 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       responseRecurrentTurns = await getTurnsFilteredByBarber(barberParam, recurrent = true);
     }
 
+    let message = `No tiene turnos para el día ${dateReformated || 'de hoy'}`;
+
+    if (endDateParam !== null) message = `No tiene turnos para estos dias`;
+
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+          <td colspan="10">${message}.</td>
         </tr>
       `;
       globalDataFinalTurns.splice(0, globalDataFinalTurns.length);
@@ -570,7 +330,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
-              <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+              <td colspan="10">${message}.</td>
             </tr>
           `;
 
@@ -593,37 +353,24 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       if (dataFinalsTurns === undefined || dataFinalsTurns.length == 0) {
         tableBodyTurnsCashRegister.innerHTML = `
           <tr>
-            <td colspan="10">No tiene turnos para el día ${dateReformated || 'de hoy'}.</td>
+            <td colspan="10">${message}.</td>
           </tr>
         `;
       }
   
       usarCalcular(dataFinalsTurns); 
 
-      handleSelectChange(cutServices, selectedDate, endDateParam);
+      handleSelectServiceChange(cutServices, selectedDate, endDateParam);
 
       handleSelectPaymentMethod(selectedDate, endDateParam);
 
     }
     
   } catch (error) {
-    alert(error);
+    alert('Error al cargar la tabla con los turnos.');
   }
   
 };
-
-const handlePaidsForBarber = ($payButton) => {
-
-  /**
-   * Maneja el pago para los barberos.
-   * param: $payButton -> elemento html del boton de pago.
-   */
-
-  $payButton.addEventListener('click', () => {
-    getPaidForBarbers();
-  });
-
-}
 
 const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns) => {
 
@@ -714,7 +461,6 @@ const showPaymentsForEachBarber = async (paymentTableBody, barbersData) => {
 
 }
 
-
 const getPaidForBarbers = async () => {
 
   /**
@@ -746,15 +492,24 @@ const getPaidForBarbers = async () => {
 
 }
 
+const handlePaidsForBarber = ($payButton) => {
+
+  /**
+   * Maneja el pago para los barberos.
+   * param: $payButton -> elemento html del boton de pago.
+   */
+
+  $payButton.addEventListener('click', () => {
+    getPaidForBarbers();
+  });
+
+}
+
 export {
   containerCashView,
   infoSectionCashView,
   tableTurns,
   paymentSection,
   cashData,
-  addDateFilterListener,
-  loadBarberSelect,
-  addBarberFilterListener,
-  handlePaidsForBarber,
-  handleWeekFilterChange
+  handlePaidsForBarber
 };

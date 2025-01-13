@@ -1,5 +1,110 @@
-.voucher-params {
-  border: thin solid red;
+.voucher-container {
+  max-width: 900px;
+  margin-bottom: 1rem;
+}
+
+.voucher-present h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.postVoucher-btn {
+  background-color: #25a844;
+  outline: none;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+
+  color: #FFFFFFF0;
+  font-weight: bold;
+  font-size: 1rem;
+
   display: flex;
-  width: 70vw;
+  justify-content: space-between;
+  align-items: center;
+
+  transition: opacity .15s ease;
+}
+
+.postVoucher-btn:hover {
+  opacity: .8;
+}
+
+.postVoucher-btn img {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+
+.voucherPost {
+  width: 20%;
+}
+
+.voucherDateFilter {
+  width: 35%;
+}
+
+.voucherBarberFilter {
+  width: 35%;
+}
+
+.table-voucher-container {
+  max-width: 800px;
+}
+
+.table-voucher-container th:nth-child(1), .table-voucher-container td:nth-child(1),
+.table-voucher-container th:nth-child(2), .table-voucher-container td:nth-child(2),  
+.table-voucher-container th:nth-child(4), .table-voucher-container td:nth-child(4),  
+.table-voucher-container th:nth-child(5), .table-voucher-container td:nth-child(5) { 
+  white-space: nowrap; 
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-voucher-container th:nth-child(5), .table-voucher-container td:nth-child(5) {
+  overflow: visible;
+}
+
+.table-voucher-container th:nth-child(3), .table-voucher-container td:nth-child(3) { 
+  white-space: nowrap; 
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (640px > width) {
+  .voucher-container {
+    margin-bottom: 0rem;
+  }
+
+  .present-container-filters-voucher {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .present-container-filters-voucher > div {
+    margin-bottom: .5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .voucherPost {
+    width: 100%;
+  }
+  
+  .voucherDateFilter {
+    width: 100%;
+  }
+  
+  .voucherBarberFilter {
+    width: 100%;
+  }
+
+  .table-voucher-container th:nth-child(3), .table-voucher-container td:nth-child(3) { 
+    min-width: 10ch;
+    max-width: 100px;
+  }
 }

@@ -3,15 +3,22 @@ import { calendario, calendarRender } from './calendarRender.js';
 import { menuAdmin } from "./menu.js";
 import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
-import { containerCashView, infoSectionCashView, tableTurns, cashData, addDateFilterListener, loadBarberSelect, addBarberFilterListener, paymentSection, handlePaidsForBarber, handleWeekFilterChange} from "./cashRegister.js";
-import { logout } from './logout.js';
-import { postEmployee, modal, usersData, manageEmployeesView, showRegisterEmployeeModal, submitEmployee, cancelSubmitForm, updateEmployee, deleteEmployee } from './manageEmployees.js';
-import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, loadBarberSelectHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
-import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, showRegisterServiceModal, submitService, cancelSubmitFormService, updateService, deleteService, configPaymentView, tablePaymentEdit, handleChangeBarber, handleModifyPercentage } from './configParams.js';
-import { voucherView, infoSectionVoucherView, voucherAddView, showRegisterVoucherModal, modalVoucher, submitVoucher, cancelSubmitVoucherForm, updateVoucher, deleteVoucher, tableVouchersColumns, vouchersRender, setupFiltersVouchers } from './voucher.js';
 import { loader } from "./loader.js";
 
+import { containerCashView, infoSectionCashView, tableTurns, cashData, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
+import { logout } from './logout.js';
+import { postEmployee, modal, usersData, manageEmployeesView } from './manageEmployees.js';
+import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
+import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, configPaymentView, tablePaymentEdit } from './configParams.js';
+import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender, setupFiltersVouchers } from './voucher.js';
+
+import { loadBarberSelect, handleChangeBarber } from '../utils/selectables.js';
+import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner } from '../utils/filters.js';
+import { cancelPostModal, showPostModal } from '../utils/modal.js';
+import { submitRecord, deleteRecord, updateRecord } from '../utils/crud.js';
+
 import "../styles/style.css";
+
 
 const indexView = async (data) => {
 
@@ -19,6 +26,8 @@ const indexView = async (data) => {
      * Renderizamos la vista del admin
      * param: data -> user active.
      */
+
+    let section;
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
@@ -56,9 +65,9 @@ const indexView = async (data) => {
                 
                 const $dateInput = document.querySelector('#filterDateInput');
                 const $weekInput = document.getElementById('filterWeekInput');
-                addDateFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput);
-                addBarberFilterListener($tableBodyTurnsCashRegister, $barberSelect, $dateInput, $weekInput);
-                handleWeekFilterChange($tableBodyTurnsCashRegister, $dateInput, $weekInput);
+                addDateFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
+                addBarberFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
+                addEndWeekFilterListner($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
                 
                 $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
     
@@ -76,16 +85,14 @@ const indexView = async (data) => {
                 $containerHistoryView.insertAdjacentHTML('beforeend', tableTurnsHistory);
                 
                 const $barberSelectHistory = document.querySelector('#barberSelectHistory');
-                await loadBarberSelectHistory($barberSelectHistory);
+                await loadBarberSelect($barberSelectHistory);
                 
                 let $tableBodyTurnsHistoryView = document.querySelector('.table-history-body');
-                let $currentDateHistory = document.querySelector('#filterDateInputHistory').value;
+                let $currentDateHistory = document.querySelector('#filterDateInputHistory');
                 
-                // Render inicial
-                await historyTurnsRender($tableBodyTurnsHistoryView, $currentDateHistory);
+                await historyTurnsRender($tableBodyTurnsHistoryView, $currentDateHistory.value);
                 
-                // Configurar filtros
-                setupFilters($tableBodyTurnsHistoryView);
+                setupFilters($tableBodyTurnsHistoryView, $currentDateHistory, $barberSelectHistory);
     
                 break;
             
@@ -108,21 +115,23 @@ const indexView = async (data) => {
                 $btnPostEmployee.setAttribute('data-bs-target', '#postEmployee');
     
                 const $modal = new bootstrap.Modal(document.getElementById('postEmployee'));
-    
-                showRegisterEmployeeModal($btnPostEmployee);
-    
                 const $formPostEmployee = document.querySelector('#formPOSTEmployee');
+                const $titleModalEmployee = document.querySelector("#postEmployeeLabel");
+                const $btnPost = document.querySelector(".btnPost");
+    
+                showPostModal($btnPostEmployee, $titleModalEmployee, $btnPost, $formPostEmployee, section = "manageEmployees");
+    
                 const $modalFooter = document.querySelector('.modal-footer');
-                submitEmployee($formPostEmployee, $modal, $modalFooter);
+                submitRecord($formPostEmployee, $modal, $modalFooter, $btnPost, section = "manageEmployees");
     
                 const $btnCancel = document.querySelector('.btnCancel');
-                cancelSubmitForm($btnCancel, $formPostEmployee, $modal);
+                cancelPostModal($btnCancel, $formPostEmployee, $modal);
     
                 const $btnsPut = document.querySelectorAll('.modify i');
-                updateEmployee($btnsPut, $modal);
+                updateRecord($btnsPut, $modal, $formPostEmployee, $titleModalEmployee, $btnPost, section = "manageEmployees");
     
                 const $btnsDelete = document.querySelectorAll('.delete i');
-                deleteEmployee($btnsDelete)
+                deleteRecord($btnsDelete, section = "manageEmployees");
     
                 break;
                 
@@ -145,21 +154,23 @@ const indexView = async (data) => {
                 $btnPostService.setAttribute('data-bs-target', '#postService');
     
                 const $modalService = new bootstrap.Modal(document.getElementById('postService'));
-    
-                showRegisterServiceModal($btnPostService);
-    
+                const $titleModal = document.querySelector("#postServiceLabel");
+                const $btnPostModal = document.querySelector(".btnPost");
                 const $formPostService = document.querySelector('#formPOSTService');
                 const $modalFooterService = document.querySelector('.modal-footer');
-                submitService($formPostService, $modalService, $modalFooterService);
+    
+                showPostModal($btnPostService, $titleModal, $btnPostModal, $formPostService, section = "config");
+    
+                submitRecord($formPostService, $modalService, $modalFooterService, $btnPostModal, section = "config");
     
                 const $btnCancelService = document.querySelector('.btnCancel');
-                cancelSubmitFormService($btnCancelService, $formPostService, $modalService);
+                cancelPostModal($btnCancelService, $formPostService, $modalService);
     
                 const $btnsPutService = document.querySelectorAll('.modify i');
-                updateService($btnsPutService, $modalService);
+                updateRecord($btnsPutService, $modalService, $formPostService, $titleModal, $btnPostModal, section = "config");
     
                 const $btnsDeleteService = document.querySelectorAll('.delete i');
-                deleteService($btnsDeleteService)
+                deleteRecord($btnsDeleteService, section = "config");
     
                 configParamsContainer.insertAdjacentHTML('beforeend', configPaymentView);
                 configParamsContainer.insertAdjacentHTML('beforeend', tablePaymentEdit);
@@ -171,61 +182,62 @@ const indexView = async (data) => {
                 await handleChangeBarber($tableBodyPaymentEdit, $barberSelectConfigParams);
     
                 break;
+            
             case '#recuento-vales':
                 app.innerHTML += voucherView;
 
                 let voucherViewContainer = document.querySelector('.voucherView');
+                voucherViewContainer.insertAdjacentHTML('beforeend', modalVoucher);
                 voucherViewContainer.insertAdjacentHTML('beforeend', infoSectionVoucherView);
                 voucherViewContainer.insertAdjacentHTML('beforeend', voucherAddView);
-                voucherViewContainer.insertAdjacentHTML('beforeend',tableVouchersColumns)
-                voucherViewContainer.insertAdjacentHTML('beforeend', modalVoucher);
+                voucherViewContainer.insertAdjacentHTML('beforeend', tableVouchersColumns)
 
-                const $barberVoucherSelect = document.querySelector('#barberSelectHistory');
-                await loadBarberSelect($barberVoucherSelect);
-                
+                const $barberVoucherSelectModal = document.querySelector('#select-barber-voucher');
+                await loadBarberSelect($barberVoucherSelectModal);
+
+                const $barberVoucherSelectFilter = document.querySelector('#barberSelect');
+                await loadBarberSelect($barberVoucherSelectFilter);
+
                 let $tableBodyVouchers = document.querySelector('.table-vouchers-body');
-                let $currentDateVoucher = document.querySelector('#filterDateInputHistory').value;
+                let $currentDateVoucher = document.querySelector('#filterDateInput');
 
-                //renderizacion de vales
-                await vouchersRender($tableBodyVouchers, $currentDateVoucher);
+                await vouchersRender($tableBodyVouchers, $currentDateVoucher.value);
 
-                const $btnPostVoucher = document.querySelector('.postService-btn');
+                const $btnPostVoucher = document.querySelector('.postVoucher-btn');
                 $btnPostVoucher.setAttribute('data-bs-toggle', 'modal');
-                $btnPostVoucher.setAttribute('data-bs-target', '#postService');
+                $btnPostVoucher.setAttribute('data-bs-target', '#postVoucher');
 
-                const $modalVoucher = new bootstrap.Modal(document.getElementById('postService'));
-
-                showRegisterVoucherModal($btnPostVoucher);
-
-                const $barberModalSelect = document.querySelector('#barber-select');
-                await loadBarberSelect($barberModalSelect);
-                const $formPostVoucher = document.querySelector("#formPOSTService");
+                const $modalVoucher = new bootstrap.Modal(document.getElementById('postVoucher'));
+                const $titleModalVoucher = document.querySelector("#postVoucherLabel");
+                const $btnPostModalVoucher = document.querySelector(".btnPost");
+                const $formPostVoucher = document.querySelector("#formPOSTVoucher");
                 const $modalFooterVoucher = document.querySelector('.modal-footer');
-                submitVoucher($formPostVoucher, $modalVoucher, $modalFooterVoucher, $barberVoucherSelect);
+
+                showPostModal($btnPostVoucher, $titleModalVoucher, $btnPostModalVoucher, $formPostVoucher, section = "voucher");
+
+                submitRecord($formPostVoucher, $modalVoucher, $modalFooterVoucher, $btnPostModalVoucher, section = "voucher");
 
                 const $btnCancelVoucher = document.querySelector('.btnCancel');
-                cancelSubmitVoucherForm($btnCancelVoucher, $formPostVoucher, $modalVoucher);
+                cancelPostModal($btnCancelVoucher, $formPostVoucher, $modalVoucher);
 
                 const $btnPutVoucher = document.querySelectorAll('.modify i');
-                updateVoucher($btnPutVoucher, $modalVoucher);
+                updateRecord($btnPutVoucher, $modalVoucher, $formPostVoucher, $titleModalVoucher, $btnPostModalVoucher, section = "voucher");
 
                 const $btnDeleteVoucher = document.querySelectorAll('.delete i');
-                deleteVoucher($btnDeleteVoucher);
+                deleteRecord($btnDeleteVoucher, section = "voucher");
 
-                setupFiltersVouchers($tableBodyVouchers);
+                setupFiltersVouchers($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
                 
                 break;
-            default:
-                // app.innerHTML += calendario;
-                // calendarRender(modalElement, data);
 
+            default:
                 app.innerHTML += presentation(userActive);
                 
                 break;
         };
 
     } catch (error) {
-        console.error('Error loading the section:', error);
+        alert('Error al renderizar la sección.')
     } finally {
         const $loader = document.querySelector('.bg-loader-container');
         if ($loader) $loader.remove();

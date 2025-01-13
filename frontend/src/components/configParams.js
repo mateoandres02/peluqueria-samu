@@ -1,8 +1,7 @@
-import { modalConfirm } from "./modalDeleteTurn";
-import { showModalConfirmDelete } from "./manageEmployees";
-import { getBarbers, getPaymentUsersById, putChangePercentageService, getServices, getServiceById, popService } from "./requests";
+import { putChangePercentageService, getServices} from "./requests";
 
 import "../styles/configParams.css";
+
 
 const configParamsView = `<div class="configParamsView containerFunctionalityView"></div>`;
 
@@ -90,6 +89,76 @@ const tablePaymentEdit = `
 `;
 
 
+const rows = (data) => {
+
+  /**
+   * Cargamos la tabla de servicios con los servicios de la aplicacion.
+   * param: data -> array de servicios almacenados en la base de datos.
+   */
+
+  let row = '';
+  data.forEach((item, index) => {
+    if (index > -1) {
+      row += `
+        <tr key=${item.Id}>
+          <td scope="row">${item.Nombre}</td>
+          <td>${item.Precio}</td>
+          <td>
+            <button class="table-btns modify">
+              <i class="bi bi-pencil-fill" key=${item.Id}></i>
+            </button>
+            <button class="table-btns delete">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    };
+  });
+
+  return row;
+};
+
+
+const serviceData = async () => {
+
+  /**
+   * Retornamos la tabla cargada o un mensaje de que no existen servicios en la aplicacion.
+   */
+
+  try {
+    const data = await getServices();
+
+    if (data.length > 0) {
+      let tableServices = `
+        <div class="table-container table-payment-container table-config-params">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">NOMBRE DEL SERVICIO</th>
+                <th scope="col">PRECIO</th>
+                <th scope="col">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows(data)}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      return tableServices;
+
+    } else {
+      return '<p class="empty">No hay servicios registrados.</p>'
+    }
+
+  } catch (error) {
+    alert("Error al cargar los servicios.");
+  };
+}
+
+
 const handleModifyPercentage = (links) => {
 
   /**
@@ -157,7 +226,7 @@ const handleModifyPercentage = (links) => {
 }
 
 
-const rowsService = (dataServices, dataPaymentBarber) => {
+const rowsServices = (dataServices, dataPaymentBarber) => {
 
   /**
    * Cargamos los servicios ofrecidos por la barbería junto con los porcentajes de pago de cada servicio del barbero elegido.
@@ -207,306 +276,6 @@ const rowsService = (dataServices, dataPaymentBarber) => {
 }
 
 
-const rows = (data) => {
-
-  /**
-   * Cargamos la tabla de servicios con los servicios de la aplicacion.
-   * param: data -> array de servicios almacenados en la base de datos.
-   */
-
-  let row = '';
-  data.forEach((item, index) => {
-    if (index > -1) {
-      row += `
-        <tr key=${item.Id}>
-          <td scope="row">${item.Nombre}</td>
-          <td>${item.Precio}</td>
-          <td>
-            <button class="table-btns modify">
-              <i class="bi bi-pencil-fill" key=${item.Id}></i>
-            </button>
-            <button class="table-btns delete">
-              <i class="bi bi-trash-fill"></i>
-            </button>
-          </td>
-        </tr>
-      `;
-    };
-  });
-
-  return row;
-};
-
-
-const serviceData = async () => {
-
-  /**
-   * Retornamos la tabla cargada o un mensaje de que no existen servicios en la aplicacion.
-   */
-
-  try {
-    const data = await getServices();
-
-    if (data.length > 0) {
-      let tableServices = `
-        <div class="table-container table-payment-container table-config-params">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">NOMBRE DEL SERVICIO</th>
-                <th scope="col">PRECIO</th>
-                <th scope="col">ACCIONES</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows(data)}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      return tableServices;
-
-    } else {
-      return '<p class="empty">No hay servicios registrados.</p>'
-    }
-
-  } catch (error) {
-    console.log(error);
-  };
-}
-
-
-const showRegisterServiceModal = (btn) => {
-
-  /**
-   * Muestra la modal al hacer click en el boton.
-   * param: btn -> elemento html del boton que hace el post.
-   */
-
-  btn.addEventListener('click', () => {
-    document.querySelector("#postServiceLabel").textContent = "Registrar Servicio";
-    document.querySelector(".btnPost").textContent = "Registrar";
-
-    const formService = document.querySelector("#formPOSTService");
-    formService.setAttribute('data-mode', 'create');
-
-    formService.removeAttribute('data-id');
-
-    formService.Nombre.value = '';
-    formService.Precio.value = '';
-
-  });
-
-}
-
-
-const submitService = (form, modal, modalFooter) => {
-
-  /**
-   * Hace un post del servicio.
-   * param: form -> elemento html del formulario.
-   * param: modal -> modal para poder hacer el post.
-   * param: modalFooter -> elemento html del footer de la modal
-   */
-
-  const span = document.createElement('span');
-  const submitServiceButton = document.querySelector('.btnPost');
-  span.innerHTML = 'Error al crear el servicio.';
-  span.style.textAlign = 'center';
-  span.style.width = '100%';
-  span.style.marginTop = '1rem';
-  span.style.marginBottom = '0rem';
-  span.style.paddingBottom = '0rem';
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const mode = form.getAttribute('data-mode');
-    const id = form.getAttribute('data-id');
-    const nombre = form.Nombre.value;
-    const precio = form.Precio.value;
-
-    submitServiceButton.setAttribute('disabled', 'true');
-
-    const service = {
-      "Nombre": nombre,
-      "Precio": precio
-    }
-
-    /**
-     * No conviene modularizarlo a request porque está trabajada completamente como promesa y deberíamos exportar todo lo de acá.
-     */
-
-    // let url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
-    let url = 'http://localhost:3001/cutservices';
-    let method = 'POST';
-
-    if (mode === 'update') {
-      // url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
-      url = `http://localhost:3001/cutservices/${id}`;
-      method = 'PUT';
-    };
-
-    fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(service),
-      credentials: 'include'
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error !== undefined || data.message !== undefined) {
-        span.innerHTML = `${data.message}` || 'Nombre de Servicio o Precio incorrectos.';
-        span.style.color = 'red';
-      } else {
-        span.innerHTML = mode === 'create' ? '¡Servicio creado correctamente!' : '¡Servicio actualizado correctamente!';
-        span.style.color = '#5cb85c';
-
-        setTimeout(() => {
-          const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
-          bootstrapModalService.hide();
-          window.location.reload();
-        }, 1300);
-      };
-
-      modalFooter.appendChild(span);
-      setTimeout(() => {
-        modalFooter.removeChild(span); 
-        submitServiceButton.removeAttribute('disabled');
-      }, 1500);
-    })
-    .catch((e) => {
-      console.log('Error del servidor:', e);
-    });
-  });
-};
-
-
-const cancelSubmitFormService = (btnCancel, form, modal) => {
-
-  /**
-   * Cancela el post.
-   * param: btnCancel -> elemento html del boton de cancelar.
-   * param: form -> elemento html del formulario.
-   * param: modal -> elemento html de la modal desplegada.
-   */
-
-  btnCancel.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    form.Nombre.value = '';
-    form.Precio.value = '';
-
-    const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
-    bootstrapModalService.hide();
-  });
-
-};
-
-const updateService = (btnsPut, modal) => {
-
-  /**
-   * Hace un update en la base de datos del servicio.
-   * param: btnsPut -> botones de actualizar.
-   * param: modal -> modal desplegada.
-   */
-
-  btnsPut.forEach(btn => {
-
-    btn.addEventListener('click', async (e) => {
-
-      const key = e.currentTarget.getAttribute('key');
-
-
-      const data = await getServiceById(key);
-
-      document.querySelector("#postServiceLabel").textContent = "Actualizar Servicio";
-      document.querySelector(".btnPost").textContent = "Actualizar";
-
-      const $putFormModalService = document.querySelector("#formPOSTService");
-
-      $putFormModalService.setAttribute('data-mode', 'update');
-      $putFormModalService.setAttribute('data-id', key);
-
-      $putFormModalService.Nombre.value = data.Nombre;
-      $putFormModalService.Precio.value = data.Precio;
-
-      modal.show();
-
-    });
-
-  });
-  
-};
-
-
-const deleteService = (btnsDelete) => {
-
-  /**
-   * Hace un delete en la base de datos del servicio seleccionado.
-   */
-
-  btnsDelete.forEach(btn => {
-    btn.addEventListener('click', async (e) => {                    
-      
-      const key = e.currentTarget.closest('tr').getAttribute('key');
-      
-      try {
-        const confirm = await showModalConfirmDelete(modalConfirm);
-
-        if (confirm) {
-
-          const response = await popService(key);
-
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            alert('Error al eliminar el servicio.');
-          };
-        }
-
-      } catch (e) {};
-    });
-
-  });
-
-}
-
-const handleChangeBarber = async (table, selectable) => {
-
-  /**
-   * Manejamos la selección del barbero para modificarle los porcentajes.
-   * param: table -> elemento html de la tabla donde se va a renderizar la información.
-   * param: selectable -> elemento html con todos los barberos cargados.
-   */
-
-  const dataBarbers = await getBarbers();
-
-  selectable.addEventListener('change', async (e) => {
-    
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
-
-    if (filteredBarber.length > 0) {
-      const dataBarber = await getPaymentUsersById(filteredBarber[0].Id);
-      
-      if (dataBarber.message) {
-        table.innerHTML = `
-          <tr>
-            <td scope="row" colspan="2">El barbero no tiene servicios asociados.</td>
-          </tr>
-        `;
-      } else {
-        paymentData(table, dataBarber)
-      }
-
-    }
-
-  });
-}
-
 const paymentData = async (table, dataBarber) => {
 
   /**
@@ -520,15 +289,16 @@ const paymentData = async (table, dataBarber) => {
     const cutServices = await getServices();
 
     if (table !== undefined) {
-      table.innerHTML = `${rowsService(cutServices, dataBarber)}`;
+      table.innerHTML = `${rowsServices(cutServices, dataBarber)}`;
     }
 
     const links = document.querySelectorAll('.modify-percentage');
     handleModifyPercentage(links)
 
   } catch (error) {
-    console.error('Error al obtener los barberos:', error);
-  }
+    alert('Error al obtener los barberos para poder configurar sus porcentajes de pago.');
+  };
+
 }
 
 export { 
@@ -536,14 +306,9 @@ export {
   infoSectionParamsView,
   configParamsInitialView,
   configPaymentView,
-  serviceData,
-  modalServices,
-  showRegisterServiceModal,
-  submitService,
-  cancelSubmitFormService,
-  updateService,
-  deleteService,
-  handleChangeBarber,
   tablePaymentEdit,
-  handleModifyPercentage
+  modalServices,
+  serviceData,
+  handleModifyPercentage,
+  paymentData
 };

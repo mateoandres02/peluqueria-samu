@@ -1,6 +1,7 @@
 import { getVouchers } from "./requests";
 import { getToday, parseDate } from "../utils/date";
 import { getVouchersFilteredByDate, getVouchersFilteredByDateAndBarber, getVouchersFilteredByBarber } from "./requests";
+import { deleteVoucher, updateVoucher } from "../utils/crud";
 import "../styles/configParams.css";
 import "../styles/voucher.css"
 
@@ -129,7 +130,6 @@ const rows = (data) => {
   return row;
 };
 
-
 const vouchersRender = async (table, selectedDate = null, barberId = null) => {
   try {
     let responseVouchers;
@@ -158,6 +158,14 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
     ? rows(dataVouchers) 
     : '<tr><td colspan="5">No se encontraron vales para los filtros aplicados.</td></tr>';
 
+    
+    if (dataVouchers) {
+      const $btnPutVoucher = document.querySelectorAll('.modify i');
+      const $btnDeleteVoucher = document.querySelectorAll('.delete i');
+
+      updateVoucher($btnPutVoucher)
+      deleteVoucher($btnDeleteVoucher);
+    }
   } catch (error) {
     alert("Error al renderizar el listado de vales");
   }

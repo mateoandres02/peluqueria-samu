@@ -1,4 +1,5 @@
 import { cashData } from "../components/cashRegister";
+import { vouchersRender } from "../components/voucher"
 import { getBarbers } from "../components/requests";
 import { getToday } from "./date";
 
@@ -135,8 +136,59 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
   };
 };
 
+// FILTROS PARA SECCION VOUCHERS
+const addDateFilterListenerVoucher = async (table, dateInput, $barberSelect) => {
+  /**
+   * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
+   * param: table -> elemento html de la tabla en donde se visualizarán los turnos.
+   * param: $barberSelect -> elemento html del selectable para elegir algun barbero.
+   */
+
+  const dataBarbers = await getBarbers();
+
+  dateInput.removeEventListener('change', handleDateChange);
+  dateInput.addEventListener('change', handleDateChange);
+
+  async function handleDateChange(e) {
+  
+    let selectedDate = e.target.value;
+
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre ===  $barberSelect.value);
+    const selectedBarber = $barberSelect.value !== 'null' ? filteredBarber[0].Nombre : null;
+
+    await vouchersRender(table, selectedDate, selectedBarber);
+  }
+    
+};
+
+const addBarberFilterListenerVoucher = async (table, $dateInput, $barberSelect) => {
+  /**
+   * Hace un filtrado de los turnos mostrados en la tabla del barbero seleccionado.
+   * param: table -> elemento html de la tabla en donde se visualizarán los turnos.
+   * param: $barberSelect -> elemento html del selectable para elegir algun barbero.
+   */
+
+  const dataBarbers = await getBarbers();
+
+  $barberSelect.addEventListener('change', async (e) => {
+    
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
+    
+    let selectedDate = $dateInput.value;
+
+    if (!filteredBarber.length > 0) {
+      await vouchersRender(table, selectedDate, null)
+    } else {
+      await vouchersRender(table, selectedDate, filteredBarber[0].Nombre);
+    }
+
+  });
+}
+
 export {
   addBarberFilterListener,
   addDateFilterListener,
-  addEndWeekFilterListner
+  addEndWeekFilterListner,
+  addDateFilterListenerVoucher,
+  addBarberFilterListenerVoucher
 }

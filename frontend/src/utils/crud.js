@@ -196,6 +196,68 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
   });
 };
 
+const updateVoucher = (btnPutVoucher) => {
+  // const $btnPutVoucher = document.querySelectorAll('.modify i');
+  const $modalVoucher = new bootstrap.Modal(document.getElementById('postVoucher'));
+  const $formPostVoucher = document.querySelector("#formPOSTVoucher");
+  const $titleModalVoucher = document.querySelector("#postVoucherLabel");
+  const $btnPostModalVoucher = document.querySelector(".btnPost");
+
+  btnPutVoucher.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const key = e.currentTarget.getAttribute('key');
+      let data;
+
+      data = await getVoucherById(key);
+        
+      $titleModalVoucher.textContent = "Actualizar Vale";
+      $btnPostModalVoucher.textContent = "Actualizar";
+
+      $formPostVoucher.setAttribute('data-mode', 'update');
+      $formPostVoucher.setAttribute('data-id', key);
+
+      $formPostVoucher.Motivo.value = data.Motivo;
+      $formPostVoucher.Monto.value = data.CantidadDinero;
+
+      $modalVoucher.show();
+
+      document.querySelector('.closeModal').addEventListener('click', () => {
+        $modalVoucher.hide(); 
+      });
+    });
+  });
+}
+
+const deleteVoucher = (btnDeleteVoucher) => {
+  btnDeleteVoucher.forEach(btn => {
+    btn.addEventListener('click', async (e) => {                    
+      
+      const key = e.currentTarget.closest('tr').getAttribute('key');
+
+      try {
+        const confirm = await showModalConfirmDelete(modalConfirm);
+
+        if (confirm) {
+
+          let response;
+          
+          response = await popVoucher(key);
+
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            console.log(response.ok)
+            alert('Error al eliminar el registro.');
+          };
+        }
+
+      } catch (e) {
+        alert('Hubo un error al eliminar el registro.')
+      };
+    });
+
+  });
+}
 
 const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, section = null) => {
 
@@ -225,11 +287,11 @@ const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, sect
         $titleModal.textContent = "Actualizar Empleado";
       };
 
-      if (section == "voucher") {
-        data = await getVoucherById(key);
+      // if (section == "voucher") {
+      //   data = await getVoucherById(key);
         
-        $titleModal.textContent = "Actualizar Vale";
-      }
+      //   $titleModal.textContent = "Actualizar Vale";
+      // }
       
       $btnPost.textContent = "Actualizar";
 
@@ -243,8 +305,8 @@ const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, sect
         $putFormModal.Contrasena.value = '';
       }
       if ($putFormModal.Rol) $putFormModal.Rol.value = data.Rol;
-      if ($putFormModal.Motivo) $putFormModal.Motivo.value = data.Motivo;
-      if ($putFormModal.Monto) $putFormModal.Monto.value = data.CantidadDinero;
+      // if ($putFormModal.Motivo) $putFormModal.Motivo.value = data.Motivo;
+      // if ($putFormModal.Monto) $putFormModal.Monto.value = data.CantidadDinero;
 
       modal.show();
 
@@ -260,7 +322,7 @@ const deleteRecord = (btnsDelete, section = null) => {
   /**
    * Hace un delete en la base de datos del servicio seleccionado.
    */
-
+  console.log("btn delete", btnsDelete);
   btnsDelete.forEach(btn => {
     btn.addEventListener('click', async (e) => {                    
       
@@ -275,7 +337,7 @@ const deleteRecord = (btnsDelete, section = null) => {
           
           if (section == "config") response = await popService(key);
           if (section == "manageEmployees") response = await popUser(key);
-          if (section == "voucher") response = await popVoucher(key);
+          // if (section == "voucher") response = await popVoucher(key);
 
           if (response.ok) {
             window.location.reload();
@@ -296,5 +358,7 @@ const deleteRecord = (btnsDelete, section = null) => {
 export {
   submitRecord,
   updateRecord,
-  deleteRecord
+  deleteRecord,
+  updateVoucher,
+  deleteVoucher
 }

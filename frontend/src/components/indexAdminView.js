@@ -13,7 +13,7 @@ import { configParamsView, infoSectionParamsView, modalServices, serviceData, co
 import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender, setupFiltersVouchers } from './voucher.js';
 
 import { loadBarberSelect, handleChangeBarber } from '../utils/selectables.js';
-import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner } from '../utils/filters.js';
+import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner, addDateFilterListenerVoucher, addBarberFilterListenerVoucher } from '../utils/filters.js';
 import { cancelPostModal, showPostModal } from '../utils/modal.js';
 import { submitRecord, deleteRecord, updateRecord } from '../utils/crud.js';
 
@@ -217,16 +217,17 @@ const indexView = async (data) => {
 
                 submitRecord($formPostVoucher, $modalVoucher, $modalFooterVoucher, $btnPostModalVoucher, section = "voucher");
 
+                addDateFilterListenerVoucher($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
+
+                addBarberFilterListenerVoucher($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
+
                 const $btnCancelVoucher = document.querySelector('.btnCancel');
                 cancelPostModal($btnCancelVoucher, $formPostVoucher, $modalVoucher);
 
-                const $btnPutVoucher = document.querySelectorAll('.modify i');
-                updateRecord($btnPutVoucher, $modalVoucher, $formPostVoucher, $titleModalVoucher, $btnPostModalVoucher, section = "voucher");
+                
+                // deleteVoucher($btnDeleteVoucher, section = "voucher");
 
-                const $btnDeleteVoucher = document.querySelectorAll('.delete i');
-                deleteRecord($btnDeleteVoucher, section = "voucher");
-
-                setupFiltersVouchers($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
+                // setupFiltersVouchers($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
                 
                 break;
 

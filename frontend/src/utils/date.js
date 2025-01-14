@@ -16,6 +16,7 @@ function parseDate(date) {
   const timeOfTurn = `${hour}:${minute}:${seconds}`;
   const completeDate = date;
   const dayWithoutYearParsed = `${day}/${month}`;
+  
 
   return {
     dayWithoutYear,
@@ -24,7 +25,8 @@ function parseDate(date) {
     timeWithoutSeconds,
     timeOfTurn,
     completeDate,
-    dayWithoutYearParsed
+    dayWithoutYearParsed,
+    datePart
   }
 };
 

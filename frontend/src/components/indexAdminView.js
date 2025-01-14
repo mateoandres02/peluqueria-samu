@@ -72,7 +72,7 @@ const indexView = async (data) => {
                 $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
     
                 const $payButton = document.querySelector('.pay-button');
-                handlePaidsForBarber($payButton);
+                handlePaidsForBarber($payButton, $dateInput, $weekInput);
     
                 break;
     

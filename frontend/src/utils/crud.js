@@ -115,12 +115,12 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       body = { "Nombre": nombre, "Precio": precio }
 
       if (mode === 'update') {
-        // url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
-        url = `http://localhost:3001/cutservices/${id}`;
+        url = `https://peluqueria-invasion-backend.vercel.app/cutservices/${id}`;
+        // url = `http://localhost:3001/cutservices/${id}`;
         method = 'PUT';
       } else {
-        // url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
-        url = 'http://localhost:3001/cutservices';
+        url = `https://peluqueria-invasion-backend.vercel.app/cutservices`;
+        // url = 'http://localhost:3001/cutservices';
         method = 'POST';
       }
 
@@ -131,12 +131,12 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       body = { "Nombre": nombre, "Contrasena": contrasena, "Rol": rol };
 
       if (mode === 'update') {
-        // url = `https://peluqueria-invasion-backend.vercel.app/users/${id}`;
-        url = `http://localhost:3001/users/${id}`;
+        url = `https://peluqueria-invasion-backend.vercel.app/users/${id}`;
+        // url = `http://localhost:3001/users/${id}`;
         method = 'PUT';
       } else {
-        // url = `https://peluqueria-invasion-backend.vercel.app/register`;
-        url = 'http://localhost:3001/register';
+        url = `https://peluqueria-invasion-backend.vercel.app/register`;
+        // url = 'http://localhost:3001/register';
         method = 'POST';
       }
 
@@ -147,12 +147,12 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       body = { "IdUsuario": idBarbero, "Motivo": motivo, "CantidadDinero": monto }
 
       if (mode === 'update') {
-        // url = `https://peluqueria-invasion-backend.vercel.app/vouchers/${id}`;
-        url = `http://localhost:3001/vouchers/${id}`;
+        url = `https://peluqueria-invasion-backend.vercel.app/vouchers/${id}`;
+        // url = `http://localhost:3001/vouchers/${id}`;
         method = 'PUT';
       } else {
-        // url = `https://peluqueria-invasion-backend.vercel.app/vouchers`;
-        url = 'http://localhost:3001/vouchers';
+        url = `https://peluqueria-invasion-backend.vercel.app/vouchers`;
+        // url = 'http://localhost:3001/vouchers';
         method = 'POST';
       }
 
@@ -197,7 +197,6 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
 };
 
 const updateVoucher = (btnPutVoucher) => {
-  // const $btnPutVoucher = document.querySelectorAll('.modify i');
   const $modalVoucher = new bootstrap.Modal(document.getElementById('postVoucher'));
   const $formPostVoucher = document.querySelector("#formPOSTVoucher");
   const $titleModalVoucher = document.querySelector("#postVoucherLabel");

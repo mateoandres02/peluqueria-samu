@@ -83,7 +83,7 @@ const usersData = async () => {
     if (data.length > 1) {
       let tableEmployees = `
         <div class="table-container table-manageemployees-container">
-          <table class="table-light">
+          <table>
             <thead>
               <tr>
                 <th scope="col">ID</th>

@@ -9,6 +9,10 @@
   margin-bottom: 1rem;
 }
 
+.voucher-present > p {
+  margin-bottom: 2.5rem;
+}
+
 .postVoucher-btn {
   background-color: #25a844;
   outline: none;
@@ -78,6 +82,16 @@
   .voucher-container {
     margin-bottom: 0rem;
   }
+
+  .voucher-present h3 {
+    font-size: 1.3rem;
+  }
+  
+  .voucher-present > p {
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+  }
+  
 
   .present-container-filters-voucher {
     display: flex;

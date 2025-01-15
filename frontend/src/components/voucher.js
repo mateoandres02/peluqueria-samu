@@ -12,7 +12,7 @@ const voucherView = `<div class="voucherView containerFunctionalityView"></div>`
 const infoSectionVoucherView = `
   <div class="present-container">
     <h2>Administración de vales y retiros de dinero</h2>
-    <p class="configParamsView-p">Lleva una cuenta de los vales hechos a barberos y retiros de dinero.</p>
+    <p class="configParamsView-p">Registra los retiros de dinero por parte de tus empleados.</p>
   </div>
 `;
 

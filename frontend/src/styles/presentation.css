@@ -8,24 +8,32 @@ svg {
 
 .presentation-container {
   width: 100%;
+  min-width: 375px;
   padding: 1rem;
 
-  min-width: 375px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .presentation-content {
   width: 100%;
-  height: 95vh;
+  height: 90vh;
+
   display: flex; 
   align-items: center; 
+  justify-content: center;
+  flex-direction: column-reverse;
+
   gap: 10px; 
-  flex-direction: column;
 }
 
 .presentation-text {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
+  justify-content: center;
+  align-items: flex-end;
+
+  height: 5rem;
 }
 
 .presentation-text h1 {
@@ -35,6 +43,9 @@ svg {
 }
 
 .neon-svg {
+  width: 80%;
+  height: 60vh;
+
   filter: drop-shadow(0 0 5px #515151) drop-shadow(0 0 15px #515151);
   animation: neon-intensity 5s infinite;
   margin-right: 0;
@@ -55,7 +66,12 @@ svg {
   }
   
   .presentation-text h1 {
-    font-size: 1.5rem !important;
+    font-size: 1.8rem !important;
     text-align: center;
+  }
+
+  .neon-svg {
+    width: 100%;
+    height: 50vh;
   }
 }

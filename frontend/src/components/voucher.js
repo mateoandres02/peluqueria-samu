@@ -131,8 +131,8 @@ const rows = (data) => {
 };
 
 const vouchersRender = async (table, selectedDate = null, barberId = null) => {
+  let responseVouchers;
   try {
-    let responseVouchers;
 
     if (selectedDate && barberId) {
       responseVouchers = await getVouchersFilteredByDateAndBarber(selectedDate, barberId);

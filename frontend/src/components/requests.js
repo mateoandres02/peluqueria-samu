@@ -461,7 +461,7 @@ const getVouchersFilteredByDate = async (dateParam) => {
 }
 
 const getVouchersFilteredByBarber = async (barberParam) => {
-  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/vouchers/params/${barberParam}`, { credentials: 'include' });
+  const responseHistoryturns = await fetch(`https://peluqueria-invasion-backend.vercel.app/vouchers/params/barber/${barberParam}`, { credentials: 'include' });
 
   // const responseVouchers = await fetch(`http://localhost:3001/vouchers/params/barber/${barberParam}`);
 

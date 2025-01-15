@@ -144,7 +144,7 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
       responseVouchers = await getVouchers();
     }
 
-    if (!responseVouchers.ok) {
+    if ( !responseVouchers || !responseVouchers.ok) {
       table.innerHTML = `
         <tr>
           <td colspan="5">No se encontraron vales para los filtros aplicados.</td>

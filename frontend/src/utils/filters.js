@@ -18,6 +18,7 @@ const addBarberFilterListener = async (table, $dateInput, $weekInput, $barberSel
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
+  const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
   
   $barberSelect.addEventListener('change', async (e) => {
@@ -25,6 +26,7 @@ const addBarberFilterListener = async (table, $dateInput, $weekInput, $barberSel
     totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
     totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
     totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
+    totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`;
     paymentTableBody.innerHTML = '';
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
@@ -55,6 +57,7 @@ const addDateFilterListener = async (table, dateInput, $weekInput, $barberSelect
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
+  const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
   
   dateInput.removeEventListener('change', handleDateChange); 
@@ -70,6 +73,7 @@ const addDateFilterListener = async (table, dateInput, $weekInput, $barberSelect
       totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
       totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
       totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
+      totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`
       paymentTableBody.innerHTML = '';
   
       let selectedDate = e.target.value;
@@ -98,6 +102,7 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
+  const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
 
   $weekInput.removeEventListener('change', handleDateChange); 
@@ -105,14 +110,14 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
 
   async function handleDateChange(e) {
 
-    if ($weekInput.value != "" && e.target.value < $dateInput.value) {
-      alert("La fecha final no puede ser menor a la inicial.");
-      // $weekInput.value = new Date($dateInput.value).toISOString().split("T")[0];
-      $weekInput.value = today;
+    if ($weekInput.value != "" && e.target.value <= $dateInput.value) {
+      alert("La fecha final no puede ser menor o igual a la inicial.");
+      $weekInput.value = ""
     } else {
       totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
       totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
       totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
+      totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`;
       paymentTableBody.innerHTML = '';
   
       let startWeekDate = $dateInput.value;

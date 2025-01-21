@@ -2,7 +2,7 @@ import { parseDate, reformatDate, getToday } from '../utils/date';
 import { sortArrayByDate, sortArrayByHour } from '../utils/arrays';
 import { handleSelectPaymentMethod, handleSelectServiceChange } from '../utils/selectables';
 
-import { getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById, getTurnsByWeek, getTurnsByWeekAndBarber, getVouchersFilteredByBarber } from "./requests";
+import { getServices, getTurnsFilteredByDateAndBarber, getTurnsFilteredByDate, getTurnsFilteredByBarber, getPaymentUsersById, getTurnsByWeek, getTurnsByWeekAndBarber, getVouchersFilteredByBarber, getVouchers } from "./requests";
 
 import '/src/styles/table.css';
 import '/src/styles/presentFunctionality.css';
@@ -13,6 +13,7 @@ const today = getToday();
 let totalEarned = 0;
 let totalEarnedEfect = 0;
 let totalEarnedTransf = 0;
+let totalCashVouchers = 0;
 
 let totalEarnedTurns = 0;
 let totalEarnedEfectTurns = 0;
@@ -51,6 +52,7 @@ const infoSectionCashView = `
         <h5 id="totalEarnedDisplay">Total ganado: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
         <h5 id="totalEarnedForEfectDisplay">Efectivo: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
         <h5 id="totalEarnedForTransfDisplay">Transferencia: <br class="totalEarnedInfo-br"> <b>$ 0.00</b></h5>
+        <h5 id="totalVouchers">Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b></h5>
       </div>
     </div>
   </div>
@@ -94,7 +96,9 @@ const paymentSection = `
         <tr>
           <th scope="col">BARBERO</th>
           <th scope="col">TOTAL GANADO</th>
+          <th scope="col">DIFERENCIA POR VALES</th>
           <th scope="col">TOTAL A PAGAR</th>
+          <th scope="col">DEBE</th>
         </tr>
       </thead>
       <tbody class="table-pay-body">
@@ -192,7 +196,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 };
 
 
-const calculateTotal = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay) => {
+const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam) => {
 
   /**
    * Calcula el total hecho en el dia.
@@ -200,6 +204,28 @@ const calculateTotal = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDis
    * param: dataRecurrentTurns -> array con los turnos recurrentes.
    * param: totalEarnedDisplay -> elemento html para poder mostrar el total hecho en el dia.
    */
+
+  // Refactorizar porque el endpoint por fecha ya esta creado.
+
+  const vouchersForBarber = await getVouchers();
+  const dataVouchers = await vouchersForBarber.json();
+
+  let vouchersTodayForBarbers = [];
+  let vouchersToday = [];
+
+  dataVouchers.forEach(voucher => {
+    const { datePart } = parseDate(voucher.FechaCreacion);
+
+    if (datePart == selectedDate) {
+
+      if (voucher.IdUsuario == barberParam) {
+        vouchersTodayForBarbers.push(voucher);
+      } else {
+        vouchersToday.push(voucher)
+      }
+
+    }
+  });
 
   totalEarnedTurns = dataFinalsTurns.reduce((acc, turn) => {
     if (turn.forma_pago === "Efec.") {
@@ -214,14 +240,30 @@ const calculateTotal = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDis
   totalEarned = totalEarnedTurns;
   totalEarnedEfect = totalEarnedEfectTurns;
   totalEarnedTransf = totalEarnedTransfTurns;
+  
+  if (barberParam == null) {
+    vouchersToday.forEach(voucher => {
+      // totalEarned -= voucher.CantidadDinero;
+      // totalEarnedEfect -= voucher.CantidadDinero;
+      totalCashVouchers += voucher.CantidadDinero;
+    })
+  } else {
+  
+    vouchersTodayForBarbers.forEach(voucher => {
+      // totalEarned -= voucher.CantidadDinero;
+      // totalEarnedEfect -= voucher.CantidadDinero;
+      totalCashVouchers += voucher.CantidadDinero;
+    })
+
+  }
 
   totalEarnedDisplay.innerHTML = `Total ganado: <br class="totalEarnedInfo-br"> <b>$ ${totalEarned.toFixed(2)}</b>`;
   totalEarnedEfectDisplay.innerHTML = `Efectivo: <br class="totalEarnedInfo-br"> <b>$ ${totalEarnedEfect.toFixed(2)}</b>`;
   totalEarnedTransfDisplay.innerHTML = `Transferencia: <br class="totalEarnedInfo-br"> <b>$ ${totalEarnedTransf.toFixed(2)}</b>`;
-
+  totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ ${totalCashVouchers}.00 </b>`
 }
 
-const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay) => {
+const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam) => {
 
   /**
    * Handle del listener del boton que calcula el total realizado en el dia.
@@ -232,16 +274,25 @@ const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
   totalEarned = 0;
   totalEarnedEfect = 0;
   totalEarnedTransf = 0;
+  totalCashVouchers = 0;
 
   totalEarnedTurns = 0;
   totalEarnedEfectTurns = 0;
   totalEarnedTransfTurns = 0;
 
-  calculateTotal(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay);
+  const calculateTotalBtn = document.querySelector('.totalEarnedBtn button');
+  calculateTotalBtn.setAttribute('disabled', 'true');
+
+  setTimeout(() => {
+    const calculateTotalBtn = document.querySelector('.totalEarnedBtn button');
+    calculateTotalBtn.removeAttribute('disabled');
+  }, 1000);
+
+  calculateTotal(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam);
 
 };
 
-const usarCalcular = (dataFinalsTurns) => {
+const usarCalcular = (dataFinalsTurns, selectedDate, barberParam) => {
 
   /**
    * Agrega un listener al boton que calcula lo realizado en el dia.
@@ -253,12 +304,13 @@ const usarCalcular = (dataFinalsTurns) => {
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
+  const totalVouchers = document.getElementById('totalVouchers');
 
   // Eliminar todos los event listeners anteriores
   $boton.replaceWith($boton.cloneNode(true));
   const $nuevoBoton = document.querySelector('.totalEarnedBtn button');
 
-  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay));
+  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam));
 
 };
 
@@ -358,7 +410,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
         `;
       }
   
-      usarCalcular(dataFinalsTurns); 
+      usarCalcular(dataFinalsTurns, selectedDate, barberParam);
 
       handleSelectServiceChange(cutServices, selectedDate, endDateParam);
 
@@ -406,7 +458,7 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns, dateIn
         dataVales.forEach((item) => {
           const { datePart } = parseDate(item.FechaCreacion);
   
-          if (datePart >= dateInput && datePart <= weekInput) {
+          if ((datePart >= dateInput && datePart <= weekInput)) {
             barbersData[barber].vales += item.CantidadDinero;
           }
           
@@ -465,11 +517,36 @@ const showPaymentsForEachBarber = async (paymentTableBody, barbersData) => {
   for (const barber in barbersData) {
     const barberData = barbersData[barber];
 
+    let totalAdjustedEarningsFormatted;
+    if (barberData.totalAdjustedEarnings < 0) {
+      totalAdjustedEarningsFormatted = 0;
+    } else {
+      totalAdjustedEarningsFormatted = barberData.totalAdjustedEarnings;
+    }
+
+    let totalDebt;
+    if (barberData.totalAdjustedEarnings < 0) {
+      totalDebt = barberData.totalAdjustedEarnings;
+    } else {
+      totalDebt = 0;
+    }
+
+    const totalDebtString = totalDebt.toString();
+
+    let totalDebtFinal;
+    if (totalDebt < 0) {
+      totalDebtFinal = `- $ ${totalDebtString.split("-")[1]}`;
+    } else {
+      totalDebtFinal = `$ 0`;
+    }
+
     paymentTableBody.innerHTML += `
       <tr>
         <td>${barber}</td>
         <td>$ ${barberData.totalEarnings}</td>
-        <td>$ ${barberData.totalAdjustedEarnings}</td>
+        <td>$ ${barberData.vales}</td>
+        <td>$ ${totalAdjustedEarningsFormatted}</td>
+        <td>${totalDebtFinal}</td>
       </tr>
     `;
   };

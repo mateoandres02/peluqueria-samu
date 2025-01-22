@@ -245,7 +245,6 @@ const deleteVoucher = (btnDeleteVoucher) => {
           if (response.ok) {
             window.location.reload();
           } else {
-            console.log(response.ok)
             alert('Error al eliminar el registro.');
           };
         }
@@ -321,7 +320,6 @@ const deleteRecord = (btnsDelete, section = null) => {
   /**
    * Hace un delete en la base de datos del servicio seleccionado.
    */
-  console.log("btn delete", btnsDelete);
   btnsDelete.forEach(btn => {
     btn.addEventListener('click', async (e) => {                    
       

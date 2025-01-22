@@ -196,7 +196,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 };
 
 
-const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam) => {
+const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, endDateParam, barberParam) => {
 
   /**
    * Calcula el total hecho en el dia.
@@ -216,7 +216,7 @@ const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
   dataVouchers.forEach(voucher => {
     const { datePart } = parseDate(voucher.FechaCreacion);
 
-    if (datePart == selectedDate) {
+    if (datePart == selectedDate || (datePart >= selectedDate && datePart <= endDateParam)) {
 
       if (voucher.IdUsuario == barberParam) {
         vouchersTodayForBarbers.push(voucher);
@@ -263,7 +263,7 @@ const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
   totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ ${totalCashVouchers}.00 </b>`
 }
 
-const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam) => {
+const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, endDateParam, barberParam) => {
 
   /**
    * Handle del listener del boton que calcula el total realizado en el dia.
@@ -288,11 +288,11 @@ const handleCalculateClick = (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
     calculateTotalBtn.removeAttribute('disabled');
   }, 1000);
 
-  calculateTotal(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam);
+  calculateTotal(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, endDateParam, barberParam);
 
 };
 
-const usarCalcular = (dataFinalsTurns, selectedDate, barberParam) => {
+const usarCalcular = (dataFinalsTurns, selectedDate, endDateParam, barberParam) => {
 
   /**
    * Agrega un listener al boton que calcula lo realizado en el dia.
@@ -310,7 +310,7 @@ const usarCalcular = (dataFinalsTurns, selectedDate, barberParam) => {
   $boton.replaceWith($boton.cloneNode(true));
   const $nuevoBoton = document.querySelector('.totalEarnedBtn button');
 
-  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, barberParam));
+  $nuevoBoton.addEventListener('click', () => handleCalculateClick(dataFinalsTurns, totalEarnedDisplay, totalEarnedEfectDisplay, totalEarnedTransfDisplay, totalVouchers, selectedDate, endDateParam, barberParam));
 
 };
 
@@ -410,7 +410,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
         `;
       }
   
-      usarCalcular(dataFinalsTurns, selectedDate, barberParam);
+      usarCalcular(dataFinalsTurns, selectedDate, endDateParam, barberParam);
 
       handleSelectServiceChange(cutServices, selectedDate, endDateParam);
 
@@ -566,11 +566,18 @@ const getPaidForBarbers = async (dateInput, weekInput) => {
 
   const paymentTableBody = document.querySelector('.table-pay-body');
 
+  paymentTableBody.innerHTML = '';
+  paymentTableBody.innerHTML += `
+    <tr>
+      <td colspan="5">Cargando...</td>
+    </tr>
+  `;
+
   if (filteredTurns.length == 0) {
     paymentTableBody.innerHTML = '';
     paymentTableBody.innerHTML += `
       <tr>
-        <td colspan="3">No hay turnos registrados con algun servicio elegido <br> para poder sacar un cálculo de pago.</td>
+        <td colspan="5">No hay turnos registrados con algun servicio elegido <br> para poder sacar un cálculo de pago.</td>
       </tr>
     `;
     return;

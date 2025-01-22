@@ -64,6 +64,11 @@ async function calendarRender (modalElement, data) {
       right: 'prev,next',
     },
     events: arrayTurns,
+    eventContent: function (args) {
+      return {
+        html: `<div class="fc-event-title">${args.event.title}</div>`
+      };
+    },
     eventClick: function(info) {
       eventInfo(info, data)
     },

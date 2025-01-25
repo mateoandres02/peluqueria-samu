@@ -159,6 +159,10 @@
 }
 
 
+.table-voucher-container {
+    padding-bottom: 2.5rem;
+}
+
 @media (640px > width) {
     .table-container {
         padding: 0rem 1rem;

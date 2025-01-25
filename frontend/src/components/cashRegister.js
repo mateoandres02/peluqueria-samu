@@ -40,7 +40,7 @@ const infoSectionCashView = `
       <div class="present-container-filter">
         <span>Filtrar por barbero</span>
         <select id="barberSelect" class="form-select">
-          <option value="null">Seleccionar...</option>
+          <option value="null">Todos</option>
         </select>
       </div>
     </div>

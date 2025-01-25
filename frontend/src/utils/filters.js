@@ -34,10 +34,20 @@ const addBarberFilterListener = async (table, $dateInput, $weekInput, $barberSel
     let selectedDate = $dateInput.value;
     let endDateWeek = $weekInput.value;
 
-    if (!filteredBarber.length > 0) {
-      await cashData(table, selectedDate, null, endDateWeek)
+    let endWeekDatePlusOne;
+    
+    if (endDateWeek) {
+      const endDate = new Date(endDateWeek);
+      endDate.setDate(endDate.getDate() + 1);
+      endWeekDatePlusOne = endDate.toISOString().split('T')[0];
     } else {
-      await cashData(table, selectedDate, filteredBarber[0].Id, endDateWeek);
+      endWeekDatePlusOne = null
+    }
+
+    if (!filteredBarber.length > 0) {
+      await cashData(table, selectedDate, null, endWeekDatePlusOne)
+    } else {
+      await cashData(table, selectedDate, filteredBarber[0].Id, endWeekDatePlusOne);
     }
 
   });

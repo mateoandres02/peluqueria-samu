@@ -625,7 +625,6 @@ export {
   getVouchersFilteredByBarber,
   getHistoryTurns,
   getVoucherById,
-  getVoucherById,
   getTurnById,
   putChangeServiceRecurrentTurns,
   getRecurrentTurnById,

@@ -190,12 +190,12 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       body = { "Nombre": nombre, "Telefono": telefono };
 
       if (mode === 'update') {
-        // url = `https://peluqueria-invasion-backend.vercel.app/clients/${id}`;
-        url = `http://localhost:3001/clients/${id}`;
+        url = `https://peluqueria-invasion-backend.vercel.app/clients/${id}`;
+        // url = `http://localhost:3001/clients/${id}`;
         method = 'PUT';
       } else {
-        // url = `https://peluqueria-invasion-backend.vercel.app/clients`;
-        url = 'http://localhost:3001/clients';
+        url = `https://peluqueria-invasion-backend.vercel.app/clients`;
+        // url = 'http://localhost:3001/clients';
         method = 'POST';
       }
 

@@ -1,6 +1,6 @@
 .table-container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1300px;
     min-height: 100px;
     height: auto;
   
@@ -10,6 +10,8 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
+
+    overflow-x: auto;
 }
    
 .table-container table {
@@ -54,15 +56,20 @@
 }
 
 .table-container th:nth-child(3), .table-container td:nth-child(3),
-.table-container th:nth-child(4), .table-container td:nth-child(4),
 .table-container th:nth-child(5) div, .table-container td:nth-child(5) div,
 .table-container th:nth-child(6), .table-container td:nth-child(6),
 .table-container th:nth-child(9), .table-container td:nth-child(9),
-.table-container th:nth-child(10), .table-container td:nth-child(10) { 
+.table-container th:nth-child(10), .table-container td:nth-child(10) {
     white-space: nowrap; 
     max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.table-container th:nth-child(3), .table-container td:nth-child(3),
+.table-container th:nth-child(6), .table-container td:nth-child(6),
+.table-container th:nth-child(9), .table-container td:nth-child(9) {
+    min-width: 150px;
 }
 
 .table-container .table-body tr td:last-child {
@@ -79,8 +86,10 @@
     text-overflow: ellipsis;
 }
 
-.table-container.table-manageemployees-container {
-    max-width: 700px;
+.table-container.table-manageemployees-container,
+.table-container.table-manageClients-container {
+    max-width: 800px;
+    min-width: 800px;
 }
 
 .table-manageemployees-container th:nth-child(5), .table-manageemployees-container td:nth-child(5) {
@@ -190,4 +199,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+@media (1300px > width) {
+    .table-container {
+        max-width: 1000px;
+    }  
 }

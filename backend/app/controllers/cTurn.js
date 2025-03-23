@@ -4,6 +4,7 @@ import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import { eq, like, and, sql } from 'drizzle-orm';
 import turns_days from "../models/mTurnsDays.js";
+import method_payment from "../models/mMethodPayment.js";
 
 const getAllTurns = async (req, res) => {
     try {
@@ -13,10 +14,14 @@ const getAllTurns = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service));
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro));
 
         res.send(data);
     } catch (error) {
@@ -36,11 +41,15 @@ const getAllTurnsByBarber = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
         .where(eq(turns.NroUsuario, id));
 
         res.send(data);
@@ -55,9 +64,22 @@ const getTurnById = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const data = await db.select()
+        const data = await db.select({
+            turns: turns,
+            peluquero: users.Nombre,
+            servicio: services.Nombre,
+            precio: services.Precio,
+            date: turns.Date,
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
+        })
         .from(turns)
-        .where(turns.Id == id);
+        .leftJoin(users, eq(users.Id, turns.NroUsuario))
+        .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
+        .where(eq(turns.Id, id));
 
         if (data.length) {
             res.status(200).send(data[0]);
@@ -83,10 +105,14 @@ const getAllTurnsByDate = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
         .where(like(turns.Date, `%${date}%`));
 
         if (data.length) {
@@ -114,10 +140,14 @@ const getAllTurnsByDateAndBarber = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         }).from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
         .where(and(like(turns.Date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
 
         res.send(data);
@@ -140,11 +170,15 @@ const getAllTurnsByWeek = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
         .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek}`);
 
         res.send(data);
@@ -166,11 +200,15 @@ const getAllTurnsByWeekAndBarber = async (req, res) => {
             servicio: services.Nombre,
             precio: services.Precio,
             date: turns.Date,
-            forma_pago: turns.Forma_Pago
+            forma_pago: method_payment.descripcion,
+            forma_cobro: turns.Forma_Cobro,
+            pago_efectivo: turns.Pago_Efectivo,
+            pago_transferencia: turns.Pago_Transferencia
         })
         .from(turns)
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
         .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(method_payment, eq(method_payment.id, turns.Forma_Cobro))
         .where(sql`${turns.Date} >= ${startWeek} and ${turns.Date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
 
         res.send(data);

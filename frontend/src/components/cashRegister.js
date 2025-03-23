@@ -66,13 +66,15 @@ const tableTurns = `
           <th scope="col">FECHA</th>
           <th scope="col">HORA</th>
           <th scope="col">CLIENTE</th>
-          <th scope="col">BARBERO</th>
-          <th scope="col">SERVICIO</th>
-          <th scope="col">TIPO DE SERVICIO</th>
-          <th scope="col">COSTO</th>
           <th scope="col">FIJO</th>
-          <th scope="col">PAGO</th>
+          <th scope="col">BARBERO</th>
+          <th scope="col">TIPO DE SERVICIO</th>
+          <th scope="col">SERVICIO</th>
+          <th scope="col">COSTO</th>
           <th scope="col">FORMA PAGO</th>
+          <th scope="col">PAGO</th>
+          <th scope="col">EFECTIVO</th>
+          <th scope="col">TRANSF.</th>
         </tr>
       </thead>
       <tbody class="table-cash-body">
@@ -107,6 +109,38 @@ const paymentSection = `
   </div>
 `;
 
+const modalMethodPayment = `
+  <div class="modal fade" id="modalMethodPayment" tabindex="-1" aria-labelledby="modalMethodPaymentLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="modalMethodPayment"><i class="bi bi-pencil-square"></i>Editar método de pago</h2>
+          <button type="button" class="closeModal" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="modalMethodPaymentForm">
+            <label for="efectivo"><i class="bi bi-person-lines-fill"></i>Efectivo</label>
+            <input type="number" name="efectivo" id="efectivo" class="input" pattern="^\\+?\\d{1,15}$">
+
+            <label for="transferencia"><i class="bi bi-person-lines-fill"></i>Transferencia</label>
+            <input type="number" name="transferencia" id="transferencia" class="input" pattern="^\\+?\\d{1,15}$">
+
+            <div class="modal-footer">
+              <button type="submit" id="saveMethodPayment" class="btn btn-success btnPost">Guardar</button>
+              <button id="closeModal" class="btn btn-danger btnCancel">Cancelar</button>
+              <div class="loader-container">
+                <img src="/assets/tube-spinner.svg" alt="loading" class="loader">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+
 
 const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 
@@ -134,17 +168,17 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
       return;
     }
 
-    if (idsPubliqued.includes(user.turns.Id)) {
-      return;
-    } else {
+    if (!registrosFinales.some(registro => registro.turns.Id === user.turns.Id && registro.date === user.date)) {
       registrosFinales.push(user);
       idsPubliqued.push(user.turns.Id);
+    } else {
+      return;
     }
 
     if (index > -1) {
       let selectOptions = cutServices.map(service => `<option value="${service.Nombre}">${service.Nombre}</option>`).join('');
 
-      let serviceField = user.turns && user.turns.Service ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin servicio</span>`;
+      let serviceField = user.servicio ? `<span>${user.servicio}</span>` : `<span class="span-red">Sin servicio</span>`;
 
       let paymentField = user.forma_pago ? `<span>${user.forma_pago}</span>` : `<span class="span-red">Sin pago</span>`;
 
@@ -158,31 +192,34 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
       if (user.exdate != 1) {
         row += `
           <tr key=${user.turns.Id}>
-            <td scope="row">${dateRecurrentTurn.dateWithoutTime || date.dateWithoutTime}</td>
+            <td scope="row">${dateRecurrentTurn.dayWithoutYearParsed || date.dateWithoutTime}</td>
             <td>${hourTurn.timeWithoutSeconds || date.timeWithoutSeconds}</td>
             <td>${user.turns.Nombre}</td>
+            <td>${isRecurrent}</td>
             <td>${user.peluquero}</td>
-            <td><div>${serviceField}</div></td>
             <td id="tdService">
               <div>
                 <select class="form-select cut-service-select" data-id="${user.turns.Id}" data-date="${user.date}" aria-label="Tipo de corte">
-                  <option selected value="null">Seleccionar...</option>
+                  <option selected value="null">Elegir...</option>
                   ${selectOptions}
                 </select>
               </div>
             </td>
-            <td class="precio-corte" id="precio-${user.turns.Id}">$ ${costField}</td>
-            <td>${isRecurrent}</td>
-            <td>${paymentField}</td>
+            <td><div>${serviceField}</div></td>
+            <td class="precio-corte" id="precio-${user.turns.Id}-${dateRecurrentTurn.dateParsed}">$ ${costField}</td>
             <td id="tdPaymentMethod">
               <div>
                 <select class="form-select payment-method" data-id="${user.turns.Id}" data-date="${user.date}" aria-label="Forma de pago">
-                  <option selected value="null">Seleccionar...</option>
-                  <option value="Efec.">EFECTIVO</option>
-                  <option value="Transf.">TRANSFERENCIA</option>
+                  <option selected value="null">Elegir...</option>
+                  <option value="Efectivo">EFECTIVO</option>
+                  <option value="Transferencia">TRANSFERENCIA</option>
+                  <option value="Mixto">MIXTA</option>
                 </select>
               </div>
             </td>
+            <td>${paymentField}</td>
+            <td>$ ${user.pago_efectivo || 0}</td>
+            <td>$ ${user.pago_transferencia || 0}</td>
           </tr>
         `;
       }
@@ -228,11 +265,15 @@ const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
   });
 
   totalEarnedTurns = dataFinalsTurns.reduce((acc, turn) => {
-    if (turn.forma_pago === "Efec.") {
+    if (turn.forma_pago === "Efectivo") {
       totalEarnedEfectTurns += (turn.precio || 0);
     };
-    if (turn.forma_pago === "Transf.") {
+    if (turn.forma_pago === "Transferencia") {
       totalEarnedTransfTurns += (turn.precio || 0);
+    }
+    if (turn.forma_pago === "Mixto") {
+      totalEarnedEfectTurns += (turn.pago_efectivo || 0);
+      totalEarnedTransfTurns += (turn.pago_transferencia || 0);
     }
     return acc + (turn.precio || 0);
   }, 0);
@@ -243,18 +284,12 @@ const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
   
   if (barberParam == null) {
     vouchersToday.forEach(voucher => {
-      // totalEarned -= voucher.CantidadDinero;
-      // totalEarnedEfect -= voucher.CantidadDinero;
       totalCashVouchers += voucher.CantidadDinero;
     })
   } else {
-  
     vouchersTodayForBarbers.forEach(voucher => {
-      // totalEarned -= voucher.CantidadDinero;
-      // totalEarnedEfect -= voucher.CantidadDinero;
       totalCashVouchers += voucher.CantidadDinero;
     })
-
   }
 
   totalEarnedDisplay.innerHTML = `Total ganado: <br class="totalEarnedInfo-br"> <b>$ ${totalEarned.toFixed(2)}</b>`;
@@ -360,7 +395,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `
         <tr>
-          <td colspan="10">${message}.</td>
+          <td colspan="12">${message}.</td>
         </tr>
       `;
       globalDataFinalTurns.splice(0, globalDataFinalTurns.length);
@@ -382,7 +417,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
-              <td colspan="10">${message}.</td>
+              <td colspan="12">${message}.</td>
             </tr>
           `;
 
@@ -405,7 +440,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       if (dataFinalsTurns === undefined || dataFinalsTurns.length == 0) {
         tableBodyTurnsCashRegister.innerHTML = `
           <tr>
-            <td colspan="10">${message}.</td>
+            <td colspan="12">${message}.</td>
           </tr>
         `;
       }
@@ -414,7 +449,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
       handleSelectServiceChange(cutServices, selectedDate, endDateParam);
 
-      handleSelectPaymentMethod(selectedDate, endDateParam);
+      handleSelectPaymentMethod();
 
     }
     
@@ -464,6 +499,7 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns, dateIn
           
         });
       }
+
     }
 
     // Agregamos y acumulamos el costo del servicio
@@ -610,6 +646,7 @@ export {
   infoSectionCashView,
   tableTurns,
   paymentSection,
+  modalMethodPayment,
   cashData,
   handlePaidsForBarber
 };

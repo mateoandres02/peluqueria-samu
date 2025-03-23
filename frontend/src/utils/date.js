@@ -16,7 +16,7 @@ function parseDate(date) {
   const timeOfTurn = `${hour}:${minute}:${seconds}`;
   const completeDate = date;
   const dayWithoutYearParsed = `${day}/${month}`;
-  
+  const dateParsed = `${year}-${month}-${day}`;
 
   return {
     dayWithoutYear,
@@ -26,8 +26,10 @@ function parseDate(date) {
     timeOfTurn,
     completeDate,
     dayWithoutYearParsed,
-    datePart
+    datePart,
+    dateParsed
   }
+  
 };
 
 const reformatDate = (date) => {
@@ -110,8 +112,14 @@ const getToday = () => {
 
   const today = new Date();
   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  today.setHours(today.getHours() - 3);
-  const formattedDate = today.toISOString().split('T')[0];
+
+  today.setHours(today.getHours() + 3);
+  let formattedDate = today.toISOString();
+
+  const dateObj = new Date(formattedDate);
+  dateObj.setHours(dateObj.getHours() - 3);
+  formattedDate = dateObj.toISOString().split('T')[0];
+
   return formattedDate;
 
 }

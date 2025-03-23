@@ -5,6 +5,7 @@ import users from "../models/mUser.js";
 import services from "../models/mCutService.js";
 import days from "../models/mDaysWeek.js";
 import { eq, like, and, sql } from 'drizzle-orm';
+import method_payment from "../models/mMethodPayment.js";
 
 const getAllRecurrentTurns = async (req, res) => {
 
@@ -13,7 +14,8 @@ const getAllRecurrentTurns = async (req, res) => {
             .select()
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
-            .leftJoin(days, eq(days.id, turns_days.id_dia));
+            .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro));
 
         res.send(data);
     } catch (error) {
@@ -33,12 +35,18 @@ const getRecurrentTurnById = async (req, res) => {
             .select({
                 id_turno: turns_days.id_turno,
                 id_dia: turns_days.id_dia,
-                date: turns.Date,
-                forma_pago: turns.Forma_Pago
+                date: turns_days.date,
+                forma_pago: method_payment.descripcion,
+                servicio: turns_days.servicio,
+                precio: services.Precio,
+                pago_efectivo: turns_days.pago_efectivo,
+                pago_transferencia: turns_days.pago_transferencia
             })
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(services, eq(services.Id, turns_days.servicio))
             .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
             .where(eq(turns_days.id_turno, id));
 
         if (data.length) {
@@ -59,18 +67,26 @@ const getRecurrentTurnById = async (req, res) => {
 const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
     try {
         const id = req.params.idUserActive;
-        
+
         const data = await db
             .select({
                 turno: turns.Id,
+                id_turno: turns_days.id_turno,
+                id_dia: turns_days.id_dia,
                 dia: days.dia,
                 date: turns_days.date,
                 exdate: turns_days.exdate,
-                forma_pago: turns.Forma_Pago
+                servicio: services.Nombre,
+                precio: services.Precio,
+                forma_pago: method_payment.descripcion,
+                pago_efectivo: turns_days.pago_efectivo,
+                pago_transferencia: turns_days.pago_transferencia
             })
             .from(turns_days)
             .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
             .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .leftJoin(services, eq(services.Id, turns_days.servicio))
+            .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
             .where(eq(turns.NroUsuario, id));
 
         // Organizar los días por turno
@@ -95,19 +111,28 @@ const getAllRecurrentTurnsDaysByBarber = async (req, res) => {
 const getAllRecurrentTurnsDaysByDate = async (req, res) => {
     try {
         const date = req.params.date;
-
-        const data = await db.select({
+        
+        const data = await db
+        .select({
             turns: turns,
             peluquero: users.Nombre,
+            id_turno: turns_days.id_turno,
+            id_dia: turns_days.id_dia,
+            dia: days.dia,
+            date: turns_days.date,
+            exdate: turns_days.exdate,
             servicio: services.Nombre,
             precio: services.Precio,
-            exdate: turns_days.exdate,
-            date: turns_days.date,
-            forma_pago: turns.Forma_Pago
-        }).from(turns_days)
+            forma_pago: method_payment.descripcion,
+            pago_efectivo: turns_days.pago_efectivo,
+            pago_transferencia: turns_days.pago_transferencia
+        })
+        .from(turns_days)
         .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+        .leftJoin(days, eq(days.id, turns_days.id_dia))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(services, eq(services.Id, turns_days.servicio))
+        .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
         .where(like(turns_days.date, `%${date}%`));
 
         if (data.length) {
@@ -129,18 +154,27 @@ const getAllRecurrentTurnsByDateAndBarber = async (req, res) => {
         const date = req.params.date;
         const idUserActive = req.params.idUserActive;
 
-        const data = await db.select({
+        const data = await db
+        .select({
             turns: turns,
             peluquero: users.Nombre,
+            id_turno: turns_days.id_turno,
+            id_dia: turns_days.id_dia,
+            dia: days.dia,
+            date: turns_days.date,
+            exdate: turns_days.exdate,
             servicio: services.Nombre,
             precio: services.Precio,
-            exdate: turns_days.exdate,
-            date: turns_days.date,
-            forma_pago: turns.Forma_Pago
-        }).from(turns_days)
+            forma_pago: method_payment.descripcion,
+            pago_efectivo: turns_days.pago_efectivo,
+            pago_transferencia: turns_days.pago_transferencia
+        })
+        .from(turns_days)
         .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
         .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
+        .leftJoin(days, eq(days.id, turns_days.id_dia))
+        .leftJoin(services, eq(services.Id, turns_days.servicio))
+        .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
         .where(and(like(turns_days.date, `%${date}%`), eq(turns.NroUsuario, idUserActive)));
         
         res.send(data);
@@ -157,20 +191,29 @@ const getAllTurnsByWeek = async (req, res) => {
 
         const { startWeek, endWeek } = req.params;
 
-        const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio,
-            exdate: turns_days.exdate,
-            date: turns_days.date,
-            forma_pago: turns.Forma_Pago
-        })
-        .from(turns_days)
-        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek}`);
+        const data = await db
+            .select({
+                turns: turns,
+                peluquero: users.Nombre,
+                id_turno: turns_days.id_turno,
+                id_dia: turns_days.id_dia,
+                dia: days.dia,
+                date: turns_days.date,
+                exdate: turns_days.exdate,
+                servicio: services.Nombre,
+                precio: services.Precio,
+                forma_pago: method_payment.descripcion,
+                pago_efectivo: turns_days.pago_efectivo,
+                pago_transferencia: turns_days.pago_transferencia
+            })
+            .from(turns_days)
+            .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(users, eq(users.Id, turns.NroUsuario))
+            .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .leftJoin(services, eq(services.Id, turns_days.servicio))
+            .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
+            .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek}`);
+
 
         res.send(data);
     } catch (error) {
@@ -185,20 +228,28 @@ const getAllTurnsByWeekAndBarber = async (req, res) => {
 
         const { startWeek, endWeek, barberId } = req.params;
 
-        const data = await db.select({
-            turns: turns,
-            peluquero: users.Nombre,
-            servicio: services.Nombre,
-            precio: services.Precio,
-            exdate: turns_days.exdate,
-            date: turns_days.date,
-            forma_pago: turns.Forma_Pago
-        })
-        .from(turns_days)
-        .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
-        .leftJoin(users, eq(users.Id, turns.NroUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
+        const data = await db
+            .select({
+                turns: turns,
+                peluquero: users.Nombre,
+                id_turno: turns_days.id_turno,
+                id_dia: turns_days.id_dia,
+                dia: days.dia,
+                date: turns_days.date,
+                exdate: turns_days.exdate,
+                servicio: services.Nombre,
+                precio: services.Precio,
+                forma_pago: method_payment.descripcion,
+                pago_efectivo: turns_days.pago_efectivo,
+                pago_transferencia: turns_days.pago_transferencia
+            })
+            .from(turns_days)
+            .leftJoin(turns, eq(turns.Id, turns_days.id_turno))
+            .leftJoin(users, eq(users.Id, turns.NroUsuario))
+            .leftJoin(days, eq(days.id, turns_days.id_dia))
+            .leftJoin(services, eq(services.Id, turns_days.servicio))
+            .leftJoin(method_payment, eq(method_payment.id, turns_days.forma_cobro))
+            .where(sql`${turns_days.date} >= ${startWeek} and ${turns_days.date} <= ${endWeek} and ${turns.NroUsuario} == ${barberId}`);
 
         res.send(data);
     } catch (error) {
@@ -237,10 +288,6 @@ const postTurnRecurrentDay = async (req, res) => {
             });
         }
 
-        //logAction({
-        //    FechaTurno: date,
-        //})
-
     } catch (error) {
         if (error.message.includes('UNIQUE constraint')) {
             return res.status(409).send({
@@ -256,31 +303,38 @@ const postTurnRecurrentDay = async (req, res) => {
 
 const updateTurn = async (req, res) => {
 
-    /**
-     * Este endpoint queda para desarrollarse más adelante porque habría que modificar la base de datos si queremos hacer esta funcionalidad.
-     * La idea es recibir la fecha a través del atributo data-date (sacado del mismo lugar que obtenemos el data-id para recibirlo acá), y con eso hacer las comparaciones en ambas tablas para actualizar uno o el otro.
-     * El tema es que como la tabla turns_days no tiene el campo de servicio, no se podría actualizar el servicio particularmente de ese turno de esa fecha. Sería necesario agregarle este campo en la base de datos para poder setearle un servicio distinto a cada registro y no uno general como en la tabla turnos como lo que estamos haciendo ahora.
-     * Entonces si decidimos avanzar con esta funcionalidad, deberíamos agregar el campo clave foránea a la tabla servicios en la tabla turns_days y asi trabajamos independientemente con cada turno recurrente.
-     * La idea sería buscar si el turno está en la tabla turnos a través de la fecha recibida y si está significa que se intenta actualizar el turno principal, el que se guarda en las dos tablas. Si no está significa que es un turno recurrente que solo está en la tabla turns_days entonces podríamos actualizar ahi el servicio elegido, si es que tuviéramos el campo de servicio en esta tabla.
-     * Lo dejo anotado para un futuro, si se descomenta, recordar que no está terminada la funcionalidad. Es solo un boceto digamos.
-     */
-
     try {
-        const id = req.params.id;
+        const { id, date } = req.params;
 
         let response;
         
-        const turnExists = await db.select().from(turns).where(like(turns.Date, `%${date}%`));
+        const turnExists = await db.select().from(turns).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`)));
+        const turnRecurrent = await db.select().from(turns_days).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`)));
 
         if (turnExists.length) {
-            response = await db.update(turns).set(req.body).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`))).returning();
+            await db.update(turns).set({ 
+                Service: req.body.servicio || turnExists[0].Service,
+                Forma_Cobro: req.body.Forma_Cobro || turnExists[0].Forma_Cobro,
+                Pago_Efectivo: req.body.Pago_Efectivo || turnExists[0].Pago_Efectivo,
+                Pago_Transferencia: req.body.Pago_Transferencia || turnExists[0].Pago_Transferencia
+            }).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`))).returning();
+            response = await db.update(turns_days).set({
+                servicio: req.body.servicio || turnRecurrent[0].servicio,
+                forma_cobro: req.body.Forma_Cobro,
+                pago_efectivo: req.body.Pago_Efectivo,
+                pago_transferencia: req.body.Pago_Transferencia
+            }).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
         } else {
-            response = await db.update(turns_days).set(req.body).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
+            response = await db.update(turns_days).set({
+                servicio: req.body.servicio || turnRecurrent[0].servicio,
+                forma_cobro: req.body.Forma_Cobro,
+                pago_efectivo: req.body.Pago_Efectivo,
+                pago_transferencia: req.body.Pago_Transferencia
+            }).where(and(eq(turns_days.id_turno, id), like(turns_days.date, `%${date}%`))).returning();
         }
 
         if (response.length) {
-            const updatedTurn = await db.select().from(turns).where(eq(turns.Id, id)).limit(1);
-            res.send(updatedTurn[0]);
+            res.status(200).send(response[0]);
         } else {
             res.status(404).send({
                 message: `No se pudo actualizar el registro del turno con id = ${id}`
@@ -304,6 +358,8 @@ const deleteTurnOfRecurrentTurns = async (req, res) => {
         const turnExists = await db.select().from(turns).where(like(turns.Date, `%${date}%`))
 
         if (turnExists.length) {
+            await db.delete(turns_days).where(eq(turns_days.id_turno, id)).returning();
+
             await db.delete(turns).where(and(eq(turns.Id, id), like(turns.Date, `%${date}%`))).returning();
         } 
         
@@ -332,6 +388,7 @@ const actionsTurns = {
     getAllTurnsByWeek,
     getAllTurnsByWeekAndBarber,
     postTurnRecurrentDay,
+    updateTurn,
     deleteTurnOfRecurrentTurns
 };
 

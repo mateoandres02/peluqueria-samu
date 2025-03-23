@@ -11,7 +11,6 @@ const renderTurns = async (turns, recurrentTurns) => {
 
   const arrayTurns = turns.map(turn => {
 
-
     const dateEnd = turnDateEnd(turn.turns.Date);
 
     let days = [];
@@ -34,18 +33,18 @@ const renderTurns = async (turns, recurrentTurns) => {
       }
 
       const rruleConfig = {
-        freq: 'daily', // Frecuencia de repetición
-        interval: 1, // Cada 1 semana
-        dtstart: turn.turns.Date, // Fecha inicial
-        until: getEndOfMonth(turn.turns.Date), // Fecha final (último día del mes)
-        byweekday: days,  // Días de repetición para este turno
+        freq: 'daily', 
+        interval: 1,
+        dtstart: turn.turns.Date,
+        until: getEndOfMonth(turn.turns.Date),
+        byweekday: days,
       };
 
       return {
         id: turn.turns.Id,
         title: turn.turns.Nombre,
         start: new Date(turn.turns.Date).toISOString(),
-        duration: '00:30:00', // Duración
+        duration: '00:30:00', 
         color: 'gray',
         className: 'fixed-turn-event',
         extendedProps: {

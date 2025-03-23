@@ -11,6 +11,7 @@ router.get("/recurrent_turns/:idUserActive/:date", cTurnsDays.getAllRecurrentTur
 router.get("/recurrent_turns/week/:startWeek/:endWeek", cTurnsDays.getAllTurnsByWeek);
 router.get("/recurrent_turns/week/:startWeek/:endWeek/:barberId", cTurnsDays.getAllTurnsByWeekAndBarber);
 router.post("/recurrent_turns", cTurnsDays.postTurnRecurrentDay);
+router.put("/recurrent_turns/:id/:date", cTurnsDays.updateTurn);
 router.delete("/recurrent_turns/turn/:id/:date", cTurnsDays.deleteTurnOfRecurrentTurns);
 
 export default router;

@@ -14,6 +14,12 @@ const getWidthDisplay = () => {
 };
 
 const getCookie = async (name) => {
+
+  /**
+   * Obtiene la cookie y la parsea.
+   * param: name -> cookie name.
+   */
+
   const nameEQ = name + "=";
   const ca = document.cookie.split(';');
   for (let i = 0; i < ca.length; i++) {

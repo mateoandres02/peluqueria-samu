@@ -5,12 +5,12 @@ import { header, closeMenu } from "./header.js";
 import { modalElement } from "./modalPostTurn.js";
 import { loader } from "./loader.js";
 
-import { containerCashView, infoSectionCashView, tableTurns, cashData, paymentSection, handlePaidsForBarber} from "./cashRegister.js";
+import { containerCashView, infoSectionCashView, tableTurns, cashData, paymentSection, handlePaidsForBarber, modalMethodPayment} from "./cashRegister.js";
 import { logout } from './logout.js';
 import { postEmployee, modal, usersData, manageEmployeesView } from './manageEmployees.js';
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, configPaymentView, tablePaymentEdit } from './configParams.js';
-import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender, setupFiltersVouchers } from './voucher.js';
+import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender } from './voucher.js';
 
 import { loadBarberSelect, handleChangeBarber } from '../utils/selectables.js';
 import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner, addDateFilterListenerVoucher, addBarberFilterListenerVoucher } from '../utils/filters.js';
@@ -18,6 +18,7 @@ import { cancelPostModal, showPostModal } from '../utils/modal.js';
 import { submitRecord, deleteRecord, updateRecord } from '../utils/crud.js';
 
 import "../styles/style.css";
+import { clientsData, manageClientsView, modalPostClient, postClient } from './manageClients.js';
 
 
 const indexView = async (data) => {
@@ -68,6 +69,8 @@ const indexView = async (data) => {
                 addDateFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
                 addBarberFilterListener($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
                 addEndWeekFilterListner($tableBodyTurnsCashRegister, $dateInput, $weekInput, $barberSelect);
+
+                $containerCashView.insertAdjacentHTML('beforeend', modalMethodPayment);
                 
                 $containerCashView.insertAdjacentHTML('beforeend', paymentSection);
     
@@ -223,12 +226,46 @@ const indexView = async (data) => {
 
                 const $btnCancelVoucher = document.querySelector('.btnCancel');
                 cancelPostModal($btnCancelVoucher, $formPostVoucher, $modalVoucher);
-
                 
-                // deleteVoucher($btnDeleteVoucher, section = "voucher");
+                break;
 
-                // setupFiltersVouchers($tableBodyVouchers, $currentDateVoucher, $barberVoucherSelectFilter);
-                
+            case '#administrar-clientes':
+
+                app.innerHTML += manageClientsView;
+
+                let manageClientsContainer = document.querySelector('.manageClientsContainer');
+                manageClientsContainer.insertAdjacentHTML('beforeend', postClient);
+
+                const tableClients = await clientsData();
+                if (tableClients) {
+                    manageClientsContainer.insertAdjacentHTML('beforeend', tableClients);
+                };
+
+                manageClientsContainer.insertAdjacentHTML('beforeend', modalPostClient);
+
+                const $btnPostClient = document.querySelector('.postClient-btn');
+                $btnPostClient.setAttribute('data-bs-toggle', 'modal');
+                $btnPostClient.setAttribute('data-bs-target', '#postClient');
+
+                const $modalPostClient = new bootstrap.Modal(document.getElementById('postClient'));
+                const $formPostClient = document.querySelector('#formPostClient');
+                const $titleModalClient = document.querySelector("#postClientLabel");
+                const $btnFormPostClient = document.querySelector(".btnPost");
+
+                showPostModal($btnPostClient, $titleModalClient, $btnFormPostClient, $formPostClient, section = "manageClients");
+
+                const $footerModalPostClient = document.querySelector('.modal-footer');
+                submitRecord($formPostClient, $modalPostClient, $footerModalPostClient, $btnFormPostClient, section = "manageClients");
+
+                const $btnCancelPostClient = document.querySelector('.btnCancel');
+                cancelPostModal($btnCancelPostClient, $formPostClient, $modalPostClient);
+
+                const $btnsPutClient = document.querySelectorAll('.modify i');
+                updateRecord($btnsPutClient, $modalPostClient, $formPostClient, $titleModalClient, $btnFormPostClient, section = "manageClients");
+
+                const $btnsDeleteClient = document.querySelectorAll('.delete i');
+                deleteRecord($btnsDeleteClient, section = "manageClients");
+
                 break;
 
             default:

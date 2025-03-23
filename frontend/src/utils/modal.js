@@ -36,6 +36,7 @@ const showPostModal = (btn, titleModal, btnPostModal, formModal, section = null)
     if (section == "config") titleModal.textContent = "Registrar Servicio";
     if (section == "manageEmployees") titleModal.textContent = "Registrar Empleado";
     if (section == "voucher") titleModal.textContent = "Registrar Vale";
+    if (section == "manageClients") titleModal.textContent = "Registrar Cliente";
 
     btnPostModal.textContent = "Registrar";
 
@@ -50,6 +51,7 @@ const showPostModal = (btn, titleModal, btnPostModal, formModal, section = null)
     if (formModal.Barbero) formModal.Barbero.value = '';
     if (formModal.Motivo) formModal.Motivo.value = '';
     if (formModal.Monto) formModal.Monto.value = '';
+    if (formModal.Telefono) formModal.Telefono.value = '';
 
   });
 
@@ -72,6 +74,7 @@ const cancelPostModal = (btnCancel, form, modal) => {
     if (form.Contrasena) form.Contrasena.value = '';
     if (form.Motivo) form.Motivo.value = '';
     if (form.Monto) form.Monto.value = '';
+    if (form.Telefono) form.Telefono.value = '';
 
     const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
     bootstrapModalService.hide();

@@ -65,7 +65,7 @@
 }
 
 .totalEarnedBtn {
-    width: 25%;
+    width: 15%;
 
     display: flex;
     align-items: center;
@@ -74,7 +74,7 @@
 
 .totalEarnedInfo {
     text-align: center;
-    width: 75%;
+    width: 85%;
 
     display: flex;
     justify-content: space-evenly;
@@ -83,6 +83,13 @@
 .totalEarnedInfo h5 {
     display: flex;
     flex-direction: column;
+
+    /* border: 1px solid red; */
+
+    border-left: 1px solid var(--gray-color);
+    border-right: 1px solid var(--gray-color);
+    padding: 0rem .5rem;
+
 }
 
 .totalEarnedInfo-br {
@@ -143,4 +150,12 @@
         display: block;
     }
     
+}
+
+
+@media (1300px < width) {
+    .present-container {
+        max-width: 1200px;
+        /* border: 1px solid red; */
+    }
 }

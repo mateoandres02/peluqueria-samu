@@ -12,6 +12,7 @@ import routesPaymentUsers from "./app/routes/rPaymentUsers.js";
 import routesTurnsDays from "./app/routes/rTurnsDays.js";
 import routesHistoryLog from "./app/routes/rHistoryLog.js";
 import routesVoucher from "./app/routes/rVoucher.js";
+import routesClients from "./app/routes/rClients.js";
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(routesTurnsDays);
 app.use(routesPaymentUsers);
 app.use(routesHistoryLog);
 app.use(routesVoucher)
+app.use(routesClients);
 
 // Iniciar el servidor en el puerto configurado
 app.listen(config.port, () => {

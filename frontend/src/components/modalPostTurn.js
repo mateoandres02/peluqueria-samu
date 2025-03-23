@@ -1,6 +1,9 @@
 import { parseDate, addHourOfStartDate } from "../utils/date";
-import '../styles/modal.css';
 import logAction from "../utils/logActions.js";
+import { loadBarberSelect } from "../utils/selectables.js";
+
+import '../styles/modal.css';
+import { getClients } from "./requests.js";
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -14,8 +17,13 @@ const modalElement = `
         </div>
         <div class="modal-body">
           <form id="eventForm">
+            <label for="name-barber-select" class="name-barber-select"><i class="bi bi-person-lines-fill"></i>Barbero</label>
+            <select id="name-barber-select" class="input name-barber-select" required>
+              <option value="null">Seleccionar barbero</option>
+            </select>
+
             <label for="input-name"><i class="bi bi-person-lines-fill"></i>Nombre</label>
-            <input type="text" name="inputName" id="input-name" class="input" required pattern="^[a-zA-Z\\s]{1,25}$">
+            <input type="text" name="inputName" id="input-name" class="input" required pattern="^[a-zA-Z\\s]{1,25}$" autocomplete="off">
 
             <label for="input-number"><i class="bi bi-telephone"></i>Teléfono</label>
             <input type="number" name="inputNumber" id="input-number" class="input" required pattern="^\\+?\\d{1,15}$">
@@ -119,7 +127,6 @@ const actionBtnCancel = ($btnCancel, $modal) => {
 
   $btnCancel.addEventListener('click', (e) => {
     e.preventDefault();
-
     const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
     bootstrapModal.hide();
   });
@@ -184,6 +191,73 @@ function modalPostTurn(info, data) {
   const $inputEventDate = d.getElementById("eventDate");
   const $inputEventTime = d.getElementById("event-datetime");
   const $inputRegularCostumer = document.getElementById("regular-customer");
+  const $selectableBarbers = d.getElementById("name-barber-select");
+  const $elementSelectableBarbers = d.querySelectorAll('.name-barber-select');
+
+  // Autocomplete de la ia
+  const $inputName = d.getElementById('input-name');
+  const $inputNumber = d.getElementById('input-number');
+
+  // Add autocomplete container after name input
+  const autocompleteContainer = document.createElement('div');
+  autocompleteContainer.className = 'autocomplete-container';
+  autocompleteContainer.style.cssText = 'position: absolute; top: 30%; max-height: 200px; overflow-y: auto; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; display: none; z-index: 1000; color: black';
+  $inputName.parentNode.style.position = 'relative';
+  $inputName.parentNode.appendChild(autocompleteContainer);
+
+  // Add input event listener for autocomplete
+  $inputName.addEventListener('input', async (e) => {
+    const inputValue = e.target.value.toLowerCase();
+    if (inputValue.length < 2) {
+      autocompleteContainer.style.display = 'none';
+      return;
+    }
+
+    const clients = await getClients();
+    const matches = clients.filter(client => 
+      client.Nombre.toLowerCase().includes(inputValue)
+    );
+
+    if (matches.length > 0) {
+      autocompleteContainer.style.display = 'block';
+      autocompleteContainer.innerHTML = matches
+        .map(client => `<div class="autocomplete-item" style="padding: 8px; cursor: pointer; hover: background-color: #f0f0f0;">${client.Nombre}</div>`)
+        .join('');
+
+      // Add click handlers for autocomplete items
+      autocompleteContainer.querySelectorAll('.autocomplete-item').forEach((item, index) => {
+        item.addEventListener('click', () => {
+          $inputName.value = matches[index].Nombre;
+          $inputNumber.value = matches[index].Telefono;
+          autocompleteContainer.style.display = 'none';
+        });
+
+        item.addEventListener('mouseover', () => {
+          item.style.backgroundColor = '#f0f0f0';
+        });
+
+        item.addEventListener('mouseout', () => {
+          item.style.backgroundColor = 'white';
+        });
+      });
+    } else {
+      autocompleteContainer.style.display = 'none';
+    }
+  });
+
+  // Close autocomplete when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!autocompleteContainer.contains(e.target) && e.target !== $inputName) {
+      autocompleteContainer.style.display = 'none';
+    }
+  });
+  // Hasta aca el autocomplete de la ia. cualquier cosa borrar todo esto.
+
+  if (data.user.Id != 1) {
+    $elementSelectableBarbers.forEach((element) => {
+      element.style.display = 'none';
+    })
+  }
 
   // Obtenemos los checks de los dias de recurrencia.
   const $checkboxesDays = d.querySelector('.form-checkboxes');
@@ -195,6 +269,9 @@ function modalPostTurn(info, data) {
   const { dayWithoutYear, timeWithoutSeconds, completeDate } = parseDate(info.dateStr);
 
   const $formModal = d.getElementById("eventForm");
+  
+  loadBarberSelect($selectableBarbers);
+
   $formModal.inputName.value = '';
   $formModal.inputNumber.value = '';
   $inputEventDate.value = dayWithoutYear;
@@ -207,7 +284,7 @@ function modalPostTurn(info, data) {
 
   activateSectionCheckboxes($inputRegularCostumer, $checkboxesDays, checksActivated);
 
-  handleSubmit($formModal, completeDate, data, $modal, checksActivated, info);
+  handleSubmit($formModal, completeDate, data, $modal, checksActivated, $selectableBarbers);
 }
 
 const validateInputString = () => {
@@ -278,7 +355,7 @@ const addDatesOfMonth = (date, dateOutParsed, datesOfMonth, checksActivated) => 
   }
 }
 
-async function handleSubmit(form, date, dataUserActive, $modal, checksActivated, info) {
+async function handleSubmit(form, date, dataUserActive, $modal, checksActivated, $selectableBarbers) {
   
   /**
    * Manejamos el envio de los datos del turno a crear.
@@ -317,7 +394,37 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
     const clientName = form.inputName.value.trim();
     const clientNumber = form.inputNumber.value.trim();
-    const idBarber = dataUserActive.user.Id;
+
+    let selectedOption;
+    if ($selectableBarbers.options[$selectableBarbers.selectedIndex]) {
+      selectedOption = $selectableBarbers.options[$selectableBarbers.selectedIndex];
+    }
+
+    let idBarber;
+    if (dataUserActive.user.Id != 1) {
+      idBarber = dataUserActive.user.Id;
+    } else {
+      idBarber = selectedOption.getAttribute('data-barberid');
+    }
+    
+    if (idBarber === null) {
+      
+      span.innerHTML = 'Seleccione un barbero';
+      span.style.color = 'red';
+      
+      setTimeout(() => {
+        $loader.style.display = "none";
+        $modalFooter.appendChild(span);
+        submitBtn.removeAttribute('disabled');
+      }, 1000);
+
+      setTimeout(() => {
+        $modalFooter.removeChild(span);
+      }, 3500);
+
+      return;
+    }
+
     const dateOutParsed = date;
     const regularCustomer = $inputRegularCostumer.value;
     const nameBarber = dataUserActive.user.Nombre;
@@ -348,7 +455,6 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       body: JSON.stringify(turn),
       credentials: 'include'
     };
-
 
     const response = await fetch(url, options);
 
@@ -447,5 +553,6 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
 export {
   modalPostTurn,
+  actionBtnCancel,
   modalElement
 }

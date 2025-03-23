@@ -52,6 +52,12 @@ const menuAdmin = (user) => {
                             Recuento de vales y descuentos
                         </a>
                     </li>
+                    <li>
+                        <a href="#administrar-clientes">
+                            <img src="/assets/icons/vale.svg" alt="Administrar clientes" class="icon">
+                            Administrar clientes
+                        </a>
+                    </li>
                 </ul>
                 <div class="button-logout-container">
                     <button id="logout">

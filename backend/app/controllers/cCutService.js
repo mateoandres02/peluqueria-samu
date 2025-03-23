@@ -3,6 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import cutServices from "../models/mCutService.js";
 import turns from "../models/mTurn.js";
 import paymentUsers from "../models/mPaymentUsers.js";
+import turns_days from "../models/mTurnsDays.js";
 
 
 const getAllCutServices = async (req, res) => {
@@ -110,9 +111,14 @@ const deleteCutService = async (req, res) => {
     const id = req.params.id;
 
     const turn = {
-      Service: null
+      Service: null,
+      Forma_Cobro: null,
+      Pago_Efectivo: null,
+      Pago_Transferencia: null
     }
+    
     await db.update(turns).set(turn).where(eq(turns.Service, id)).returning();
+    await db.update(turns_days).set({servicio: null, forma_cobro: null, pago_efectivo: null, pago_transferencia: null}).where(eq(turns_days.servicio, id)).returning();
     await db.delete(paymentUsers).where(eq(paymentUsers.id_servicio, id));
 
     const response = await db.delete(cutServices)

@@ -217,6 +217,14 @@ input[type="number"] {
     padding: 1rem 0rem !important;
 }
 
+.autocomplete-item:hover {
+    background-color: #f0f0f0;
+}
+
+.autocomplete-container {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 @media (640px > width) {    
     .form-checkboxes {
         padding-left: 6rem;

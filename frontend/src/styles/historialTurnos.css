@@ -1,5 +1,5 @@
 .table-history-container {
-  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .agregado {
@@ -10,4 +10,11 @@
 .eliminado {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+@media (640px > width) {
+  .table-history-container {
+    padding-bottom: 0rem;
+    margin-bottom: 2.5rem;
+  }
 }

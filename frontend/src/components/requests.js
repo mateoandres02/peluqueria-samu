@@ -561,7 +561,6 @@ const popVoucher = async (id) => {
 }
 
 
-
 const getTurnById = async (rowId) => {
   const turn_id = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/turn/id/${rowId}`);
   // const turn_id = await fetch(`http://localhost:3001/turns/turn/id/${rowId}`);

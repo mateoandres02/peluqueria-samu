@@ -1,13 +1,13 @@
 const logActions = async (data) => {
   try {
-      const response = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', { // Cambia la URL según tu configuración
-         method: 'POST',
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(data),
-         credentials: 'include',
-      });
+    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/historyturns', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        credentials: 'include',
+    });
 
     // const response = await fetch(' http://localhost:3001/historyturns', { // Cambia la URL según tu configuración
     //   method: 'POST',

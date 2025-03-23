@@ -89,6 +89,9 @@ const modalVoucher = `
             <div class="modal-footer modal-footer-without-padding">
               <button type="submit" class="btn btn-success btnPost">Registrar</button>
               <button class="btn btn-danger btnCancel" data-bs-dismiss="modal">Cancelar</button>
+              <div class="loader-container">
+                <img src="/assets/tube-spinner.svg" alt="loading" class="loader">
+              </div>
             </div>
           </form>
         </div>

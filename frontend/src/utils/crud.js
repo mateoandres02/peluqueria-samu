@@ -28,6 +28,9 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
     const mode = form.getAttribute('data-mode');
     const id = form.getAttribute('data-id');
 
+    const $loader = document.querySelector('.loader-container');
+    if ($loader) $loader.style.display = "flex";
+
     let nombre;
     let precio;
     let contrasena;
@@ -119,6 +122,7 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       }
 
       if (isDuplicate) {
+        $loader.style.display = "none";
         span.innerHTML = 'El cliente ya existe en la base de datos.';
         span.style.color = 'red';
         modalFooter.appendChild(span);
@@ -212,6 +216,8 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
     })
     .then(response => response.json())
     .then(data => {
+
+      $loader.style.display = "none";
 
       if (data.error !== undefined || data.message !== undefined) {
         span.innerHTML = data.error || data.message || messageSpan || 'Error al crear o actualizar el registro.';

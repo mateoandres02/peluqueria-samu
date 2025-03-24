@@ -32,12 +32,19 @@ const handleSelectPaymentMethod = () => {
       const rowId = e.target.dataset.id;
       const rowDate = e.target.dataset.date;
       
+      console.log('selectedPaymentMethod: ', selectedPaymentMethod)
+      console.log('rowId: ', rowId)
+      console.log('rowDate: ', rowDate)
+      
       const turn_id_data = await getTurnById(rowId);
+      console.log('turn_id_data: ', turn_id_data)
       const { dateParsed } = parseDate(rowDate);
+      console.log(dateParsed)
 
       let turn_id_data_recurrent_turn;
       if (turn_id_data.turns.Regular === "true") {
         turn_id_data_recurrent_turn = await getRecurrentTurnById(rowId);
+        console.log('turn id data recurrent:', turn_id_data_recurrent_turn)
       }
 
       let precio;
@@ -46,28 +53,14 @@ const handleSelectPaymentMethod = () => {
       if (turn_id_data_recurrent_turn) {
         for (const turn of turn_id_data_recurrent_turn) {   
           if (turn.id_turno === parseInt(rowId) && turn.date === rowDate) {
-            // console.log('turn: ', turn)
-            // if (turn.servicio === null) {
-            //   alert('Es necesario primero cargar el servicio.');
-            //   return;
-            // }
-            // precio = turn.precio;
-            // recurrentTurn = turn;
-            // break;
-            // Make the comparison more robust by ensuring both values are numbers
-            const turnId = parseInt(turn.id_turno, 10);
-            const compareId = parseInt(rowId, 10);
-            
-            if (!isNaN(turnId) && !isNaN(compareId) && turnId === compareId && turn.date === rowDate) {
-              console.log('turn: ', turn)
-              if (turn.servicio === null) {
-                alert('Es necesario primero cargar el servicio.');
-                return;
-              }
-              precio = turn.precio;
-              recurrentTurn = turn;
-              break;
+            console.log('turn: ', turn)
+            if (turn.servicio === null) {
+              alert('Es necesario primero cargar el servicio.');
+              return;
             }
+            precio = turn.precio;
+            recurrentTurn = turn;
+            break;
           }
         }
       }

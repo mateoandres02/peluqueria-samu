@@ -44,15 +44,30 @@ const handleSelectPaymentMethod = () => {
       let recurrentTurn;
       
       if (turn_id_data_recurrent_turn) {
-        for (const turn of turn_id_data_recurrent_turn) {
+        for (const turn of turn_id_data_recurrent_turn) {   
           if (turn.id_turno === parseInt(rowId) && turn.date === rowDate) {
-            if (turn.servicio === null) {
-              alert('Es necesario primero cargar el servicio.');
-              return;
+            // console.log('turn: ', turn)
+            // if (turn.servicio === null) {
+            //   alert('Es necesario primero cargar el servicio.');
+            //   return;
+            // }
+            // precio = turn.precio;
+            // recurrentTurn = turn;
+            // break;
+            // Make the comparison more robust by ensuring both values are numbers
+            const turnId = parseInt(turn.id_turno, 10);
+            const compareId = parseInt(rowId, 10);
+            
+            if (!isNaN(turnId) && !isNaN(compareId) && turnId === compareId && turn.date === rowDate) {
+              console.log('turn: ', turn)
+              if (turn.servicio === null) {
+                alert('Es necesario primero cargar el servicio.');
+                return;
+              }
+              precio = turn.precio;
+              recurrentTurn = turn;
+              break;
             }
-            precio = turn.precio;
-            recurrentTurn = turn;
-            break;
           }
         }
       }

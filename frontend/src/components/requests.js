@@ -253,7 +253,7 @@ const getTurnsFilteredByBarber = async (barberParam, recurrent) => {
 
 
 const getRecurrentTurnById = async (id) => {
-  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turns/${id}`, {
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/turn/${id}`, {
     credentials: 'include'
   });
   // const response = await fetch(`http://localhost:3001/recurrent_turns/turn/${id}`);

@@ -54,8 +54,14 @@ const menuAdmin = (user) => {
                     </li>
                     <li>
                         <a href="#administrar-clientes">
-                            <img src="/assets/icons/vale.svg" alt="Administrar clientes" class="icon">
+                            <img src="/assets/icons/edit-user.svg" alt="Administrar clientes" class="icon">
                             Administrar clientes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#registro-trabajo">
+                            <img src="/assets/icons/work.svg" alt="Registrar sesion de trabajo" class="icon">
+                            Registro de sesion de trabajo
                         </a>
                     </li>
                 </ul>

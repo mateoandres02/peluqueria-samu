@@ -590,6 +590,24 @@ const putChangeServiceRecurrentTurns = async (id, date, body) => {
   return response;
 }
 
+const getWorkSessions = async () => {
+  // const response = await fetch(`http://localhost:3001/worksessions`);
+
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/worksessions`, { credentials: "include" });
+  return response;
+};
+
+const getWorkSessionsByDate = async (dateParam) => {
+  // const response = await fetch(`http://localhost:3001/worksessions/${dateParam}`, {
+  //   credentials: 'include'
+  // });
+
+  const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/worksessions/${dateParam}`, {
+    credentials: 'include'
+  });
+  return response;
+};
+
 
 export {
   login,
@@ -629,5 +647,7 @@ export {
   getRecurrentTurnById,
   getClients,
   getClientById,
-  popClient
+  popClient,
+  getWorkSessions,
+  getWorkSessionsByDate
 };

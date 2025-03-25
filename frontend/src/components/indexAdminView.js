@@ -11,6 +11,8 @@ import { postEmployee, modal, usersData, manageEmployeesView } from './manageEmp
 import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, historyTurnsRender, setupFilters } from './historialTurnos.js';
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, configPaymentView, tablePaymentEdit } from './configParams.js';
 import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender } from './voucher.js';
+import { containerWorkSessionsView, infoSectionWorkSessionsView, tableWorkSessions, handleStartButton, handleEndButton, sessionsRender, addDateFilterListenerWorkSessions } from './workSession.js';
+import deviceId from './deviceId.js';
 
 import { loadBarberSelect, handleChangeBarber } from '../utils/selectables.js';
 import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner, addDateFilterListenerVoucher, addBarberFilterListenerVoucher } from '../utils/filters.js';
@@ -265,6 +267,33 @@ const indexView = async (data) => {
 
                 const $btnsDeleteClient = document.querySelectorAll('.delete i');
                 deleteRecord($btnsDeleteClient, section = "manageClients");
+
+                break;
+
+            case '#registro-trabajo':
+
+                console.log("devId",deviceId);
+
+                app.innerHTML += containerWorkSessionsView
+                let $containerWorkSessionsView = document.querySelector('.containerWorkSessionsView');
+                
+                $containerWorkSessionsView.insertAdjacentHTML('beforeend',infoSectionWorkSessionsView);
+
+                $containerWorkSessionsView.insertAdjacentHTML('beforeend', tableWorkSessions);
+                
+                let $tableBodyWorkSessionsView = document.querySelector('.table-worksession-body');
+
+                let $dateFilter = document.querySelector('#filterDateInputWorkSession');
+            
+                await sessionsRender($tableBodyWorkSessionsView, $dateFilter.value);
+
+                addDateFilterListenerWorkSessions($tableBodyWorkSessionsView, $dateFilter);
+
+                const buttonStart = document.querySelector('#startSession');
+                const buttonEnd = document.querySelector('#endSession');
+
+                handleStartButton(buttonStart);
+                handleEndButton(buttonEnd);
 
                 break;
 

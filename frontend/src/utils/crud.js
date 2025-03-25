@@ -409,10 +409,102 @@ const deleteRecord = (btnsDelete, section = null) => {
 
 }
 
+// Apartado de registro de sesion de trabajo
+const postWorkSession = async (fechaInicio, horarioInicio) => {
+  try {
+    const data = {
+      FechaSesion: fechaInicio,
+      HorarioInicio: horarioInicio
+    };
+
+    // const response = await fetch('http://localhost:3001/worksessions', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type':'application/json',
+    //   },
+    //   body: JSON.stringify(data),
+    //   credentials: 'include',
+    // });
+
+    const response = await fetch('https://peluqueria-invasion-backend.vercel.app/worksessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(data),
+      credentials: 'include',
+    });
+
+    const dataJson = await response.json()
+
+    if (!response.ok) {
+      throw new Error('Error al registrar la accion: ' + response.statusText);
+    } else {
+      console.log("registro anadido", dataJson)
+      localStorage.setItem("workSessionId", dataJson.Id)
+    }
+
+  } catch (error) {
+    console.error("Error al registrar la sesion de trabajo", error.message);
+  }
+};
+
+const updateWorkSession = async ( horaFin, cantHoras) => {
+  const sessionId = localStorage.getItem("workSessionId");
+
+  if (!sessionId) {
+    console.error("No hay sesion de trabajo activa para actualizar.");
+    return;
+  }
+
+  try {
+    const data = {
+      HorarioFin: horaFin,
+      CantHoras: cantHoras
+    };
+
+    console.log("data", data)
+
+    // const response = await fetch(`http://localhost:3001/worksessions/${sessionId}`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type':'application/json',
+    //   },
+    //   body: JSON.stringify(data),
+    //   credentials: 'include',
+    // });
+
+    const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/worksessions/${sessionId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(data),
+      credentials: 'include',
+    });
+
+
+    const dataJson = await response.json();
+
+    if (!response.ok) {
+      throw new Error('Error al actualizar la sesión: ' + response.statusText);
+    } else {
+      console.log("Sesión de trabajo actualizada:", dataJson);
+      localStorage.removeItem("workSessionId");
+      localStorage.removeItem("fechaInicio");
+      localStorage.removeItem("horarioInicio");
+    }
+  } catch (error) {
+    console.error("Error al actualizar la sesión de trabajo:", error.message);
+  }
+};
+
 export {
   submitRecord,
   updateRecord,
   deleteRecord,
   updateVoucher,
-  deleteVoucher
+  deleteVoucher,
+  postWorkSession,
+  updateWorkSession
 }

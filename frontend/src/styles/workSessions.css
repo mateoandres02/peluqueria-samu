@@ -1,0 +1,70 @@
+@media (max-width: 1023px) {
+  body {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* .buttons-container {
+    border: thin solid red;
+    display: flex;
+    flex-direction: column;
+    height: 4rem;
+    width: 6rem;
+    justify-content: space-around;
+  } */
+
+  /* Botones */
+  #startSession,
+  #endSession {
+    background-color: #080414;
+    color: #c9cbd1;
+    border: 1px solid #c9cbd1;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #startSession:hover {
+    background-color: #1c1a2b;
+    color: #ffffff;
+    border-color: #ffffff;
+    transform: scale(1.05);
+  }
+
+  #endSession:hover {
+    background-color: #e74c3c;
+    color: #ffffff;
+    border-color: #e74c3c;
+    transform: scale(1.05);
+  }
+
+  /* Contenedor de botones */
+  .buttons-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.8rem;
+  }
+
+  /* Cronómetro en formato columna */
+  .cronometro-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #c9cbd1;
+    text-align: center;
+    background-color: #1c1a2b;
+    border-radius: .5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .cronometro-label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+}

@@ -148,6 +148,20 @@ function formattedEndDate(dateString) {
 
 } 
 
+function formatOnlyDate(date) {
+  if (!date || typeof date !== 'string') return '';
+
+  const [year, month, day] = date.split('-');
+
+  return `${day}/${month}/${year.slice(2)}`;
+}
+
+function formatOnlyTime(time) {
+  if (!time || typeof time !== 'string') return '';
+  const [hour, minute] = time.split(':');
+  return `${hour}:${minute}`;
+}
+
 export { 
   parseDate, 
   addHourOfStartDate, 
@@ -155,5 +169,7 @@ export {
   turnDateEnd, 
   getEndOfMonth, 
   getToday,
-  formattedEndDate
+  formattedEndDate,
+  formatOnlyDate,
+  formatOnlyTime
 };

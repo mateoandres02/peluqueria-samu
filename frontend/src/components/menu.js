@@ -65,12 +65,12 @@ const menuAdmin = (user) => {
                         </a>
                     </li>
                 </ul>
-                <div class="button-logout-container">
-                    <button id="logout">
-                        Cerrar Sesion
-                    </button>
-                </div>
             </nav>
+            <div class="button-logout-container">
+                <button id="logout">
+                    Cerrar Sesion
+                </button>
+            </div>
         </aside>
     `;
 
@@ -101,12 +101,12 @@ const menuEmployee = (data) => {
                         </a>
                     </li>
                 </ul>
-                <div class="button-logout-container">
-                    <button id="logout">
-                        Cerrar Sesion
-                    </button>
-                </div>
             </nav>
+            <div class="button-logout-container">
+                <button id="logout">
+                    Cerrar Sesion
+                </button>
+            </div>
         </aside>
     `;
 

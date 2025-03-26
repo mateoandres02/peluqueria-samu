@@ -141,6 +141,7 @@ svg {
     grid-area: "logout";
     
     width: 100%;
+    height: 100%;
 
     display: flex;
     justify-content: center;
@@ -182,8 +183,8 @@ svg {
         position: relative;
     }
     
-    #logout {
+    /* #logout {
         position: absolute;
         top: -2.5rem;
-    }
+    } */
 }

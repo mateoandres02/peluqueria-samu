@@ -10,8 +10,6 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
-
-    overflow-x: auto;
 }
    
 .table-container table {
@@ -193,7 +191,6 @@
     .table-container {
         padding: 0rem 1rem;
         margin: 0rem 0rem 5rem;
-        overflow-x: auto;
     }      
 
     .table-container table {
@@ -276,8 +273,9 @@
     
 }
 
-@media (1300px > width) {
+@media (1500px > width) {
     .table-container {
         max-width: 1000px;
+        overflow-x: auto;
     }
 }

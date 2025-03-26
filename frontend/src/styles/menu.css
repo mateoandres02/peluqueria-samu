@@ -71,6 +71,22 @@ svg {
     margin: 0;
 }
 
+.menu ul::-webkit-scrollbar {
+    width: 5px;
+}
+
+.menu ul::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.menu ul::-webkit-scrollbar-thumb {
+    background: var(--bg-color-sidebar);
+}
+
+.menu ul::-webkit-scrollbar-thumb:hover {
+    background: rgb(56, 56, 56);
+}
+
 .menu ul {
     list-style: none;
     padding: 0rem;
@@ -80,6 +96,8 @@ svg {
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
+
+    overflow-y: auto;
 }
 
 .menu li {

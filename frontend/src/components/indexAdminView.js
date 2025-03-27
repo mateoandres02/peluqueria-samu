@@ -22,6 +22,7 @@ import { submitRecord, deleteRecord, updateRecord } from '../utils/crud.js';
 import "../styles/style.css";
 import { clientsData, manageClientsView, modalPostClient, postClient } from './manageClients.js';
 
+import { setDeviceId, deviceIdStr } from './securityValidator.js'
 
 const indexView = async (data) => {
 
@@ -31,6 +32,8 @@ const indexView = async (data) => {
      */
 
     let section;
+
+    setDeviceId();
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
@@ -271,8 +274,15 @@ const indexView = async (data) => {
                 break;
 
             case '#registro-trabajo':
+                const storedDeviceId = localStorage.getItem("devicePelu");
 
-                console.log("devId",deviceId);
+                if (deviceIdStr !== storedDeviceId) {
+                    alert("❌ Error! El dispositivo no es el indicado.");
+
+                    break; 
+                }
+
+                // console.log("devId",deviceId);
 
                 app.innerHTML += containerWorkSessionsView
                 let $containerWorkSessionsView = document.querySelector('.containerWorkSessionsView');

@@ -3,6 +3,18 @@ import { path1, path2, path3 } from './presentation.js';
 
 const menuAdmin = (user) => {
 
+    const isMobile = window.innerWidth <= 768;
+
+
+    const workSessionItem = !isMobile ? `
+        <li>
+            <a href="#registro-trabajo">
+                <img src="/assets/icons/work.svg" alt="Registrar sesion de trabajo" class="icon">
+                Registro de sesion de trabajo
+            </a>
+        </li>
+    ` : ''; 
+
     const menu = `
         <aside class="sidebar">
             <div class="sidebar-nav">
@@ -58,12 +70,7 @@ const menuAdmin = (user) => {
                             Administrar clientes
                         </a>
                     </li>
-                    <li>
-                        <a href="#registro-trabajo">
-                            <img src="/assets/icons/work.svg" alt="Registrar sesion de trabajo" class="icon">
-                            Registro de sesion de trabajo
-                        </a>
-                    </li>
+                    ${workSessionItem}
                 </ul>
             </nav>
             <div class="button-logout-container">

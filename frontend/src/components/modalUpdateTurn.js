@@ -213,9 +213,9 @@ const updateTurn = (form, modal, $selectableBarbers, info, data) => {
         $modalFooter.removeChild(span);
         const bootstrapModal = bootstrap.Modal.getInstance(modal._element);
         bootstrapModal.hide();
+        window.location.reload();
       }, 3500);
       
-      window.location.reload();
     }
 
   });

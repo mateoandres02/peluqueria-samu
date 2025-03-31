@@ -564,7 +564,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
         bootstrapModal.hide();
         submitBtn.removeAttribute('disabled');
-        // window.location.reload();
+        window.location.reload();
       }, 1500);
 
     } else {

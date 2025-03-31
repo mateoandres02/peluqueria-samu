@@ -334,7 +334,7 @@
 
         margin: 0 auto;
 
-        justify-content: center;
+        justify-content: flex-start;
     }
     .table-container.table-config-params table {
         min-width: 500px;

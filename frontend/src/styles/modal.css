@@ -226,6 +226,22 @@ input[type="number"] {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.btn-edit {
+    background-color: #307cc4; /* fondo oscuro */
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: #1b1a2d; /* un tono más claro al hacer hover */
+    color: #ffffff;
+    cursor: pointer;
+}
+
 @media (640px > width) {    
     .form-checkboxes {
         padding-left: 6rem;

@@ -3,7 +3,7 @@ import logAction from "../utils/logActions.js";
 import { loadBarberSelect } from "../utils/selectables.js";
 
 import '../styles/modal.css';
-import { getClients } from "./requests.js";
+import { getClients, getTurnByDateAndBarber, getTurnsFilteredByDateAndBarber } from "./requests.js";
 
 const modalElement = `
   <div class="modal fade" id="dateClickModal" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -201,7 +201,11 @@ function modalPostTurn(info, data) {
   // Add autocomplete container after name input
   const autocompleteContainer = document.createElement('div');
   autocompleteContainer.className = 'autocomplete-container';
-  autocompleteContainer.style.cssText = 'position: absolute; top: 30%; max-height: 200px; overflow-y: auto; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; display: none; z-index: 1000; color: black';
+  if (data.user.Id != 1) {
+    autocompleteContainer.style.cssText = 'position: absolute; top: 16%; max-height: 200px; overflow-y: auto; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; display: none; z-index: 1000; color: black';
+  } else {
+    autocompleteContainer.style.cssText = 'position: absolute; top: 30%; max-height: 200px; overflow-y: auto; width: 100%; background: white; border: 1px solid #ddd; border-radius: 4px; display: none; z-index: 1000; color: black';
+  }
   $inputName.parentNode.style.position = 'relative';
   $inputName.parentNode.appendChild(autocompleteContainer);
 
@@ -434,8 +438,34 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
       $numberInput.reportValidity();
     }
 
-    submitBtn.setAttribute('disabled', 'true');
+    // Si el barbero tiene un turno, avisamos que lo tiene.
+    if (dataUserActive.user.Id == 1) {
+      submitBtn.setAttribute('disabled', 'true');
 
+      const { recurrentTurn, turn } = await getTurnByDateAndBarber(dateOutParsed, idBarber);
+
+      if (recurrentTurn.length > 0 || turn.length > 0) {
+        span.innerHTML = 'Ya existe un turno en esa fecha. Consultar al barbero.';
+        span.style.color = 'red';
+
+        setTimeout(() => {
+          $loader.style.display = "none";
+          $modalFooter.appendChild(span);
+        }, 1000);
+        
+        setTimeout(() => {
+          submitBtn.removeAttribute('disabled');
+          $modalFooter.removeChild(span);
+        }, 4000);
+
+        return;
+      }
+    }
+    // aca termina la funcionalidad, si anda mal, comentarla.
+
+    
+    submitBtn.setAttribute('disabled', 'true');
+    
     // Trabajamos con el turno normal.
     const turn = {
       Nombre: clientName,
@@ -534,7 +564,7 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
         const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
         bootstrapModal.hide();
         submitBtn.removeAttribute('disabled');
-        window.location.reload();
+        // window.location.reload();
       }, 1500);
 
     } else {

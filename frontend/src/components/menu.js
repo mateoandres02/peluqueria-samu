@@ -107,6 +107,12 @@ const menuEmployee = (data) => {
                             Administrar Calendario
                         </a>
                     </li>
+                    <li>
+                        <a href="#historial-trabajo">
+                            <img src="/assets/icons/history-log.svg" alt="Historial de trabajo" class="icon">
+                            Historial de trabajo
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <div class="button-logout-container">

@@ -2,6 +2,7 @@ import { cashData } from "../components/cashRegister";
 import { vouchersRender } from "../components/voucher"
 import { getBarbers } from "../components/requests";
 import { getToday } from "./date";
+import { cutData } from "../components/employeeHistory";
 
 const today = getToday();
 
@@ -200,10 +201,85 @@ const addBarberFilterListenerVoucher = async (table, $dateInput, $barberSelect) 
   });
 }
 
+const handleDateFilter = async (dataUserActive, $dateInput, $weekInput) => {
+  $dateInput.removeEventListener('change', handleDateChange); 
+  $dateInput.addEventListener('change', handleDateChange);
+  
+  const $textCutsForServices = document.querySelector('.infoEmployeeHistory-description-cutsForServices ul');
+  const $textVales = document.querySelector('.infoEmployeeHistory-description-vouchers p');
+  const $textFooter = document.querySelector('.infoEmployeeHistory-footer');
+
+  $textCutsForServices.innerHTML = 'No hay registros.';
+  $textVales.innerHTML = 'No hay registros.';
+  $textFooter.innerHTML = '';   
+
+  async function handleDateChange(e) {
+    
+    if ($weekInput.value != "" && e.target.value > $weekInput.value) {
+      alert("La fecha inicial no puede ser mayor a la final.");
+      $dateInput.value = today;
+    } else {
+      $textCutsForServices.innerHTML = 'Cargando...';
+      $textVales.innerHTML = 'Cargando...';
+      $textFooter.innerHTML = '';    
+  
+      let selectedDate = e.target.value;
+      let endWeekDate = $weekInput.value;
+  
+      await cutData(dataUserActive, selectedDate, endWeekDate);
+    }
+    
+  };
+};
+
+const handleEndWeekFilter = async (dataUserActive, $dateInput, $weekInput) => {
+  $weekInput.removeEventListener('change', handleDateChange); 
+  $weekInput.addEventListener('change', handleDateChange);
+
+  const $textCutsForServices = document.querySelector('.infoEmployeeHistory-description-cutsForServices ul');
+  const $textVales = document.querySelector('.infoEmployeeHistory-description-vouchers p');
+  const $textFooter = document.querySelector('.infoEmployeeHistory-footer');
+
+  $textCutsForServices.innerHTML = 'No hay registros.';
+  $textVales.innerHTML = 'No hay registros.';
+  $textFooter.innerHTML = ''; 
+
+  async function handleDateChange(e) {
+
+    if ($weekInput.value != "" && e.target.value <= $dateInput.value) {
+      alert("La fecha final no puede ser menor o igual a la inicial.");
+      $weekInput.value = ""
+    } else {
+
+      $textCutsForServices.innerHTML = 'Cargando...';
+      $textVales.innerHTML = 'Cargando...';
+      $textFooter.innerHTML = '';    
+  
+      let startWeekDate = $dateInput.value;
+      let endWeekDate = e.target.value;
+      let endWeekDatePlusOne;
+
+      if (endWeekDate) {
+        const endDate = new Date(endWeekDate);
+        endDate.setDate(endDate.getDate() + 1);
+        endWeekDatePlusOne = endDate.toISOString().split('T')[0];
+      } else {
+        endWeekDatePlusOne = e.target.value;
+      }
+  
+      await cutData(dataUserActive, startWeekDate, endWeekDatePlusOne);
+    }
+
+  };
+
+};
+
 export {
   addBarberFilterListener,
   addDateFilterListener,
   addEndWeekFilterListner,
   addDateFilterListenerVoucher,
-  addBarberFilterListenerVoucher
+  addBarberFilterListenerVoucher,
+  handleDateFilter,
+  handleEndWeekFilter
 }

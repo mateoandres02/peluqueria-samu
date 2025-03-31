@@ -60,6 +60,7 @@ const tableVouchersColumns = `
       </tbody>
     </table>
   </div>
+  <div class="table-container-footer"></div>
 `;
 
 const modalVoucher = `
@@ -170,7 +171,6 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
     }
   } catch (error) {
     alert("Error al renderizar el listado de vales");
-    console.log('error', error);
   }
 }
 

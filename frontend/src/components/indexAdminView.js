@@ -278,11 +278,9 @@ const indexView = async (data) => {
 
                 if (deviceIdStr !== storedDeviceId) {
                     alert("❌ Error! El dispositivo no es el indicado.");
-
+                    window.location.href = "/";
                     break; 
                 }
-
-                // console.log("devId",deviceId);
 
                 app.innerHTML += containerWorkSessionsView
                 let $containerWorkSessionsView = document.querySelector('.containerWorkSessionsView');

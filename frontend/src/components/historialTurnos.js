@@ -46,6 +46,7 @@ const tableTurnsHistory = `
       </tbody>
     </table>
   </div>
+  <div class="table-container-footer"></div>
 `;
 
 

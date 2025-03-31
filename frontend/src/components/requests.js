@@ -210,6 +210,21 @@ const getTurnsFilteredByDateAndBarber = async (dateParam, barberParam, recurrent
 }
 
 
+const getTurnByDateAndBarber = async (dateParam, barberParam) => {
+
+  const responseRecurrentTurn = await fetch(`https://peluqueria-invasion-backend.vercel.app/recurrent_turns/${barberParam}/${dateParam}`, {credentials: 'include'});
+  // const responseRecurrentTurns = await fetch(`http://localhost:3001/recurrent_turns/${barberParam}/${dateParam}`);
+  const responseTurn = await fetch(`https://peluqueria-invasion-backend.vercel.app/turns/${dateParam}/${barberParam}`, {credentials: 'include'});
+  // const responseTurns = await fetch(`http://localhost:3001/turns/${dateParam}/${barberParam}`);
+
+  const recurrentTurn = await responseRecurrentTurn.json();
+  const turn = await responseTurn.json();
+
+  return { recurrentTurn, turn };
+
+}
+
+
 const getTurnsFilteredByDate = async (dateParam, recurrent) => {
 
   /**
@@ -649,5 +664,6 @@ export {
   getClientById,
   popClient,
   getWorkSessions,
-  getWorkSessionsByDate
+  getWorkSessionsByDate,
+  getTurnByDateAndBarber
 };

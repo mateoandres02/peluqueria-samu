@@ -1,4 +1,5 @@
 import { modalGetTurn, modalTurnContent } from "../components/modalGetTurn";
+import { modalUpdateTurn } from "../components/modalUpdateTurn";
 import { modalPostTurn } from "../components/modalPostTurn";
 import { removeAllModals } from "./modal";
 

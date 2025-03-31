@@ -40,8 +40,29 @@ const sortArrayByHour = (array) => {
 
 }
 
+const sortArrayByName = (array) => {
+  
+  /**
+   * Ordenamos los turnos por hora (de forma ascendente).
+   * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
+   */
+
+  array.sort((a, b) => {
+
+    const nameA = a.Nombre ? a.Nombre.toLowerCase() : '';
+    const nameB = b.Nombre ? b.Nombre.toLowerCase() : '';
+    
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+
+    return 0;
+
+  });
+
+}
 
 export {
   sortArrayByDate,
-  sortArrayByHour
+  sortArrayByHour,
+  sortArrayByName
 }

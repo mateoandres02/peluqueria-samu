@@ -7,6 +7,8 @@ import { logout } from './logout.js';
 import { loader } from './loader.js';
 
 import "../styles/style.css"
+import { containerEmployeeHistory, cutData, infoEmployeeHistory, infoSectionEmployeeHistory } from './employeeHistory.js';
+import { handleDateFilter, handleEndWeekFilter } from '../utils/filters.js';
 
 const indexView = async (data) => {
 
@@ -34,6 +36,25 @@ const indexView = async (data) => {
                 
                 break;
         
+            case '#historial-trabajo':
+
+                app.innerHTML += containerEmployeeHistory;
+
+                let $containerEmployeeHistory = document.querySelector('.containerEmployeeHistory');
+                $containerEmployeeHistory.insertAdjacentHTML('beforeend', infoSectionEmployeeHistory);
+                $containerEmployeeHistory.insertAdjacentHTML('beforeend', infoEmployeeHistory);
+
+                let $currentDate = document.querySelector('#filterDateInputEmployeeHistory').value;
+
+                await cutData(data, $currentDate, null);
+
+                const $dateInput = document.querySelector('#filterDateInputEmployeeHistory');
+                const $weekInput = document.querySelector('#filterWeekInputEmployeeHistory');
+                handleDateFilter(data, $dateInput, $weekInput);
+                handleEndWeekFilter(data, $dateInput, $weekInput);
+
+                break;
+
             default:
                 app.innerHTML += presentation(userActive);
     

@@ -1,6 +1,7 @@
 import { getClients } from "./requests";
 
 import '../styles/manageClients.css';
+import { sortArrayByName } from "../utils/arrays";
 
 
 const manageClientsView = '<div class="manageClientsContainer containerFunctionalityView"></div>';
@@ -80,6 +81,8 @@ const clientsData = async () => {
   try {
     const data = await getClients();
       
+    sortArrayByName(data);
+
     if (data.length > 0) {
       let tableClients = `
         <div class="table-container table-manageClients-container">
@@ -97,6 +100,7 @@ const clientsData = async () => {
             </tbody>
           </table>
         </div>
+        <div class="table-container-footer"></div>
       `;
 
         return tableClients;

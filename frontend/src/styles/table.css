@@ -2,6 +2,8 @@
     width: 100%;
     max-width: 1300px;
     min-height: 100px;
+    max-height: 600px;
+    overflow-y: auto;
     height: auto;
   
     margin: 0 auto 3rem;
@@ -167,9 +169,11 @@
     min-width: 375px;
     max-width: 600px;
 
+    max-height: 600px;
+
     margin: 0 auto;
 
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .table-manageClients-container th:nth-child(1), .table-manageClients-container td:nth-child(1) {
@@ -185,6 +189,60 @@
     width: 20%;
     min-width: 50px;
     overflow: visible;
+}
+
+.table-container.table-history-container {
+    padding: 0rem;
+    margin: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.table-container.table-history-container table {
+    padding: 0;
+    max-width: 1000px;
+}
+
+.table-container.table-history-container th:nth-child(2),.table-container.table-history-container td:nth-child(2) {
+    width: 5ch;
+}
+
+.table-container-footer {
+    padding: 2.5rem;
+}
+
+.table-container.table-config-params,
+.table-container.table-config-payment-container {
+    padding: 0rem;
+    margin: 0;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.table-container.table-config-params table,
+.table-container.table-config-payment-container table {
+    padding: 0;
+    max-width: 500px;
+}
+
+.table-container.table-config-params th:nth-child(1),.table-container.table-config-params td:nth-child(1) {
+    width: 15ch;
+}
+
+.table-container.table-config-params th:nth-child(2),.table-container.table-config-params td:nth-child(2) {
+    width: 5ch;
+}
+
+.table-container.table-config-params th:nth-child(3),.table-container.table-config-params td:nth-child(3) {
+    width: 5ch;
+}
+
+.table-container.table-config-payment-container th:nth-child(1),.table-container.table-config-payment-container td:nth-child(1) {
+    width: 15ch;
+}
+
+.table-container.table-config-payment-container th:nth-child(2),.table-container.table-config-payment-container td:nth-child(2) {
+    width: 10ch;
 }
 
 @media (640px > width) {
@@ -271,6 +329,17 @@
         width: 25%;
     }
     
+    .table-container.table-config-params {
+        overflow-x: scroll;
+
+        margin: 0 auto;
+
+        justify-content: center;
+    }
+    .table-container.table-config-params table {
+        min-width: 500px;
+        max-width: 500px;
+    }
 }
 
 @media (1500px > width) {

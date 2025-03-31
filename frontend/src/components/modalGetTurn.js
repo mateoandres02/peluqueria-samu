@@ -1,8 +1,10 @@
 import { parseDate } from "../utils//date";
 import { deleteTurn, modalConfirm, modalConfirmDisplay } from "./modalDeleteTurn.js";
-import { removeAllModals } from "../utils/modal.js";
+import { cancelPostModal, removeAllModals } from "../utils/modal.js";
 
 import '../styles/modal.css';
+import { modalUpdateTurn, updateTurn } from "./modalUpdateTurn.js";
+import { loadBarberSelect } from "../utils/selectables.js";
 
 const modalTurnContent = `
   <div class="modal fade" id="dateClickModalTurnContent" tabindex="-1" aria-labelledby="dateClickModalLabel">
@@ -22,6 +24,9 @@ const modalTurnContent = `
           <h3 id="infoEndTime"><i class="bi bi-clock-history"></i>Fin de Turno: <span id="spanEndTime"></span></h3>
           <h3 id="regularCustomer"><i class="bi bi-person-lines-fill"></i>Ciente regular: <span id="spanRegularCustomer"></span></h3>
           <div class="modal-footer modal-footer-calendar">
+          <button id="editTurn" class="btn btn-edit">
+              <i class="bi bi-pencil"></i>
+            </button>
             <a id="contactWsp" class="btn btn-success" href="" target="_blank">
               <i class="bi bi-whatsapp"></i>
             </a>
@@ -34,6 +39,7 @@ const modalTurnContent = `
     </div>
   </div>
 `;
+
 
 const actionBtnDelete = ($btnDelete, modalConfirm, info, data) => {
 
@@ -83,6 +89,41 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
     window.open(wspUrl, '_blank');
   });
   
+}
+
+const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data) => {
+  let body = document.body;
+  $btnEdit.addEventListener("click", async(e) => {
+    e.preventDefault();
+
+    const modalGetTurn = bootstrap.Modal.getInstance($modalGetTurn._element);
+    modalGetTurn.hide();
+    
+    body.insertAdjacentHTML('beforeend', modalUpdateTurn);
+    const $modalUpdateTurn = new bootstrap.Modal(document.getElementById('updateTurn'));
+    $modalUpdateTurn.show();
+
+    const $selectableBarbers = document.getElementById("name-barber-select");
+    loadBarberSelect($selectableBarbers);
+
+    const $nameInput = document.getElementById('input-name');
+    const $phoneInput = document.getElementById('input-number');
+    
+    $nameInput.value = info.event._def.title;
+    $phoneInput.value = info.event._def.extendedProps.telefono;
+
+    const $btnCancelPutTurn = document.querySelector(".btnCancelPutTurn");
+    const $formPutTurn = document.getElementById("formPutTurn");
+    cancelPostModal($btnCancelPutTurn, $formPutTurn, $modalUpdateTurn)
+
+    updateTurn($formPutTurn, $modalUpdateTurn, $selectableBarbers, info, data); 
+
+    $selectableBarbers.innerHTML = `<option value="null">Seleccionar barbero</option>`;
+
+    // Close current modal
+    const modales = document.querySelectorAll('.modal');
+    modales.forEach(modal => removeAllModals(modal));
+  });
 }
 
 function modalGetTurn(info, data) {
@@ -135,10 +176,14 @@ function modalGetTurn(info, data) {
 
   const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp");
-
+  const $btnEdit = document.getElementById("editTurn");
+  
   actionBtnDelete($btnDelete, modalConfirm, info, data);
+  
+  actionBtnWsp(name, day, startTime, tel, $btnWsp);
 
-  actionBtnWsp(name, day, startTime, tel, $btnWsp)
+  actionBtnEdit($btnEdit, $modal, info, data);
+
 }
 
 export {

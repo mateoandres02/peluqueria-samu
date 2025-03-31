@@ -1,6 +1,7 @@
 import { putChangePercentageService, getServices} from "./requests";
 
 import "../styles/configParams.css";
+import { sortArrayByName } from "../utils/arrays";
 
 
 const configParamsView = `<div class="configParamsView containerFunctionalityView"></div>`;
@@ -77,7 +78,7 @@ const configPaymentView = `
 `;
 
 const tablePaymentEdit = `
-  <div class="table-container table-payment-container table-config-payment-container">
+  <div class="table-container table-config-payment-container">
     <table>
       <thead>
         <tr>
@@ -89,6 +90,7 @@ const tablePaymentEdit = `
       </tbody>
     </table>
   </div>
+  <div class="table-container-footer"></div>
 `;
 
 
@@ -132,9 +134,11 @@ const serviceData = async () => {
   try {
     const data = await getServices();
 
+    sortArrayByName(data);
+
     if (data.length > 0) {
       let tableServices = `
-        <div class="table-container table-payment-container table-config-params">
+        <div class="table-container table-config-params">
           <table>
             <thead>
               <tr>

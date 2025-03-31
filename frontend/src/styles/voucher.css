@@ -55,6 +55,7 @@
 
 .table-voucher-container {
   max-width: 800px;
+  margin: 0 auto;
 }
 
 .table-voucher-container th:nth-child(1), .table-voucher-container td:nth-child(1),
@@ -62,7 +63,7 @@
 .table-voucher-container th:nth-child(4), .table-voucher-container td:nth-child(4),  
 .table-voucher-container th:nth-child(5), .table-voucher-container td:nth-child(5) { 
   white-space: nowrap; 
-  max-width: 40px;
+  max-width: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -72,7 +73,8 @@
 }
 
 .table-voucher-container th:nth-child(3), .table-voucher-container td:nth-child(3) { 
-  white-space: nowrap; 
+  white-space: nowrap;
+  width: 80px; 
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -91,7 +93,6 @@
     font-size: 1.1rem;
     margin-bottom: 2.5rem;
   }
-  
 
   .present-container-filters-voucher {
     display: flex;
@@ -117,8 +118,9 @@
     width: 100%;
   }
 
-  .table-voucher-container th:nth-child(3), .table-voucher-container td:nth-child(3) { 
-    min-width: 10ch;
-    max-width: 100px;
+  .table-voucher-container table {
+    min-width: 600px;
+    max-width: 600px;
   }
+
 }

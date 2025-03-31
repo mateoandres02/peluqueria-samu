@@ -215,9 +215,8 @@ const updateTurn = (form, modal, $selectableBarbers, info, data) => {
         bootstrapModal.hide();
       }, 3500);
       
+      window.location.reload();
     }
-
-    const responseData = await response.json();
 
   });
 

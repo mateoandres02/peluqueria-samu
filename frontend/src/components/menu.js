@@ -113,13 +113,13 @@ const menuEmployee = (data) => {
                             Historial de trabajo
                         </a>
                     </li>
+                    <li class="button-logout-container">
+                        <button id="logout">
+                            Cerrar Sesion
+                        </button>
+                    </li>
                 </ul>
             </nav>
-            <div class="button-logout-container">
-                <button id="logout">
-                    Cerrar Sesion
-                </button>
-            </div>
         </aside>
     `;
 

@@ -7,11 +7,10 @@
     color: var(--light-grey-letter);
 
     display: grid;
-    grid-template-rows: 10% 75% 15%;
+    grid-template-rows: 10% 90%;
     grid-template-areas: 
         "profile"
-        "menu"
-        "logout";
+        "menu";
 
     position: fixed;
     top: 0;
@@ -102,7 +101,7 @@ svg {
 
 .menu li {
     width: 100%;
-    height: 60px;
+    height: 50px;
     margin: 5px 0;
 
     font-weight: 500;
@@ -138,14 +137,11 @@ svg {
 }
 
 .button-logout-container {
-    grid-area: "logout";
-    
     width: 100%;
     height: 100%;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
 }
 
 #logout {
@@ -163,6 +159,8 @@ svg {
     cursor: pointer;
     
     transition: background-color 0.2s ease, color 0.3s ease;
+
+    margin: 0rem auto;
 }
 
 #logout:hover {

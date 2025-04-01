@@ -101,6 +101,7 @@ const usersData = async () => {
             </tbody>
           </table>
         </div>
+        <div class="table-container-footer"></div>
       `;
 
         return tableEmployees;

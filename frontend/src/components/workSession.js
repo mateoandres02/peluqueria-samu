@@ -55,6 +55,7 @@ const tableWorkSessions = `
 const sessionsRender = async (table, selectedDate = null) => {
   let responseSessions;
   try {
+    console.log("selectedDate", selectedDate)
     if (selectedDate) {
       responseSessions = await getWorkSessionsByDate(selectedDate);
     } else {

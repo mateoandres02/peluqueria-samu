@@ -165,6 +165,7 @@ const handleStartButton = (button) => {
 
             // Capturar fecha (YYYY-MM-DD)
             const fechaInicio = new Date().toISOString().split("T")[0];
+            console.log("VIENDO FECHA INICIO", fechaInicio)
 
             // Capturar hora exacta (HH:MM:SS)
             const horarioInicio = new Date().toLocaleTimeString("es-AR", {

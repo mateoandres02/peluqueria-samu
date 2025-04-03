@@ -12,7 +12,7 @@ import { containerHistoryView, infoSectionHistoryTurnsView, tableTurnsHistory, h
 import { configParamsView, infoSectionParamsView, modalServices, serviceData, configParamsInitialView, configPaymentView, tablePaymentEdit } from './configParams.js';
 import { voucherView, infoSectionVoucherView, voucherAddView, modalVoucher, tableVouchersColumns, vouchersRender } from './voucher.js';
 import { containerWorkSessionsView, infoSectionWorkSessionsView, tableWorkSessions, handleStartButton, handleEndButton, sessionsRender, addDateFilterListenerWorkSessions } from './workSession.js';
-import deviceId from './deviceId.js';
+// import deviceId from './deviceId.js';
 
 import { loadBarberSelect, handleChangeBarber } from '../utils/selectables.js';
 import { addBarberFilterListener, addDateFilterListener, addEndWeekFilterListner, addDateFilterListenerVoucher, addBarberFilterListenerVoucher } from '../utils/filters.js';
@@ -22,7 +22,7 @@ import { submitRecord, deleteRecord, updateRecord } from '../utils/crud.js';
 import "../styles/style.css";
 import { clientsData, manageClientsView, modalPostClient, postClient } from './manageClients.js';
 
-import { setDeviceId, deviceIdStr } from './securityValidator.js'
+// import { setDeviceId, deviceIdStr } from './securityValidator.js'
 
 const indexView = async (data) => {
 
@@ -33,7 +33,7 @@ const indexView = async (data) => {
 
     let section;
 
-    setDeviceId();
+    // setDeviceId();
     
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
@@ -274,13 +274,13 @@ const indexView = async (data) => {
                 break;
 
             case '#registro-trabajo':
-                const storedDeviceId = localStorage.getItem("devicePelu");
+                // const storedDeviceId = localStorage.getItem("devicePelu");
 
-                if (deviceIdStr !== storedDeviceId) {
-                    alert("❌ Error! El dispositivo no es el indicado.");
-                    window.location.href = "/";
-                    break; 
-                }
+                // if (deviceIdStr !== storedDeviceId) {
+                //     alert("❌ Error! El dispositivo no es el indicado.");
+                //     window.location.href = "/";
+                //     break; 
+                // }
 
                 app.innerHTML += containerWorkSessionsView
                 let $containerWorkSessionsView = document.querySelector('.containerWorkSessionsView');

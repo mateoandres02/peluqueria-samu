@@ -164,7 +164,8 @@ const handleStartButton = (button) => {
             localStorage.setItem("tiempoInicio", tiempoInicio);
 
             // Capturar fecha (YYYY-MM-DD)
-            const fechaInicio = new Date().toISOString().split("T")[0];
+            // const fechaInicio = new Date().toISOString().split("T")[0];
+            const fechaInicio = new Date().toLocaleDateString('en-CA'); // formato YYYY-MM-DD
             console.log("VIENDO FECHA INICIO", fechaInicio)
 
             // Capturar hora exacta (HH:MM:SS)

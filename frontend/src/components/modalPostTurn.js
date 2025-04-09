@@ -444,7 +444,8 @@ async function handleSubmit(form, date, dataUserActive, $modal, checksActivated,
 
       const { recurrentTurn, turn } = await getTurnByDateAndBarber(dateOutParsed, idBarber);
 
-      if (recurrentTurn.length > 0 || turn.length > 0) {
+      if ((recurrentTurn.length > 0 && recurrentTurn[0].exdate === 0) || turn.length > 0) {
+
         span.innerHTML = 'Ya existe un turno en esa fecha. Consultar al barbero.';
         span.style.color = 'red';
 

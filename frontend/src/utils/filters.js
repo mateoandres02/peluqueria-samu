@@ -225,8 +225,17 @@ const handleDateFilter = async (dataUserActive, $dateInput, $weekInput) => {
   
       let selectedDate = e.target.value;
       let endWeekDate = $weekInput.value;
+      let endWeekDatePlusOne;
+
+      if (endWeekDate) {
+        const endDate = new Date(endWeekDate);
+        endDate.setDate(endDate.getDate() + 1);
+        endWeekDatePlusOne = endDate.toISOString().split('T')[0];
+      } else {
+        endWeekDatePlusOne = $weekInput.value;
+      }
   
-      await cutData(dataUserActive, selectedDate, endWeekDate);
+      await cutData(dataUserActive, selectedDate, endWeekDatePlusOne);
     }
     
   };

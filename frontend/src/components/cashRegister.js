@@ -360,6 +360,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
   try {
     const cutServices = await getServices();
+    
     const dateParam = selectedDate ? `${selectedDate}` : today;
     const barberParam = barberId ? `${barberId}` : null;
     const endDateParam = endWeekDate ? `${endWeekDate}` : null;
@@ -390,7 +391,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
     let message = `No tiene turnos para el día ${dateReformated || 'de hoy'}`;
 
-    if (endDateParam !== null) message = `No tiene turnos para estos dias`;
+    if (endDateParam !== null) message = `No tiene turnos para estos dias.`;
 
     if (!responseTurns.ok && !responseRecurrentTurns.ok) {
       tableBodyTurnsCashRegister.innerHTML = `

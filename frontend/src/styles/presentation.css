@@ -8,7 +8,7 @@ svg {
 
 .presentation-container {
   width: 100%;
-  min-width: 375px;
+  min-width: 425px;
   padding: 1rem;
 
   display: flex;
@@ -60,7 +60,7 @@ svg {
   }
 }
 
-@media (640px > width) {
+@media (1024px > width) {
   .presentation-content {
     height: 80vh;
   }

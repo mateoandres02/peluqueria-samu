@@ -80,7 +80,7 @@
   text-overflow: ellipsis;
 }
 
-@media (640px > width) {
+@media (1024px > width) {
   .voucher-container {
     margin-bottom: 0rem;
   }

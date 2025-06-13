@@ -37,7 +37,7 @@
     outline: none;
 }
 
-@media (640px > width) {
+@media (1024px > width) {
     .header {
         display: flex;
         justify-content: center;
@@ -48,7 +48,8 @@
 
         min-height: 80.5px !important;
         width: 100%;
-        min-width: 375px;
+        min-width: 425px;
+        border: 1px solid red;
     }
 
     .header-title {

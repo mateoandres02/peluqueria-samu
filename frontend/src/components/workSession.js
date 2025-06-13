@@ -35,7 +35,7 @@ const infoSectionWorkSessionsView = `
 </div>`
 
 const tableWorkSessions = `
-  <div class="table-container table-history-container table-worksession-container">
+  <div class="table-container table-worksession-container">
     <table>
       <thead>
         <tr>
@@ -55,7 +55,7 @@ const tableWorkSessions = `
 const sessionsRender = async (table, selectedDate = null) => {
   let responseSessions;
   try {
-    console.log("selectedDate", selectedDate)
+    // console.log("selectedDate", selectedDate)
     if (selectedDate) {
       responseSessions = await getWorkSessionsByDate(selectedDate);
     } else {

@@ -110,7 +110,7 @@ p {
     padding-right: 10px;
 }
 
-@media (640px > width) {
+@media (1024px > width) {
     #app {
         flex-direction: column;
         padding: 0;

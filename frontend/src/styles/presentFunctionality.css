@@ -109,7 +109,7 @@
     margin-bottom: 1rem;
 }
 
-@media (640px > width) {
+@media (1024px > width) {
     .present-container-filters {
         width: 100%;
         height: auto;

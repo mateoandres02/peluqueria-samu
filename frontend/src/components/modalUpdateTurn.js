@@ -1,4 +1,5 @@
 import { parseDate } from "../utils/date";
+import { autocompleteClient } from "./modalPostTurn";
 import { getClients, getTurnByDateAndBarber } from "./requests";
 
 const modalUpdateTurn = `

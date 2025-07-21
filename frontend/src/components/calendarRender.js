@@ -1,6 +1,6 @@
 import esLocale from "@fullcalendar/core/locales/es";
 import { renderTurns } from "./turns.js";
-import { getTurnsByUserActive, getRecurrentTurnsByUserActive } from  "./requests.js";
+import { getTurnsByUserActive, getRecurrentTurnsByUserActive } from "./requests.js";
 import rrulePlugin from '@fullcalendar/rrule';
 import { getWidthDisplay } from "../utils/utils.js";
 import { eventInfo, dateInfo, dateSetStyles, getInitialDate, determinateRangeOfDays } from "../utils/calendar.js";
@@ -11,7 +11,7 @@ const d = document;
 
 const calendario = `<div class="calendar-container" id="calendar"></div>`;
 
-async function calendarRender (modalElement, data) {
+async function calendarRender(modalElement, data, clients) {
 
   /**
    * Renderiza el calendario.
@@ -22,7 +22,7 @@ async function calendarRender (modalElement, data) {
   const turns = await getTurnsByUserActive(data);
   const recurrentTurns = await getRecurrentTurnsByUserActive(data);
   let arrayTurns = await renderTurns(turns, recurrentTurns);
-  
+
   let calendarEl = d.getElementById("calendar");
 
   const { days, isMobile } = getWidthDisplay();
@@ -43,7 +43,6 @@ async function calendarRender (modalElement, data) {
     slotLabelInterval: '00:30:00',
     slotDuration: '00:30:00',
     slotMinTime: '08:00:00',
-    editable: false,
     dayMaxEventRows: true,
     nowIndicator: true,
     views: {
@@ -58,7 +57,7 @@ async function calendarRender (modalElement, data) {
       },
     },
     allDaySlot: false,
-    headerToolbar: { 
+    headerToolbar: {
       left: 'dayGridMonth,timeGridWeek',
       center: 'title',
       right: 'prev,next',
@@ -69,19 +68,50 @@ async function calendarRender (modalElement, data) {
         html: `<div class="fc-event-title">${args.event.title}</div>`
       };
     },
-    eventClick: function(info) {
-      eventInfo(info, data)
+    eventClick: function (info) {
+      eventInfo(info, data, clients)
     },
-    dateClick: function(info) {
-      dateInfo(info, data, modalElement)
+    dateClick: function (info) {
+      dateInfo(info, data, modalElement, clients)
     },
-    selectable: false,
     locale: esLocale,
     eventOverlap: false,
-    datesSet: function(info) {
+    datesSet: function (info) {
       dateSetStyles();
-    }
-      
+    },
+    editable: false,
+    selectable: false,
+    // editable: true,
+    // selectable: true,
+    // eventResize: function(info) {
+    //   // Esto se ejecuta cuando el usuario redimensiona (estira o reduce) un evento:
+
+    //   console.log("Evento redimensionado:");
+    //   console.log("Nuevo inicio:", info.event.start);
+    //   console.log("Nuevo fin:", info.event.end);
+
+    //   const dateStart = new Date(info.event.start);
+    //   dateStart.setHours(dateStart.getHours() + 3);
+    //   console.log('datestart', dateStart);
+
+    //   const dateEnd = new Date(info.event.end);
+    //   dateEnd.setHours(dateEnd.getHours() + 3);
+    //   console.log('dateend', dateEnd);
+
+    //   console.log(info.event)
+    //   putChangeHourOfTurn(info.event._def.publicId, dateStart, dateEnd, data.user.Id);
+
+    //   // Acá podrías hacer una petición a tu backend para guardar los cambios
+    // },
+    // eventDrop: function(info) {
+    //   // Esto se dispara cuando arrastran el evento a otro día u hora:
+
+    //   console.log("Evento movido:");
+    //   console.log("Nuevo inicio:", info.event.start);
+    //   console.log("Nuevo fin:", info.event.end);
+
+    //   // También podrías guardar los cambios acá
+    // },
   });
 
   calendar.render();

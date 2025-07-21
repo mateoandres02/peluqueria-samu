@@ -27,7 +27,7 @@ const containerCashView = `<div class="containerCashView containerFunctionalityV
 const infoSectionCashView = `
   <div class="present-container">
     <h2>Seguimiento de Caja</h2>
-    <p>Visualiza los cobros realizados y los pagos por realizar.</p>
+    <p>Lleva un seguimiento de los cobros realizados por los servicios prestados.</p>
     <div class="present-container-filters">
       <div class="present-container-filter">
         <span>Fecha Inicio</span>
@@ -38,7 +38,7 @@ const infoSectionCashView = `
         <input type="date" id="filterWeekInput">
       </div>
       <div class="present-container-filter">
-        <span>Filtrar por barbero</span>
+        <span>Filtrar por empleado</span>
         <select id="barberSelect" class="form-select">
           <option value="null">Todos</option>
         </select>
@@ -67,7 +67,7 @@ const tableTurns = `
           <th scope="col">HORA</th>
           <th scope="col">CLIENTE</th>
           <th scope="col">FIJO</th>
-          <th scope="col">BARBERO</th>
+          <th scope="col">EMPLEADO</th>
           <th scope="col">TIPO DE SERVICIO</th>
           <th scope="col">SERVICIO</th>
           <th scope="col">COSTO</th>
@@ -96,14 +96,17 @@ const paymentSection = `
     <table>
       <thead>
         <tr>
-          <th scope="col">BARBERO</th>
+          <th scope="col">EMPLEADO</th>
           <th scope="col">TOTAL GANADO</th>
-          <th scope="col">DIFERENCIA POR VALES</th>
+          <th scope="col">TOTAL RETIRADO</th>
           <th scope="col">TOTAL A PAGAR</th>
           <th scope="col">DEBE</th>
         </tr>
       </thead>
       <tbody class="table-pay-body">
+        <tr>
+          <td colspan="5">Sin datos.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -182,7 +185,7 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
 
       let paymentField = user.forma_pago ? `<span>${user.forma_pago}</span>` : `<span class="span-red">Sin pago</span>`;
 
-      let costField = user.precio ? user.precio : '0'; 
+      let costField = user.precio_unitario_servicio ? user.precio_unitario_servicio : '0';
 
       let date = user.turns.Date ? parseDate(user.turns.Date) : '';
       let dateRecurrentTurn = user.date ? parseDate(user.date) : '';
@@ -266,22 +269,22 @@ const calculateTotal = async (dataFinalsTurns, totalEarnedDisplay, totalEarnedEf
 
   totalEarnedTurns = dataFinalsTurns.reduce((acc, turn) => {
     if (turn.forma_pago === "Efectivo") {
-      totalEarnedEfectTurns += (turn.precio || 0);
+      totalEarnedEfectTurns += (turn.precio_unitario_servicio || 0);
     };
     if (turn.forma_pago === "Transferencia") {
-      totalEarnedTransfTurns += (turn.precio || 0);
+      totalEarnedTransfTurns += (turn.precio_unitario_servicio || 0);
     }
     if (turn.forma_pago === "Mixto") {
       totalEarnedEfectTurns += (turn.pago_efectivo || 0);
       totalEarnedTransfTurns += (turn.pago_transferencia || 0);
     }
-    return acc + (turn.precio || 0);
+    return acc + (turn.precio_unitario_servicio || 0);
   }, 0);
-  
+
   totalEarned = totalEarnedTurns;
   totalEarnedEfect = totalEarnedEfectTurns;
   totalEarnedTransf = totalEarnedTransfTurns;
-  
+
   if (barberParam == null) {
     vouchersToday.forEach(voucher => {
       totalCashVouchers += voucher.CantidadDinero;
@@ -360,7 +363,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
 
   try {
     const cutServices = await getServices();
-    
+
     const dateParam = selectedDate ? `${selectedDate}` : today;
     const barberParam = barberId ? `${barberId}` : null;
     const endDateParam = endWeekDate ? `${endWeekDate}` : null;
@@ -407,14 +410,14 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       let dataTurns = await responseTurns.json();
 
       if (tableBodyTurnsCashRegister !== undefined) {
-  
+
         tableBodyTurnsCashRegister.innerHTML = "";
         globalDataFinalTurns.splice(0, globalDataFinalTurns.length);
 
         if (
-            (dataTurns.message && dataRecurrentTurns.message) || 
-            (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
-          ) {
+          (dataTurns.message && dataRecurrentTurns.message) ||
+          (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
+        ) {
 
           tableBodyTurnsCashRegister.innerHTML = `
             <tr>
@@ -445,7 +448,7 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
           </tr>
         `;
       }
-  
+
       usarCalcular(dataFinalsTurns, selectedDate, endDateParam, barberParam);
 
       handleSelectServiceChange(cutServices, selectedDate, endDateParam);
@@ -453,11 +456,11 @@ const cashData = async (tableBodyTurnsCashRegister, selectedDate = null, barberI
       handleSelectPaymentMethod();
 
     }
-    
+
   } catch (error) {
     alert('Error al cargar la tabla con los turnos.');
   }
-  
+
 };
 
 const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns, dateInput, weekInput) => {
@@ -470,7 +473,7 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns, dateIn
 
   for (const turn of filteredTurns) {
     const barber = turn.peluquero;
-    const price = turn.precio || 0;
+    const price = turn.precio_unitario_servicio || 0;
     const nameService = turn.servicio;
 
     if (!barbersData[barber]) {
@@ -481,23 +484,23 @@ const fillTheObjectWithFilteredTurns = async (barbersData, filteredTurns, dateIn
       const paymentForBarber = await getPaymentUsersById(turn.turns.NroUsuario);
       const valesForBarber = await getVouchersFilteredByBarber(turn.peluquero);
       const dataVales = await valesForBarber.json();
-      
+
       if (!paymentForBarber.message) {
         paymentForBarber.forEach((item) => {
           if (!barbersData[barber].percentages[item.servicio]) {
             barbersData[barber].percentages[item.servicio] = item.porcentaje_pago || 50;
           }
-        })        
+        })
       }
 
       if (!dataVales.message) {
         dataVales.forEach((item) => {
           const { datePart } = parseDate(item.FechaCreacion);
-  
-          if ((datePart >= dateInput && datePart <= weekInput)) {
+
+          if ((datePart >= dateInput && datePart <= weekInput) || (datePart == dateInput)) {
             barbersData[barber].vales += item.CantidadDinero;
           }
-          
+
         });
       }
 
@@ -527,6 +530,7 @@ const calculateEarnedForBarber = async (barbersData) => {
     barberData.totalEarnings = 0;
 
     for (const service in barberData.services) {
+
       const totalForService = barberData.services[service];
       const percentage = barberData.percentages[service] || 50;
 
@@ -597,7 +601,7 @@ const getPaidForBarbers = async (dateInput, weekInput) => {
    */
 
   // Filtramos los turnos que tienen servicio
-  const filteredTurns = globalDataFinalTurns.filter(turn => turn.turns.Service);
+  const filteredTurns = globalDataFinalTurns.filter(turn => turn.servicio && turn.forma_pago);
 
   let barbersData = {};
 
@@ -635,7 +639,6 @@ const handlePaidsForBarber = ($payButton, $dateInput, $weekInput) => {
    * param: $payButton -> elemento html del boton de pago.
    */
 
-  
   $payButton.addEventListener('click', () => {
     getPaidForBarbers($dateInput.value, $weekInput.value);
   });

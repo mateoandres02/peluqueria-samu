@@ -10,7 +10,7 @@ const getAllCutServices = async (req, res) => {
 
   try {
     const data = await db.select({
-        servicio: cutServices,
+      servicio: cutServices,
     }).from(cutServices)
 
     const formattedData = data.map(item => item.servicio);
@@ -18,7 +18,7 @@ const getAllCutServices = async (req, res) => {
     res.send(formattedData)
   } catch (e) {
     res.status(500).send({
-        message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
+      message: e.message || "Ocurrió algún error recuperando los  tipos de servicios de corte."
     });
   }
 
@@ -44,7 +44,7 @@ const getServiceById = async (req, res) => {
       message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
     });
   }
-  
+
 }
 const postCutService = async (req, res) => {
   try {
@@ -57,7 +57,7 @@ const postCutService = async (req, res) => {
     }
     const nombreBD = await db.select().from(cutServices).where(sql`lower(${cutServices.Nombre}) = lower(${Nombre})`).limit(1);
     if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() == Nombre.toLowerCase()) {
-      return res.status(400).send({message: "¡El nombre del servicio ya existe!"});
+      return res.status(400).send({ message: "¡El nombre del servicio ya existe!" });
     }
 
     const newCutService = {
@@ -88,10 +88,10 @@ const updateCutService = async (req, res) => {
 
     const response = await db.update(cutServices)
       .set({ Nombre, Precio })
-      .where(eq(cutServices.Id,id))
+      .where(eq(cutServices.Id, id))
       .returning();
 
-    if (response.length) {     
+    if (response.length) {
       res.send(response[0]);
     } else {
       res.status(404).send({
@@ -116,13 +116,13 @@ const deleteCutService = async (req, res) => {
       Pago_Efectivo: null,
       Pago_Transferencia: null
     }
-    
+
     await db.update(turns).set(turn).where(eq(turns.Service, id)).returning();
-    await db.update(turns_days).set({servicio: null, forma_cobro: null, pago_efectivo: null, pago_transferencia: null}).where(eq(turns_days.servicio, id)).returning();
+    await db.update(turns_days).set({ servicio: null, forma_cobro: null, pago_efectivo: null, pago_transferencia: null }).where(eq(turns_days.servicio, id)).returning();
     await db.delete(paymentUsers).where(eq(paymentUsers.id_servicio, id));
 
     const response = await db.delete(cutServices)
-      .where(eq(cutServices.Id,id))
+      .where(eq(cutServices.Id, id))
       .returning();
 
     if (response.length) {
@@ -136,7 +136,7 @@ const deleteCutService = async (req, res) => {
     }
   } catch (e) {
     res.status(500).send({
-      message: e.message || "Ocurrio algun error eliminando un registro de un tipo de servicio de corte con id = " + id 
+      message: e.message || "Ocurrio algun error eliminando un registro de un tipo de servicio de corte con id = " + id
     });
   }
 }

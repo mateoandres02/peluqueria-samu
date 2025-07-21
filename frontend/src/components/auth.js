@@ -3,7 +3,7 @@ import renderIndexEmployeeView from "./indexEmployeeView.js";
 import { getUserActive } from "./requests.js";
 
 export default async function checkAuthentication() {
-  
+
   const response = await getUserActive();
 
   if (!response || !response.ok || response.status === 401) {
@@ -11,7 +11,7 @@ export default async function checkAuthentication() {
     localStorage.removeItem('token');
     window.location.href = '/login';
   } else {
-    const data = await response.json(); 
+    const data = await response.json();
 
     if (data.user.Rol === "Empleado") {
       await renderIndexEmployeeView(data);
@@ -19,5 +19,5 @@ export default async function checkAuthentication() {
       await renderIndexAdminView(data);
     }
   };
-  
+
 }

@@ -10,7 +10,7 @@ const containerEmployeeHistory = `<div class="containerEmployeeHistory container
 const infoSectionEmployeeHistory = `
   <div class="present-container">
     <h2>Historial de trabajo</h2>
-    <p>Visualiza un historial acerca de tu trabajo realizado en la barbería.</p>
+    <p>Visualiza un historial acerca de tu trabajo realizado en la peluquería.</p>
     <div class="present-container-filters">
       <div class="present-container-filter">
         <span>Fecha Inicio</span>
@@ -47,7 +47,7 @@ const infoEmployeeHistory = `
 `;
 
 const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) => {
- 
+
   const paymentForBarber = await getPaymentUsersById(dataUserActive.user.Id);
   const valesForBarber = await getVouchersFilteredByBarber(dataUserActive.user.Nombre);
   const dataVales = await valesForBarber.json();
@@ -66,20 +66,23 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
         if (!cutsData.percentages[item.servicio]) {
           cutsData.percentages[item.servicio] = item.porcentaje_pago || 50;
         }
-      })        
+      })
     }
 
-    cutsData.vales = { cantidad_vales: 0, total_vales_por_date: 0 }
+    cutsData.vales = { cantidad_vales: 0, total_vales_por_date: 0, motivo: [], fecha: [], dinero_por_motivo: [] }
 
     if (!dataVales.message) {
       dataVales.forEach((item) => {
-        const { datePart } = parseDate(item.FechaCreacion);
+        const { datePart, dayWithoutYear } = parseDate(item.FechaCreacion);
 
         if ((!weekInput && datePart == dateInput) || (datePart >= dateInput && datePart <= weekInput)) {
           cutsData.vales.total_vales_por_date += item.CantidadDinero;
           cutsData.vales.cantidad_vales += 1;
+          cutsData.vales.motivo.push(item.Motivo);
+          cutsData.vales.fecha.push(dayWithoutYear);
+          cutsData.vales.dinero_por_motivo.push(item.CantidadDinero);
         }
-        
+
       });
     }
 
@@ -89,7 +92,7 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
     cutsData.services[nameService].total_ganado += price;
     cutsData.services[nameService].total_cobrado += (price * (cutsData.percentages[nameService] || 50)) / 100;
     cutsData.services[nameService].cantidad_cortes_realizados += 1;
-    
+
     cutsData.monto_final += (price * (cutsData.percentages[nameService] || 50)) / 100;
   }
 
@@ -101,7 +104,7 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
   $textFooter.innerHTML = '';
 
   Object.keys(cutsData.services).forEach((barberData) => {
-    
+
     const serviceName = barberData;
     const serviceData = cutsData.services[serviceName];
     const $li = document.createElement('li');
@@ -122,17 +125,20 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
         <span><b>${serviceName}</b>: ${messageCutsForServices} </span>
       </p>
     `;
-    
+
     $textCutsForServices.appendChild($li);
 
   });
 
   let messageForVales = '';
+  for (let i = 0; i < cutsData.vales.cantidad_vales; i++) {
+    messageForVales += `Fecha: <b>${cutsData.vales.fecha[i]}</b> - Motivo: <b>${cutsData.vales.motivo[i]}</b> - Dinero: <b>$ ${cutsData.vales.dinero_por_motivo[i]}</b>. <br><br>`;
+  }
   if (cutsData.vales.cantidad_vales === 1) {
-    messageForVales = `Retiraste <b>${cutsData.vales.cantidad_vales}</b> vale por la cantidad de <b>$ ${cutsData.vales.total_vales_por_date}</b>.`;
+    messageForVales += `Retiraste <b>${cutsData.vales.cantidad_vales}</b> vale por la cantidad de <b>$ ${cutsData.vales.total_vales_por_date}</b>.`;
   };
   if (cutsData.vales.cantidad_vales > 1) {
-    messageForVales = `Retiraste <b>${cutsData.vales.cantidad_vales}</b> vales por un total de <b>$ ${cutsData.vales.total_vales_por_date}</b>.`;
+    messageForVales += `Retiraste <b>${cutsData.vales.cantidad_vales}</b> vales por un total de <b>$ ${cutsData.vales.total_vales_por_date}</b>.`;
   };
   if (cutsData.vales.cantidad_vales === 0) {
     messageForVales = 'No realizaste vales.';
@@ -155,7 +161,7 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
   if (filteredTurns.length === 0) {
     $textCutsForServices.innerHTML = 'No hay registros.';
     $textVales.innerHTML = 'No hay registros.';
-    $textFooter.innerHTML = '';   
+    $textFooter.innerHTML = '';
   }
 
 }
@@ -163,20 +169,20 @@ const getCutsForServices = async (dataUserActive, data, dateInput, weekInput) =>
 const showData = (dataUserActive, dataTurns, dataRecurrentTurns, dateInput, weekInput) => {
 
   let finalArrayOfTurns = [];
-  
+
   let dataTurnsConcats = [...dataTurns, ...dataRecurrentTurns];
 
-  
+
   dataTurnsConcats.forEach((user) => {
-    
+
     if (!finalArrayOfTurns.some(registro => registro.turns.Id === user.turns.Id && registro.date === user.date)) {
       finalArrayOfTurns.push(user);
     } else {
       return;
     }
-    
+
   })
-  
+
   getCutsForServices(dataUserActive, finalArrayOfTurns, dateInput, weekInput);
 
 }
@@ -218,15 +224,15 @@ const cutData = async (dataUserActive, selectedDate = null, endWeekDate = null) 
       let dataTurns = await responseTurns.json();
 
       if (
-          (dataTurns.message && dataRecurrentTurns.message) || 
-          (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
-        ) {
+        (dataTurns.message && dataRecurrentTurns.message) ||
+        (dataTurns.length <= 0 && dataRecurrentTurns.length <= 0)
+      ) {
 
-          $textCutsForServices.innerHTML = 'No existen registros.';
-          $textVales.innerHTML = 'No existen registros.';
-          $textFooter.innerHTML = '';
+        $textCutsForServices.innerHTML = 'No existen registros.';
+        $textVales.innerHTML = 'No existen registros.';
+        $textFooter.innerHTML = '';
 
-      } else if ((dataTurns.message && !dataRecurrentTurns.message) || (dataTurns.length <= 0 && dataRecurrentTurns.length > 0))  {
+      } else if ((dataTurns.message && !dataRecurrentTurns.message) || (dataTurns.length <= 0 && dataRecurrentTurns.length > 0)) {
         showData(dataUserActive, dataTurns = [], dataRecurrentTurns, dateParam, endDateParam);
       } else if ((!dataTurns.message && dataRecurrentTurns.message) || (dataTurns.length > 0 && dataRecurrentTurns.length <= 0)) {
         showData(dataUserActive, dataTurns, dataRecurrentTurns = [], dateParam, endDateParam);
@@ -239,7 +245,7 @@ const cutData = async (dataUserActive, selectedDate = null, endWeekDate = null) 
   } catch (error) {
     alert('Error al cargar la tabla con los turnos.');
   }
-  
+
 };
 
 export {

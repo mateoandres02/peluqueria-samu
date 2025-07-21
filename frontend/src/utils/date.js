@@ -1,5 +1,5 @@
 function parseDate(date) {
-  
+
   /**
    * Parseamos la fecha proporcionada por fullcalendar para poder trabajarla.
    * param: date -> es la fecha de la celda seleccionada en el calendario, proporcionada por fullcalendar.
@@ -9,7 +9,7 @@ function parseDate(date) {
   const [year, month, day] = datePart.split('-');
   const [hour, minute, seconds] = timePart.split(":");
 
-  const dayWithoutYear = `${month}-${day}`;
+  const dayWithoutYear = `${day}/${month}`;
   const dateWithoutTime = `${day}/${month}/${year}`;
   const dateWithoutTimeWithDash = `${day}-${month}-${year}`;
   const timeWithoutSeconds = `${hour}:${minute}`;
@@ -29,7 +29,7 @@ function parseDate(date) {
     datePart,
     dateParsed
   }
-  
+
 };
 
 const reformatDate = (date) => {
@@ -51,7 +51,7 @@ const addHourOfStartDate = (dateWithoutTime, timeOfTurn) => {
    * param: dateWithoutTime -> fecha sin horario.
    * param: timeOfTurn -> el horario del turno.
    */
-  
+
   const completeDate = `${dateWithoutTime}T${timeOfTurn}`;
   return completeDate;
 }
@@ -65,7 +65,7 @@ const turnDateEnd = (date) => {
 
   const [datePart, timePart] = date.split('T');
 
-  const [hour, minute, ] = timePart.split(":");
+  const [hour, minute,] = timePart.split(":");
 
   let dateHourEnd = hour;
   let dateMinutesEnd = '';
@@ -86,7 +86,7 @@ const turnDateEnd = (date) => {
   const completeDateEnd = `${datePart}T${dateEnd}`;
 
   return completeDateEnd;
-  
+
 }
 
 
@@ -99,7 +99,7 @@ const getEndOfMonth = (startDate) => {
 
   const date = new Date(startDate);
   return new Date(date.getFullYear(), date.getMonth() + 1, 1);
-  
+
 };
 
 
@@ -146,7 +146,7 @@ function formattedEndDate(dateString) {
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 
-} 
+}
 
 function formatOnlyDate(date) {
   if (!date || typeof date !== 'string') return '';
@@ -162,12 +162,12 @@ function formatOnlyTime(time) {
   return `${hour}:${minute}`;
 }
 
-export { 
-  parseDate, 
-  addHourOfStartDate, 
-  reformatDate, 
-  turnDateEnd, 
-  getEndOfMonth, 
+export {
+  parseDate,
+  addHourOfStartDate,
+  reformatDate,
+  turnDateEnd,
+  getEndOfMonth,
   getToday,
   formattedEndDate,
   formatOnlyDate,

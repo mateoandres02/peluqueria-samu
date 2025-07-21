@@ -14,7 +14,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
     try {
         const response = await login(username, password);
-        
+
         if (response.ok) {
             const data = await response.json();
 
@@ -35,7 +35,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
             $loader.style.display = "none";
             mensajeError.classList.toggle("escondido", false);
-    
+
             setTimeout(() => {
                 mensajeError.classList.toggle("escondido");
             }, 2500);

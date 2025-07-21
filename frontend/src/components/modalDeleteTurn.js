@@ -28,16 +28,16 @@ const modalConfirm = `
 `;
 
 
-function deleteTurn(info, data){
+function deleteTurn(info, data) {
 
   /**
    * Gestionamos el delete del turno.
    * param: info -> info proporcionada por fullcalendar de la celda seleccinada, por ende del turno seleccionado.
    * param: data -> info del usuario logueado.
    */
-  
+
   const $deleteTurn = document.getElementById("confirmDeleteTurn");
-  
+
   $deleteTurn.addEventListener("click", async (e) => {
     e.preventDefault();
 
@@ -51,7 +51,7 @@ function deleteTurn(info, data){
     const formatedStartDate = formattedEndDate(info.event._def.extendedProps.end);
 
     if (regularCustomer === "true") {
-      
+
       logAction({
         Barbero: userName,
         Cliente: cliente,
@@ -59,7 +59,7 @@ function deleteTurn(info, data){
         Fijo: `${regularCustomer}`,
         Accion: 'DELETE'
       });
-      
+
       response = await deleteRegularCustomer(publicId, date);
     } else {
 
@@ -73,7 +73,7 @@ function deleteTurn(info, data){
 
       response = await deleteNormalCustomer(publicId, date);
     }
-    
+
     if (response.ok) {
       const focusableElement = document.querySelector('.fc-button-active') || document.body;
       focusableElement.focus();

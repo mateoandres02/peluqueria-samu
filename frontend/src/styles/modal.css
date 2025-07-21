@@ -23,9 +23,9 @@
     width: 80%;
     max-width: 500px;
     min-width: 350px;
-    
+
     color: var(--light-grey-letter);
-    font-weight:600;
+    font-weight: 600;
 }
 
 .modal-header {
@@ -33,7 +33,7 @@
     padding: .25rem 0rem 1rem;
 }
 
-.modal-header h2 > i {
+.modal-header h2>i {
     margin-left: 1rem;
     padding-right: .5rem;
 }
@@ -46,7 +46,7 @@
     padding: 1rem;
 }
 
-.modal-body h3 > i {
+.modal-body h3>i {
     padding-right: 1rem;
 }
 
@@ -82,12 +82,12 @@
     width: 100%;
     padding: 1rem 1rem 0rem 1rem !important;
     border-top: 1px solid var(--line-grey);
-    
+
     margin-top: 1rem !important;
 }
 
 .modal-footer-calendar {
-    justify-content: center; 
+    justify-content: center;
 }
 
 label {
@@ -95,7 +95,7 @@ label {
     margin-bottom: .25rem;
 }
 
-label > i {
+label>i {
     padding-right: 5px;
 }
 
@@ -147,7 +147,7 @@ input[type="number"] {
     align-items: center;
 
     width: 100%;
-    
+
     margin-bottom: 1rem;
 }
 
@@ -193,7 +193,7 @@ input[type="number"] {
     gap: 2rem;
     margin-top: 0rem !important;
 }
-  
+
 .modal-close {
     background-color: #aaa;
     color: white;
@@ -202,14 +202,14 @@ input[type="number"] {
     cursor: pointer;
     border-radius: .25rem;
 }
-  
+
 .closeModal {
     border: none;
     background-color: transparent;
     font-size: 1.5rem;
     transition: color .25s ease;
 }
-  
+
 .closeModal:hover {
     color: #888;
 }
@@ -223,11 +223,12 @@ input[type="number"] {
 }
 
 .autocomplete-container {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-edit {
-    background-color: #307cc4; /* fondo oscuro */
+    background-color: #307cc4;
+    /* fondo oscuro */
     color: #ffffff;
     border: none;
     padding: 8px 12px;
@@ -237,12 +238,13 @@ input[type="number"] {
 }
 
 .btn-edit:hover {
-    background-color: #1b1a2d; /* un tono más claro al hacer hover */
+    background-color: #1b1a2d;
+    /* un tono más claro al hacer hover */
     color: #ffffff;
     cursor: pointer;
 }
 
-@media (1024px > width) {    
+@media (640px > width) {
     .form-checkboxes {
         padding-left: 6rem;
         overflow-x: auto;

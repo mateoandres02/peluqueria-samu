@@ -7,9 +7,9 @@ const getAllHistory = async (req, res) => {
         const data = await db.select({
             turnos_historial: history_turns,
         }).from(history_turns)
-    
+
         const formattedData = data.map(item => item.turnos_historial);
-    
+
         res.send(formattedData);
 
     } catch (error) {
@@ -19,7 +19,7 @@ const getAllHistory = async (req, res) => {
     }
 }
 
-const getAllTurnsHistoryByBarber = async (req,res) => {
+const getAllTurnsHistoryByBarber = async (req, res) => {
     try {
         const barberName = req.params.barberName;
 
@@ -32,8 +32,8 @@ const getAllTurnsHistoryByBarber = async (req,res) => {
             Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         })
-        .from(history_turns)
-        .where(eq(history_turns.Barbero, barberName));
+            .from(history_turns)
+            .where(eq(history_turns.Barbero, barberName));
 
         if (data.length) {
             res.status(200).send(data);
@@ -61,8 +61,8 @@ const getAllTurnsHistoryByDate = async (req, res) => {
             Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         })
-        .from(history_turns)
-        .where(like(history_turns.FechaCreacion, `%${date}%`));
+            .from(history_turns)
+            .where(like(history_turns.FechaCreacion, `%${date}%`));
 
         if (data.length) {
             res.status(200).send(data);
@@ -92,7 +92,7 @@ const getAllTurnsHistoryByDateAndBarber = async (req, res) => {
             Fijo: history_turns.Fijo,
             Accion: history_turns.Accion
         }).from(history_turns)
-        .where(and(like(history_turns.FechaCreacion, `%${date}%`), eq(history_turns.Barbero, barberName)));
+            .where(and(like(history_turns.FechaCreacion, `%${date}%`), eq(history_turns.Barbero, barberName)));
 
         if (data.length) {
             res.status(200).send(data);
@@ -149,7 +149,7 @@ const deleteHistoryTurn = async (req, res) => {
 
         //logAction({
         //    fechaTurno: date,
-         //   nombre_cliente: Nombre, // Asegúrate de que este campo esté en el body
+        //   nombre_cliente: Nombre, // Asegúrate de que este campo esté en el body
         //    nro_barbero: NroUsuario, // Asegúrate de que este campo esté en el body
         //    accion: 'DELETE'
         //});
@@ -172,7 +172,7 @@ const deleteHistoryTurn = async (req, res) => {
     }
 };
 
- const actionsTurns = {
+const actionsTurns = {
     getAllHistory,
     postTurnHistoryLog,
     deleteHistoryTurn,

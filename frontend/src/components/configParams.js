@@ -1,4 +1,4 @@
-import { putChangePercentageService, getServices} from "./requests";
+import { putChangePercentageService, getServices } from "./requests";
 
 import "../styles/configParams.css";
 import { sortArrayByName } from "../utils/arrays";
@@ -87,6 +87,7 @@ const tablePaymentEdit = `
         </tr>
       </thead>
       <tbody class="table-config-pay-body">
+        <td colspan="2">Sin datos</td>
       </tbody>
     </table>
   </div>
@@ -175,9 +176,9 @@ const handleModifyPercentage = (links) => {
 
   links.forEach(btn => {
     btn.addEventListener('click', async (e) => {
-      
+
       e.preventDefault();
-      
+
       const linkElement = e.target;
 
       const input = document.createElement('input');
@@ -186,7 +187,7 @@ const handleModifyPercentage = (links) => {
       input.max = 100;
       input.value = 0;
       input.id = 'input-new-percentage';
-      
+
       linkElement.parentNode.replaceChild(input, linkElement);
 
       input.addEventListener('keydown', async (event) => {
@@ -227,7 +228,7 @@ const handleModifyPercentage = (links) => {
 
       // Enfocamos el input automáticamente después del cambio por la accesibilidad.
       input.focus();
-      
+
     });
   })
 }
@@ -303,12 +304,12 @@ const paymentData = async (table, dataBarber) => {
     handleModifyPercentage(links)
 
   } catch (error) {
-    alert('Error al obtener los barberos para poder configurar sus porcentajes de pago.');
+    alert('Error al obtener los empleados para poder configurar sus porcentajes de pago.');
   };
 
 }
 
-export { 
+export {
   configParamsView,
   infoSectionParamsView,
   configParamsInitialView,

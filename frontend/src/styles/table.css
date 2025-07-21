@@ -4,16 +4,17 @@
     min-height: 100px;
     max-height: 600px;
     overflow-y: auto;
+    overflow-x: auto;
     height: auto;
-  
+
     margin: 0 auto 3rem;
-    
+
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
 }
-   
+
 .table-container table {
     width: 100%;
 }
@@ -33,7 +34,8 @@
     text-align: center;
 }
 
-.table-container th, .table-container td {
+.table-container th,
+.table-container td {
     padding: 10px;
 }
 
@@ -55,20 +57,28 @@
     text-align: center;
 }
 
-.table-container th:nth-child(3), .table-container td:nth-child(3),
-.table-container th:nth-child(5) div, .table-container td:nth-child(5) div,
-.table-container th:nth-child(6), .table-container td:nth-child(6),
-.table-container th:nth-child(9), .table-container td:nth-child(9),
-.table-container th:nth-child(10), .table-container td:nth-child(10) {
-    white-space: nowrap; 
+.table-container th:nth-child(3),
+.table-container td:nth-child(3),
+.table-container th:nth-child(5) div,
+.table-container td:nth-child(5) div,
+.table-container th:nth-child(6),
+.table-container td:nth-child(6),
+.table-container th:nth-child(9),
+.table-container td:nth-child(9),
+.table-container th:nth-child(10),
+.table-container td:nth-child(10) {
+    white-space: nowrap;
     max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.table-container th:nth-child(3), .table-container td:nth-child(3),
-.table-container th:nth-child(6), .table-container td:nth-child(6),
-.table-container th:nth-child(9), .table-container td:nth-child(9) {
+.table-container th:nth-child(3),
+.table-container td:nth-child(3),
+.table-container th:nth-child(6),
+.table-container td:nth-child(6),
+.table-container th:nth-child(9),
+.table-container td:nth-child(9) {
     min-width: 150px;
 }
 
@@ -79,8 +89,9 @@
     height: 45px;
 }
 
-.container-btns-actions, .btns-actions { 
-    white-space: nowrap; 
+.container-btns-actions,
+.btns-actions {
+    white-space: nowrap;
     max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -91,7 +102,8 @@
     min-width: 500px;
 }
 
-.table-manageemployees-container th:nth-child(5), .table-manageemployees-container td:nth-child(5) {
+.table-manageemployees-container th:nth-child(5),
+.table-manageemployees-container td:nth-child(5) {
     overflow: visible;
 }
 
@@ -102,7 +114,8 @@
     margin: 0 1rem;
 }
 
-.table-container .bi-pencil-fill, .bi-trash-fill  {
+.table-container .bi-pencil-fill,
+.bi-trash-fill {
     background-color: var(--white);
     transition: color 0.63s ease;
 }
@@ -121,7 +134,7 @@
 }
 
 .table-payment-container table thead tr th:last-child {
-    white-space: wrap; 
+    white-space: wrap;
     max-width: 150px;
     overflow: hidden;
 }
@@ -162,10 +175,12 @@
     width: 700px !important;
 }
 
-.table-payment-container th:nth-child(3), .table-payment-container td:nth-child(3), 
-.table-payment-container th:nth-child(4), .table-payment-container td:nth-child(4) { 
-    white-space: wrap; 
-    max-width: 120px;
+.table-payment-container th:nth-child(3),
+.table-payment-container td:nth-child(3),
+.table-payment-container th:nth-child(4),
+.table-payment-container td:nth-child(4) {
+    white-space: wrap;
+    max-width: 150px;
     overflow: visible;
 }
 
@@ -186,16 +201,23 @@
     justify-content: flex-start;
 }
 
-.table-manageClients-container th:nth-child(1), .table-manageClients-container td:nth-child(1) {
+.table-manageClients-container th:nth-child(1),
+.table-manageClients-container td:nth-child(1) {
     width: 10%;
 }
-.table-manageClients-container th:nth-child(2),.table-manageClients-container td:nth-child(2) {
+
+.table-manageClients-container th:nth-child(2),
+.table-manageClients-container td:nth-child(2) {
     width: 35%;
 }
-.table-manageClients-container th:nth-child(3),.table-manageClients-container td:nth-child(3) {
+
+.table-manageClients-container th:nth-child(3),
+.table-manageClients-container td:nth-child(3) {
     width: 35%;
 }
-.table-manageClients-container th:nth-child(4),.table-manageClients-container td:nth-child(4) {
+
+.table-manageClients-container th:nth-child(4),
+.table-manageClients-container td:nth-child(4) {
     width: 20%;
     min-width: 50px;
     overflow: visible;
@@ -213,8 +235,18 @@
     max-width: 1000px;
 }
 
-.table-container.table-history-container th:nth-child(2),.table-container.table-history-container td:nth-child(2) {
+.table-container.table-history-container th:nth-child(1),
+.table-container.table-history-container td:nth-child(1),
+.table-container.table-history-container th:nth-child(2),
+.table-container.table-history-container td:nth-child(2),
+.table-container.table-history-container th:nth-child(4),
+.table-container.table-history-container td:nth-child(4) {
     width: 5ch;
+
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table-container-footer {
@@ -235,34 +267,43 @@
     max-width: 500px;
 }
 
-.table-container.table-config-params th:nth-child(1),.table-container.table-config-params td:nth-child(1) {
+.table-container.table-config-params th:nth-child(1),
+.table-container.table-config-params td:nth-child(1) {
     width: 15ch;
 }
 
-.table-container.table-config-params th:nth-child(2),.table-container.table-config-params td:nth-child(2) {
+.table-container.table-config-params th:nth-child(2),
+.table-container.table-config-params td:nth-child(2) {
     width: 5ch;
 }
 
-.table-container.table-config-params th:nth-child(3),.table-container.table-config-params td:nth-child(3) {
+.table-container.table-config-params th:nth-child(3),
+.table-container.table-config-params td:nth-child(3) {
     width: 5ch;
 }
 
-.table-container.table-config-payment-container th:nth-child(1),.table-container.table-config-payment-container td:nth-child(1) {
+.table-container.table-config-payment-container th:nth-child(1),
+.table-container.table-config-payment-container td:nth-child(1) {
     width: 15ch;
 }
 
-.table-container.table-config-payment-container th:nth-child(2),.table-container.table-config-payment-container td:nth-child(2) {
+.table-container.table-config-payment-container th:nth-child(2),
+.table-container.table-config-payment-container td:nth-child(2) {
     width: 10ch;
 }
 
-@media (1024px > width) {
+@media (640px > width) {
     .table-container {
         padding: 0rem 1rem;
         margin: 0rem 0rem 5rem;
-    }      
+    }
 
     .table-container table {
         min-width: 1000px
+    }
+
+    .table-container.table-history-container {
+        padding: 1rem !important;
     }
 
     .table-payment-container table {
@@ -270,13 +311,18 @@
         max-width: 600px;
     }
 
+    .table-config-payment-container {
+        padding: 1rem !important;
+    }
+
     .table-config-payment-container table {
         min-width: 350px;
         max-width: 350px;
     }
 
-    .table-config-payment-container th:nth-child(1), .table-config-payment-container td:nth-child(1) { 
-        white-space: nowrap; 
+    .table-config-payment-container th:nth-child(1),
+    .table-config-payment-container td:nth-child(1) {
+        white-space: nowrap;
         max-width: 150px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -284,34 +330,42 @@
 
     .table-container.table-manageemployees-container {
         min-width: 375px;
-        max-width: 650px;
+        max-width: 700px;
 
         overflow-x: scroll;
-    
+
         margin: 0 auto;
-        
-        display: flex;
-        align-items: center;
+
         justify-content: center;
     }
+
     .table-container.table-manageemployees-container table {
         min-width: 600px;
         max-width: 600px;
     }
 
-    .table-manageemployees-container th:nth-child(1), .table-manageemployees-container td:nth-child(1) {
+    .table-manageemployees-container th:nth-child(1),
+    .table-manageemployees-container td:nth-child(1) {
         width: 5%;
     }
-    .table-manageemployees-container th:nth-child(2), .table-manageemployees-container td:nth-child(2) {
+
+    .table-manageemployees-container th:nth-child(2),
+    .table-manageemployees-container td:nth-child(2) {
         width: 15%;
     }
-    .table-manageemployees-container th:nth-child(3), .table-manageemployees-container td:nth-child(3) {
+
+    .table-manageemployees-container th:nth-child(3),
+    .table-manageemployees-container td:nth-child(3) {
         width: 15%;
     }
-    .table-manageemployees-container th:nth-child(4), .table-manageemployees-container td:nth-child(4) {
+
+    .table-manageemployees-container th:nth-child(4),
+    .table-manageemployees-container td:nth-child(4) {
         width: 15%;
     }
-    .table-manageemployees-container th:nth-child(5), .table-manageemployees-container td:nth-child(5) {
+
+    .table-manageemployees-container th:nth-child(5),
+    .table-manageemployees-container td:nth-child(5) {
         width: 5%;
     }
 
@@ -327,20 +381,27 @@
         min-width: 500px;
         max-width: 500px;
     }
-    
-    .table-manageClients-container th:nth-child(1), .table-manageClients-container td:nth-child(1) {
+
+    .table-manageClients-container th:nth-child(1),
+    .table-manageClients-container td:nth-child(1) {
         width: 5%;
     }
-    .table-manageClients-container th:nth-child(2),.table-manageClients-container td:nth-child(2) {
+
+    .table-manageClients-container th:nth-child(2),
+    .table-manageClients-container td:nth-child(2) {
         width: 35%;
     }
-    .table-manageClients-container th:nth-child(3),.table-manageClients-container td:nth-child(3) {
+
+    .table-manageClients-container th:nth-child(3),
+    .table-manageClients-container td:nth-child(3) {
         width: 35%;
     }
-    .table-manageClients-container th:nth-child(4),.table-manageClients-container td:nth-child(4) {
+
+    .table-manageClients-container th:nth-child(4),
+    .table-manageClients-container td:nth-child(4) {
         width: 25%;
     }
-    
+
     .table-container.table-config-params {
         overflow-x: scroll;
 
@@ -348,14 +409,16 @@
 
         justify-content: flex-start;
     }
+
     .table-container.table-config-params table {
         min-width: 500px;
         max-width: 500px;
     }
 }
 
-@media (1500px > width) {
+@media (375px > width) {
     .table-container {
+        min-width: 375px;
         max-width: 1000px;
         overflow-x: auto;
     }

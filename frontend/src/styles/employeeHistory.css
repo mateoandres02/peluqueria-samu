@@ -45,14 +45,14 @@
   margin: 0;
 }
 
-.infoEmployeeHistory-description-cutsForServices ul, 
+.infoEmployeeHistory-description-cutsForServices ul,
 .infoEmployeeHistory-description-cutsForServices li {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-@media (1024px > width) {
+@media (640px > width) {
   .infoEmployeeHistory-description {
     flex-direction: column;
     align-items: center;

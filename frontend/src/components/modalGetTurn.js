@@ -77,28 +77,28 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
    */
 
   const innerWidth = window.innerWidth;
-  
-  $btnWsp.addEventListener('click', async(e) => {
+
+  $btnWsp.addEventListener('click', async (e) => {
     e.preventDefault();
 
     const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`;
     let wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
 
     $btnWsp.href = wspUrl;
-    
+
     window.open(wspUrl, '_blank');
   });
-  
+
 }
 
-const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data) => {
+const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data, clients) => {
   let body = document.body;
-  $btnEdit.addEventListener("click", async(e) => {
+  $btnEdit.addEventListener("click", async (e) => {
     e.preventDefault();
 
     const modalGetTurn = bootstrap.Modal.getInstance($modalGetTurn._element);
     modalGetTurn.hide();
-    
+
     body.insertAdjacentHTML('beforeend', modalUpdateTurn);
     const $modalUpdateTurn = new bootstrap.Modal(document.getElementById('updateTurn'));
     $modalUpdateTurn.show();
@@ -108,7 +108,7 @@ const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data) => {
 
     const $nameInput = document.getElementById('input-name');
     const $phoneInput = document.getElementById('input-number');
-    
+
     $nameInput.value = info.event._def.title;
     $phoneInput.value = info.event._def.extendedProps.telefono;
 
@@ -116,9 +116,9 @@ const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data) => {
     const $formPutTurn = document.getElementById("formPutTurn");
     cancelPostModal($btnCancelPutTurn, $formPutTurn, $modalUpdateTurn)
 
-    updateTurn($formPutTurn, $modalUpdateTurn, $selectableBarbers, info, data); 
+    updateTurn($formPutTurn, $modalUpdateTurn, $selectableBarbers, info, data, clients);
 
-    $selectableBarbers.innerHTML = `<option value="null">Seleccionar barbero</option>`;
+    $selectableBarbers.innerHTML = `<option value="null">Seleccionar empleado</option>`;
 
     // Close current modal
     const modales = document.querySelectorAll('.modal');
@@ -126,8 +126,8 @@ const actionBtnEdit = ($btnEdit, $modalGetTurn, info, data) => {
   });
 }
 
-function modalGetTurn(info, data) {
-  
+function modalGetTurn(info, data, clients) {
+
   /**
    * Obtenemos la información del turno y la mostramos en una modal.
    * param: info -> trae info de la celda seleccionada del calendario, proporcionado por fullcalendar.
@@ -143,9 +143,9 @@ function modalGetTurn(info, data) {
   const $spanStartTime = d.getElementById("spanStartTime");
   const $spanEndTime = d.getElementById("spanEndTime");
   const $spanRegularCustomer = d.getElementById("spanRegularCustomer");
-  
+
   const { dayWithoutYearParsed, timeWithoutSeconds: timeWithoutSecondsStart } = parseDate(info.event.startStr);
-  const { timeWithoutSeconds: timeWithoutSecondsEnd  } = parseDate(info.event.extendedProps.end);
+  const { timeWithoutSeconds: timeWithoutSecondsEnd } = parseDate(info.event.extendedProps.end);
 
   // Obtenemos los valores de cada input de la modal.
   const name = info.event._def.title;
@@ -157,7 +157,7 @@ function modalGetTurn(info, data) {
 
   if (regular === 'true') regular = 'Sí';
   if (regular === 'false') regular = 'No';
-  
+
   $spanName.innerHTML = "";
   $spanTel.innerHTML = "";
   $spanDay.innerHTML = "";
@@ -177,12 +177,12 @@ function modalGetTurn(info, data) {
   const $btnDelete = document.getElementById("deleteTurn");
   const $btnWsp = document.getElementById("contactWsp");
   const $btnEdit = document.getElementById("editTurn");
-  
+
   actionBtnDelete($btnDelete, modalConfirm, info, data);
-  
+
   actionBtnWsp(name, day, startTime, tel, $btnWsp);
 
-  actionBtnEdit($btnEdit, $modal, info, data);
+  actionBtnEdit($btnEdit, $modal, info, data, clients);
 
 }
 

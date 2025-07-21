@@ -20,7 +20,7 @@ const getAllUsers = async (req, res) => {
             .where(sql`Nombre LIKE ${condicion}`);
 
         res.send(data);
-        
+
     } catch (error) {
         res.status(500).send({
             message: error.message || "Ocurrió algún error recuperando a todos los usuarios."
@@ -74,7 +74,7 @@ const postUser = async (req, res) => {
             const userCreate = await db.insert(users).values(user).returning();
             res.status(201).send(userCreate[0]);
         } else {
-            res.status(401).send({message: 'Ocurrió un error al crear el usuario.'})
+            res.status(401).send({ message: 'Ocurrió un error al crear el usuario.' })
         }
 
     } catch (error) {
@@ -96,7 +96,7 @@ const updateUser = async (req, res) => {
         Validation.password(user.Contrasena);
 
         const hashedPassword = await bcrypt.hash(user.Contrasena, config.saltRounds);
-        
+
         const newUser = {
             Id: id,
             Nombre: user.Nombre,

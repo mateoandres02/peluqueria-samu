@@ -115,7 +115,11 @@
   text-decoration: none;
 }
 
-@media (1024px > width) {
+@media (640px > width) {
+
+  .table-config-params {
+    padding: 1rem !important;
+  }
 
   .totalEarned {
     width: 100%;

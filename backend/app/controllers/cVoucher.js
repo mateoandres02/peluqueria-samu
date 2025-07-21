@@ -4,13 +4,13 @@ import users from "../models/mUser.js";
 import { eq, like, and, sql } from 'drizzle-orm';
 
 const getActualDate = () => {
-  const fechaCreacionUTC = new Date();
-  // Convertir a la zona horaria de Argentina (UTC-3)
-  const fechaCreacionArgentina = new Date(fechaCreacionUTC.getTime() - (3 * 60 * 60 * 1000));
-  // Formatear fecha para eliminar la parte después del "."
-  const fechaCreacionFormateada = fechaCreacionArgentina.toISOString().split('.')[0];
+    const fechaCreacionUTC = new Date();
+    // Convertir a la zona horaria de Argentina (UTC-3)
+    const fechaCreacionArgentina = new Date(fechaCreacionUTC.getTime() - (3 * 60 * 60 * 1000));
+    // Formatear fecha para eliminar la parte después del "."
+    const fechaCreacionFormateada = fechaCreacionArgentina.toISOString().split('.')[0];
 
-  return fechaCreacionFormateada;
+    return fechaCreacionFormateada;
 }
 
 const getAllVouchers = async (req, res) => {
@@ -19,13 +19,13 @@ const getAllVouchers = async (req, res) => {
             vale: vouchers,
             barbero: users.Nombre,
         }).from(vouchers)
-        .leftJoin(users, eq(users.Id, vouchers.IdUsuario));
+            .leftJoin(users, eq(users.Id, vouchers.IdUsuario));
 
         const formattedData = data.map(item => ({
-          ...item.vale,
-          Barbero: item.barbero || null 
+            ...item.vale,
+            Barbero: item.barbero || null
         }));
-    
+
         res.send(formattedData);
     } catch (error) {
         res.status(500).send({
@@ -42,10 +42,10 @@ const getAllTurnsByBarber = async (req, res) => {
             vouchers: vouchers,
             barbero: users.Nombre,
         })
-        .from(vouchers)
-        .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
-        .leftJoin(services, eq(services.Id, turns.Service))
-        .where(eq(vouchers.IdUsuario, id));
+            .from(vouchers)
+            .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+            .leftJoin(services, eq(services.Id, turns.Service))
+            .where(eq(vouchers.IdUsuario, id));
 
         res.send(data);
     } catch (err) {
@@ -86,9 +86,9 @@ const getVouchersByDateAndBarber = async (req, res) => {
             vale: vouchers,
             barbero: users.Nombre,
         })
-        .from(vouchers)
-        .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
-        .where(and(like(vouchers.FechaCreacion, `%${date}%`), eq(users.Nombre, barberName)));
+            .from(vouchers)
+            .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+            .where(and(like(vouchers.FechaCreacion, `%${date}%`), eq(users.Nombre, barberName)));
 
         const formattedData = data.map(item => ({
             ...item.vale,
@@ -109,7 +109,7 @@ const getVouchersByDateAndBarber = async (req, res) => {
     }
 }
 
-const getVouchersByBarber = async (req,res) => {
+const getVouchersByBarber = async (req, res) => {
     try {
         const barberName = req.params.barberName;
 
@@ -117,9 +117,9 @@ const getVouchersByBarber = async (req,res) => {
             vale: vouchers,
             barbero: users.Nombre,
         })
-        .from(vouchers)
-        .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
-        .where(eq(users.Nombre, barberName));
+            .from(vouchers)
+            .leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+            .where(eq(users.Nombre, barberName));
 
         const formatedData = data.map(item => ({
             ...item.vale,
@@ -147,8 +147,8 @@ const getVouchersByDate = async (req, res) => {
             vale: vouchers,
             barbero: users.Nombre,
         })
-        .from(vouchers).leftJoin(users, eq(users.Id, vouchers.IdUsuario))
-        .where(like(vouchers.FechaCreacion, `%${date}%`));
+            .from(vouchers).leftJoin(users, eq(users.Id, vouchers.IdUsuario))
+            .where(like(vouchers.FechaCreacion, `%${date}%`));
 
         const formattedData = data.map(item => ({
             ...item.vale,
@@ -170,93 +170,93 @@ const getVouchersByDate = async (req, res) => {
 }
 
 const postVoucher = async (req, res) => {
-  try {
-      const {Motivo, CantidadDinero, IdUsuario} = req.body;
+    try {
+        const { Motivo, CantidadDinero, IdUsuario } = req.body;
 
-      if (!Motivo || !CantidadDinero || !IdUsuario) {
-          return res.status(400).send({
-              message: "¡No hay contenido para el post!"
-          });
-      }
+        if (!Motivo || !CantidadDinero || !IdUsuario) {
+            return res.status(400).send({
+                message: "¡No hay contenido para el post!"
+            });
+        }
 
-      const fechaCreacionfmt = getActualDate();
+        const fechaCreacionfmt = getActualDate();
 
-      const newVoucher = {
-        IdUsuario,
-        Motivo,
-        CantidadDinero,
-        FechaCreacion: fechaCreacionfmt,
-      };
+        const newVoucher = {
+            IdUsuario,
+            Motivo,
+            CantidadDinero,
+            FechaCreacion: fechaCreacionfmt,
+        };
 
-      const response = await db.insert(vouchers).values(newVoucher).returning();
+        const response = await db.insert(vouchers).values(newVoucher).returning();
 
-      res.status(201).send(response[0]);
-  } catch (e) {
-      res.status(500).send({
-          message: e.message || "Ocurrió algún error creando un registro de vale de barbero."
-      });
-  }
+        res.status(201).send(response[0]);
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || "Ocurrió algún error creando un registro de vale de barbero."
+        });
+    }
 };
 const updateVoucher = async (req, res) => {
-  try {
-      const id = req.params.id;
+    try {
+        const id = req.params.id;
 
-      const fechaCreacionfmt = getActualDate();
+        const fechaCreacionfmt = getActualDate();
 
-      const updatedVoucher = {
-        ...req.body,
-        FechaCreacion: fechaCreacionfmt,
-      };
+        const updatedVoucher = {
+            ...req.body,
+            FechaCreacion: fechaCreacionfmt,
+        };
 
-      const response = await db.update(vouchers)
-          .set(updatedVoucher)
-          .where(eq(vouchers.Id, id))
-          .returning();
+        const response = await db.update(vouchers)
+            .set(updatedVoucher)
+            .where(eq(vouchers.Id, id))
+            .returning();
 
-      if (response.length) {
-          // const updatedTurn = await db.select().from(vouchers).where(eq(vouchers.Id, id)).limit(1);
-          res.send(response[0]);
-      } else {
-          res.status(404);
-      }
-  } catch (e) {
-      res.status(500).send({
-          message: e.message || "Ocurrió un error al actualizar el registro del turno con id = " + id
-      });
-  }
+        if (response.length) {
+            // const updatedTurn = await db.select().from(vouchers).where(eq(vouchers.Id, id)).limit(1);
+            res.send(response[0]);
+        } else {
+            res.status(404);
+        }
+    } catch (e) {
+        res.status(500).send({
+            message: e.message || "Ocurrió un error al actualizar el registro del turno con id = " + id
+        });
+    }
 };
 
 
 const deleteVoucher = async (req, res) => {
-  try {
-      const id = req.params.id;
+    try {
+        const id = req.params.id;
 
-      const response = await db.delete(vouchers).where(eq(vouchers.Id, id)).returning();
-      if (response.length) {
-        res.status(200).send({
-            message: "¡El registro se eliminó exitosamente!"
+        const response = await db.delete(vouchers).where(eq(vouchers.Id, id)).returning();
+        if (response.length) {
+            res.status(200).send({
+                message: "¡El registro se eliminó exitosamente!"
+            });
+        } else {
+            res.status(404).send({
+                message: `No se pudo borrar el registro con id = ${id}`
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "No se pudo borrar el registro con id = " + id
         });
-      } else {
-          res.status(404).send({
-              message: `No se pudo borrar el registro con id = ${id}`
-          });
-      }
-  } catch (err) {
-      res.status(500).send({
-          message: err.message || "No se pudo borrar el registro con id = " + id
-      });
-  }
+    }
 };
 
 const actionsTurns = {
-  getAllVouchers,
-  postVoucher,
-  deleteVoucher,
-  updateVoucher,
-  getVoucherById,
-  getVouchersByDateAndBarber,
-  getVouchersByDate,
-  getVouchersByBarber
+    getAllVouchers,
+    postVoucher,
+    deleteVoucher,
+    updateVoucher,
+    getVoucherById,
+    getVouchersByDateAndBarber,
+    getVouchersByDate,
+    getVouchersByBarber
 };
 
 export default actionsTurns;

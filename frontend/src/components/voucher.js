@@ -10,19 +10,14 @@ const today = getToday();
 const voucherView = `<div class="voucherView containerFunctionalityView"></div>`;
 
 const infoSectionVoucherView = `
-  <div class="present-container">
-    <h2>Administración de vales y retiros de dinero</h2>
-    <p class="configParamsView-p">Registra los retiros de dinero por parte de tus empleados.</p>
+  <div class="present-container voucher-present">
+    <h2>Administración de retiros de dinero</h2>
+    <p>Agrega, modifica o elimina los distintos retiros de dinero.</p>
   </div>
 `;
 
 const voucherAddView = `
-  <hr>
   <div class="voucher-container present-container">
-    <div class="voucher-present">
-      <h3><img class="svg" src="/assets/icons/config.svg">Administración de vales</h3>
-      <p>Agrega, modifica o elimina los vales.</p>
-    </div>
     <div class="present-container-filters present-container-filters-voucher">
       <div class="present-container-filter voucherPost">
         <button type="button" class="postVoucher-btn">
@@ -35,7 +30,7 @@ const voucherAddView = `
         <input type="date" id="filterDateInput" value="${today}">
       </div>
       <div class="present-container-filter voucherBarberFilter">
-        <span>Filtrar por barbero</span>
+        <span>Filtrar por empleado</span>
         <select id="barberSelect" class="form-select">
           <option value="null">Seleccionar...</option>
         </select>
@@ -50,7 +45,7 @@ const tableVouchersColumns = `
       <thead>
         <tr>
           <th scope="col">FECHA CREACION</th>
-          <th scope="col">BARBERO</th>
+          <th scope="col">EMPLEADO</th>
           <th scope="col">MOTIVO</th>
           <th scope="col">MONTO</th>
           <th scope="col">ACCION</th>
@@ -76,9 +71,9 @@ const modalVoucher = `
         <div class="modal-body">
 
           <form id="formPOSTVoucher">
-            <label for="select-barber-voucher">Barbero</label>
+            <label for="select-barber-voucher">Empleado</label>
             <select id="select-barber-voucher" name="Barbero" class="input" required>
-              <option value="" disabled selected>Seleccionar Barbero</option>
+              <option value="" disabled selected>Seleccionar empleado</option>
             </select>
             
             <label for="reason-voucher">Motivo</label>
@@ -139,7 +134,7 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
   try {
     if (selectedDate && barberId) {
       responseVouchers = await getVouchersFilteredByDateAndBarber(selectedDate, barberId);
-    } else if (selectedDate)  {
+    } else if (selectedDate) {
       responseVouchers = await getVouchersFilteredByDate(selectedDate);
     } else if (barberId) {
       responseVouchers = await getVouchersFilteredByBarber(barberId);
@@ -147,7 +142,7 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
       responseVouchers = await getVouchers();
     }
 
-    if ( !responseVouchers || !responseVouchers.ok) {
+    if (!responseVouchers || !responseVouchers.ok) {
       table.innerHTML = `
         <tr>
           <td colspan="5">No se encontraron vales para los filtros aplicados.</td>
@@ -157,11 +152,11 @@ const vouchersRender = async (table, selectedDate = null, barberId = null) => {
 
     const dataVouchers = await responseVouchers.json();
 
-    table.innerHTML = dataVouchers.length 
-    ? rows(dataVouchers) 
-    : '<tr><td colspan="5">No se encontraron vales para los filtros aplicados.</td></tr>';
+    table.innerHTML = dataVouchers.length
+      ? rows(dataVouchers)
+      : '<tr><td colspan="5">No se encontraron vales para los filtros aplicados.</td></tr>';
 
-    
+
     if (dataVouchers) {
       const $btnPutVoucher = document.querySelectorAll('.modify i');
       const $btnDeleteVoucher = document.querySelectorAll('.delete i');

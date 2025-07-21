@@ -60,14 +60,14 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
         const allUsers = await getBarbers();
 
         let isDuplicate = false;
-  
+
         allUsers.forEach(user => {
           if (user.Nombre === nombre && user.Id !== parseInt(id)) {
             isDuplicate = true;
           }
           return;
         });
-  
+
         if (isDuplicate) {
           span.innerHTML = 'El usuario ya existe';
           span.style.color = 'red';
@@ -85,14 +85,14 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
         const allServices = await getServices();
 
         let isDuplicate = false;
-  
+
         allServices.forEach(service => {
           if (service.Nombre === nombre && service.Id !== parseInt(id)) {
             isDuplicate = true;
           }
           return;
         });
-  
+
         if (isDuplicate) {
           span.innerHTML = 'El servicio ya existe';
           span.style.color = 'red';
@@ -104,7 +104,7 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
         };
 
       }
-      
+
     }
 
     if (section == "manageClients") {
@@ -203,7 +203,7 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
         method = 'POST';
       }
 
-      messageSpan = 'Nombre o telefono incorrecto.';
+      messageSpan = 'Nombre o teléfono incorrecto.';
     }
 
     fetch(url, {
@@ -214,34 +214,34 @@ const submitRecord = (form, modal, modalFooter, btnPostModal, section = null) =>
       body: JSON.stringify(body),
       credentials: 'include'
     })
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
 
-      $loader.style.display = "none";
+        $loader.style.display = "none";
 
-      if (data.error !== undefined || data.message !== undefined) {
-        span.innerHTML = data.error || data.message || messageSpan || 'Error al crear o actualizar el registro.';
-        span.style.color = 'red';
-      } else {
-        span.innerHTML = mode === 'create' ? '¡Se creó correctamente!' : '¡Se actualizó correctamente!';
-        span.style.color = '#5cb85c';
+        if (data.error !== undefined || data.message !== undefined) {
+          span.innerHTML = data.error || data.message || messageSpan || 'Error al crear o actualizar el registro.';
+          span.style.color = 'red';
+        } else {
+          span.innerHTML = mode === 'create' ? '¡Se creó correctamente!' : '¡Se actualizó correctamente!';
+          span.style.color = '#5cb85c';
 
+          setTimeout(() => {
+            const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
+            bootstrapModalService.hide();
+            window.location.reload();
+          }, 1300);
+        };
+
+        modalFooter.appendChild(span);
         setTimeout(() => {
-          const bootstrapModalService = bootstrap.Modal.getInstance(modal._element);
-          bootstrapModalService.hide();
-          window.location.reload();
-        }, 1300);
-      };
-
-      modalFooter.appendChild(span);
-      setTimeout(() => {
-        modalFooter.removeChild(span); 
-        btnPostModal.removeAttribute('disabled');
-      }, 1500);
-    })
-    .catch((e) => {
-      alert('Error al crear o actualizar el registro.');
-    });
+          modalFooter.removeChild(span);
+          btnPostModal.removeAttribute('disabled');
+        }, 1500);
+      })
+      .catch((e) => {
+        alert('Error al crear o actualizar el registro.');
+      });
   });
 };
 
@@ -257,7 +257,7 @@ const updateVoucher = (btnPutVoucher) => {
       let data;
 
       data = await getVoucherById(key);
-        
+
       $titleModalVoucher.textContent = "Actualizar Vale";
       $btnPostModalVoucher.textContent = "Actualizar";
 
@@ -270,7 +270,7 @@ const updateVoucher = (btnPutVoucher) => {
       $modalVoucher.show();
 
       document.querySelector('.closeModal').addEventListener('click', () => {
-        $modalVoucher.hide(); 
+        $modalVoucher.hide();
       });
     });
   });
@@ -278,8 +278,8 @@ const updateVoucher = (btnPutVoucher) => {
 
 const deleteVoucher = (btnDeleteVoucher) => {
   btnDeleteVoucher.forEach(btn => {
-    btn.addEventListener('click', async (e) => {                    
-      
+    btn.addEventListener('click', async (e) => {
+
       const key = e.currentTarget.closest('tr').getAttribute('key');
 
       try {
@@ -288,7 +288,7 @@ const deleteVoucher = (btnDeleteVoucher) => {
         if (confirm) {
 
           let response;
-          
+
           response = await popVoucher(key);
 
           if (response.ok) {
@@ -322,21 +322,21 @@ const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, sect
 
       let data;
 
-      if (section == "config") { 
+      if (section == "config") {
         data = await getServiceById(key);
 
         $titleModal.textContent = "Actualizar Servicio";
       };
-      
+
       if (section == "manageEmployees") {
         data = await getBarberById(key)
-        
+
         $titleModal.textContent = "Actualizar Empleado";
       };
 
       // if (section == "voucher") {
       //   data = await getVoucherById(key);
-        
+
       //   $titleModal.textContent = "Actualizar Vale";
       // }
 
@@ -345,7 +345,7 @@ const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, sect
 
         $titleModal.innerHTML = "Actualizar cliente";
       }
-      
+
       $btnPost.textContent = "Actualizar";
 
       $putFormModal.setAttribute('data-mode', 'update');
@@ -367,7 +367,7 @@ const updateRecord = (btnsPut, modal, $putFormModal, $titleModal, $btnPost, sect
     });
 
   });
-  
+
 };
 
 
@@ -377,8 +377,8 @@ const deleteRecord = (btnsDelete, section = null) => {
    * Hace un delete en la base de datos del servicio seleccionado.
    */
   btnsDelete.forEach(btn => {
-    btn.addEventListener('click', async (e) => {                    
-      
+    btn.addEventListener('click', async (e) => {
+
       const key = e.currentTarget.closest('tr').getAttribute('key');
 
       try {
@@ -387,7 +387,7 @@ const deleteRecord = (btnsDelete, section = null) => {
         if (confirm) {
 
           let response;
-          
+
           if (section == "config") response = await popService(key);
           if (section == "manageEmployees") response = await popUser(key);
           // if (section == "voucher") response = await popVoucher(key);
@@ -429,7 +429,7 @@ const postWorkSession = async (fechaInicio, horarioInicio) => {
     const response = await fetch('https://peluqueria-invasion-backend.vercel.app/worksessions', {
       method: 'POST',
       headers: {
-        'Content-Type':'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
       credentials: 'include',
@@ -449,7 +449,7 @@ const postWorkSession = async (fechaInicio, horarioInicio) => {
   }
 };
 
-const updateWorkSession = async ( horaFin, cantHoras) => {
+const updateWorkSession = async (horaFin, cantHoras) => {
   const sessionId = localStorage.getItem("workSessionId");
 
   if (!sessionId) {
@@ -463,8 +463,6 @@ const updateWorkSession = async ( horaFin, cantHoras) => {
       CantHoras: cantHoras
     };
 
-    console.log("data", data)
-
     // const response = await fetch(`http://localhost:3001/worksessions/${sessionId}`, {
     //   method: 'PUT',
     //   headers: {
@@ -477,7 +475,7 @@ const updateWorkSession = async ( horaFin, cantHoras) => {
     const response = await fetch(`https://peluqueria-invasion-backend.vercel.app/worksessions/${sessionId}`, {
       method: 'PUT',
       headers: {
-        'Content-Type':'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
       credentials: 'include',

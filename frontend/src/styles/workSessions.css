@@ -1,3 +1,6 @@
+.infoSectionHistoryTurnsView p {
+  margin-bottom: 2.5rem;
+}
 
 @media (min-width: 1024px) {
   /* .buttons-container {

@@ -12,14 +12,14 @@ import { handleDateFilter, handleEndWeekFilter } from '../utils/filters.js';
 
 const indexView = async (data) => {
 
-     /**
-     * Renderizamos la vista del empleado
-     * param: data -> user active.
-     */
+    /**
+    * Renderizamos la vista del empleado
+    * param: data -> user active.
+    */
 
     const userActive = data.user.Nombre;
     const urlActive = window.location.hash;
-    
+
     app.innerHTML = '';
     app.innerHTML += header;
     app.innerHTML += menuEmployee(userActive);
@@ -28,14 +28,14 @@ const indexView = async (data) => {
 
     try {
         switch (urlActive) {
-        
+
             case '#calendario':
-    
+
                 app.innerHTML += calendario;
                 calendarRender(modalElement, data);
-                
+
                 break;
-        
+
             case '#historial-trabajo':
 
                 app.innerHTML += containerEmployeeHistory;
@@ -57,9 +57,9 @@ const indexView = async (data) => {
 
             default:
                 app.innerHTML += presentation(userActive);
-    
+
                 break;
-    
+
         };
     } catch (error) {
         alert('Error al renderizar la sección.')
@@ -68,7 +68,7 @@ const indexView = async (data) => {
         if ($loader) $loader.remove();
 
         closeMenu();
-    
+
         const $btnLogout = document.querySelector('#logout');
         $btnLogout.addEventListener('click', logout);
     }

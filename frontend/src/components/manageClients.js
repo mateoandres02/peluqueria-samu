@@ -58,7 +58,7 @@ const rows = (data) => {
     if (index > -1) {
       row += `
         <tr key=${client.Id}>
-          <td scope="row">${client.Id}</td>
+          <td scope="row">${index + 1}</td>
           <td>${client.Nombre}</td>
           <td>${client.Telefono}</td>
           <td class="btns-actions">
@@ -80,7 +80,7 @@ const rows = (data) => {
 const clientsData = async () => {
   try {
     const data = await getClients();
-      
+
     sortArrayByName(data);
 
     if (data.length > 0) {
@@ -89,7 +89,7 @@ const clientsData = async () => {
           <table>
             <thead>
               <tr>
-                <th scope="col">ID</th>
+                <th scope="col">N°</th>
                 <th scope="col">NOMBRE</th>
                 <th scope="col">TELÉFONO</th>
                 <th scope="col" class="container-btns-actions">ACCIONES</th>
@@ -103,13 +103,13 @@ const clientsData = async () => {
         <div class="table-container-footer"></div>
       `;
 
-        return tableClients;
+      return tableClients;
 
     } else {
       return '<p class="empty">No hay clientes registrados.</p>'
     }
   } catch (error) {
-    alert('Error al cargar los clientes.');
+    console.log('No hay ningun cliente registrado.');
   };
 };
 

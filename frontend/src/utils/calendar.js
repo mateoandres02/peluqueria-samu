@@ -5,8 +5,8 @@ import { removeAllModals } from "./modal";
 
 const body = document.body;
 
-const eventInfo = (info, data) => {
-  
+const eventInfo = (info, data, clients) => {
+
   /**
    * Permite ver la información del evento almacenado en la base de datos. Hace un get del evento generado.
    * Quita todos los popovers para mostrar de manera correcta la modal.
@@ -17,14 +17,14 @@ const eventInfo = (info, data) => {
   document.querySelectorAll('.fc-popover').forEach(popover => popover.remove());
 
   body.insertAdjacentHTML('beforeend', modalTurnContent);
-  modalGetTurn(info, data);
+  modalGetTurn(info, data, clients);
 
   document.querySelectorAll('.modal').forEach(modal => removeAllModals(modal));
 
 }
 
 
-const dateInfo = (info, data, modalElement) => {
+const dateInfo = (info, data, modalElement, clients) => {
 
   /**
    * Obtiene la info de la celda clickeada para hacer un post.
@@ -34,7 +34,7 @@ const dateInfo = (info, data, modalElement) => {
    */
 
   body.insertAdjacentHTML('beforeend', modalElement);
-  modalPostTurn(info, data);
+  modalPostTurn(info, data, clients);
   document.querySelector('.modal').addEventListener('hidden.bs.modal', function () {
     this.remove();
   });
@@ -94,13 +94,18 @@ function determinateRangeOfDays(currentDate, isMobile) {
   start.setDate(start.getDate() - (isMobile ? 0 : start.getDay() - 1));
   end.setDate(start.getDate() + days - 1);
 
-  return { 
-    start, 
+  return {
+    start,
     end
   };
-  
+
 }
 
+
+// const putChangeHourOfTurn = async (idTurn, dateStart, dateEnd, idBarber) => {
+//   const response = await fetch('')
+
+// }
 
 export {
   eventInfo,

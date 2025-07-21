@@ -45,7 +45,7 @@ const showPostModal = (btn, titleModal, btnPostModal, formModal, section = null)
     formModal.removeAttribute('data-id');
 
     if (formModal.Nombre) formModal.Nombre.value = '';
-    if (formModal.Precio) formModal.Precio.value = ''; 
+    if (formModal.Precio) formModal.Precio.value = '';
     if (formModal.Contrasena) formModal.Contrasena.value = '';
     if (formModal.Contrasena) formModal.Contrasena.placeholder = '';
     if (formModal.Barbero) formModal.Barbero.value = '';
@@ -98,7 +98,7 @@ const showModalConfirmDelete = (modal) => {
     });
 
     modalElement.querySelector('#closeModal').addEventListener('click', () => {
-      resolve(false); 
+      resolve(false);
       $modal.hide();
     });
 

@@ -1,6 +1,6 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
-const history_turns = sqliteTable('Historial_Turnos', 
+const history_turns = sqliteTable('Historial_Turnos',
   {
     Id: integer('Id').primaryKey({ autoIncrement: true }),
     Barbero: text('Barbero').notNull(),

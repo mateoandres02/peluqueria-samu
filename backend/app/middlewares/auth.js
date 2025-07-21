@@ -6,18 +6,18 @@ const verifyToken = async (req, res, next) => {
 
     if (req.query.token) {
         token = req.query.token;
-    }    
-    
+    }
+
     // 1. Intentar obtener el token del encabezado Authorization
     if (!token && req.headers.authorization) {
         token = req.headers.authorization || req.headers['authorization']?.split(' ')[1];
     }
-    
+
     // 2. Intentar obtener el token de las cookies
     if (!token && req.cookies.token) {
         token = req.cookies.token;
     }
-    
+
     // 3. Intentar obtener el token desde el cuerpo (si localStorage lo envía explícitamente)
     if (!token && req.body?.accessToken) {
         token = req.body.accessToken;

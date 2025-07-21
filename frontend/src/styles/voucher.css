@@ -1,16 +1,21 @@
 .voucher-container {
-  max-width: 900px;
+  min-width: 375px;
+  max-width: 1000px;
   margin-bottom: 1rem;
+
 }
 
-.voucher-present h3 {
-  font-size: 1.5rem;
+.voucher-present h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+}
+
+.voucher-present>p {
   font-weight: 600;
-  margin-bottom: 1rem;
-}
+  font-size: 1.2rem;
 
-.voucher-present > p {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 .postVoucher-btn {
@@ -58,40 +63,51 @@
   margin: 0 auto;
 }
 
-.table-voucher-container th:nth-child(1), .table-voucher-container td:nth-child(1),
-.table-voucher-container th:nth-child(2), .table-voucher-container td:nth-child(2),  
-.table-voucher-container th:nth-child(4), .table-voucher-container td:nth-child(4),  
-.table-voucher-container th:nth-child(5), .table-voucher-container td:nth-child(5) { 
-  white-space: nowrap; 
+.table-voucher-container th:nth-child(1),
+.table-voucher-container td:nth-child(1),
+.table-voucher-container th:nth-child(2),
+.table-voucher-container td:nth-child(2),
+.table-voucher-container th:nth-child(4),
+.table-voucher-container td:nth-child(4),
+.table-voucher-container th:nth-child(5),
+.table-voucher-container td:nth-child(5) {
+  white-space: nowrap;
   max-width: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.table-voucher-container th:nth-child(5), .table-voucher-container td:nth-child(5) {
+.table-voucher-container th:nth-child(5),
+.table-voucher-container td:nth-child(5) {
   overflow: visible;
 }
 
-.table-voucher-container th:nth-child(3), .table-voucher-container td:nth-child(3) { 
+.table-voucher-container th:nth-child(3),
+.table-voucher-container td:nth-child(3) {
   white-space: nowrap;
-  width: 80px; 
+  width: 80px;
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-@media (1024px > width) {
+@media (640px > width) {
   .voucher-container {
     margin-bottom: 0rem;
+    padding-top: 0rem;
+  }
+
+  .voucher-present {
+    padding-bottom: 0rem;
   }
 
   .voucher-present h3 {
     font-size: 1.3rem;
   }
-  
-  .voucher-present > p {
+
+  .voucher-present>p {
     font-size: 1.1rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
   }
 
   .present-container-filters-voucher {
@@ -101,19 +117,22 @@
     align-items: center;
   }
 
-  .present-container-filters-voucher > div {
+  .present-container-filters-voucher>div {
     margin-bottom: .5rem;
     margin-bottom: 1.5rem;
+    padding: .5rem 0rem;
   }
 
   .voucherPost {
     width: 100%;
+    display: flex;
+    justify-content: flex-start !important;
   }
-  
+
   .voucherDateFilter {
     width: 100%;
   }
-  
+
   .voucherBarberFilter {
     width: 100%;
   }

@@ -21,22 +21,26 @@ const addBarberFilterListener = async (table, $dateInput, $weekInput, $barberSel
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
   const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
-  
+
   $barberSelect.addEventListener('change', async (e) => {
-    
+
     totalEarnedDisplay.innerHTML = `Total ganado: <b>$ 0.00</b>`;
     totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
     totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
     totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`;
-    paymentTableBody.innerHTML = '';
+    paymentTableBody.innerHTML = `
+      <tr>
+        <td colspan="5">Sin datos.</td>
+      </tr>
+    `;
 
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
-    
+
     let selectedDate = $dateInput.value;
     let endDateWeek = $weekInput.value;
 
     let endWeekDatePlusOne;
-    
+
     if (endDateWeek) {
       const endDate = new Date(endDateWeek);
       endDate.setDate(endDate.getDate() + 1);
@@ -46,8 +50,18 @@ const addBarberFilterListener = async (table, $dateInput, $weekInput, $barberSel
     }
 
     if (!filteredBarber.length > 0) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="12">Cargando...</td>
+        </tr>
+      `;
       await cashData(table, selectedDate, null, endWeekDatePlusOne)
     } else {
+      table.innerHTML = `
+        <tr>
+          <td colspan="12">Cargando...</td>
+        </tr>
+      `;
       await cashData(table, selectedDate, filteredBarber[0].Id, endWeekDatePlusOne);
     }
 
@@ -64,18 +78,18 @@ const addDateFilterListener = async (table, dateInput, $weekInput, $barberSelect
    */
 
   const dataBarbers = await getBarbers();
-  
+
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
   const totalEarnedEfectDisplay = document.getElementById('totalEarnedForEfectDisplay');
   const totalEarnedTransfDisplay = document.getElementById('totalEarnedForTransfDisplay');
   const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
-  
-  dateInput.removeEventListener('change', handleDateChange); 
+
+  dateInput.removeEventListener('change', handleDateChange);
   dateInput.addEventListener('change', handleDateChange);
-  
+
   async function handleDateChange(e) {
-    
+
     if ($weekInput.value != "" && e.target.value > $weekInput.value) {
       alert("La fecha inicial no puede ser mayor a la final.");
       // dateInput.value = new Date($weekInput.value).toISOString().split("T")[0];
@@ -85,29 +99,38 @@ const addDateFilterListener = async (table, dateInput, $weekInput, $barberSelect
       totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
       totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
       totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`
-      paymentTableBody.innerHTML = '';
-  
+      paymentTableBody.innerHTML = `
+        <tr>
+          <td colspan="5">Sin datos.</td>
+        </tr>
+      `;
+
       let selectedDate = e.target.value;
       let endWeekDate = $weekInput.value;
-  
-      const filteredBarber = dataBarbers.filter(barber => barber.Nombre ===  $barberSelect.value);
+
+      const filteredBarber = dataBarbers.filter(barber => barber.Nombre === $barberSelect.value);
       const selectedBarber = $barberSelect.value !== 'null' ? filteredBarber[0].Id : null;
-  
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="12">Cargando...</td>
+        </tr>
+      `;
       await cashData(table, selectedDate, selectedBarber, endWeekDate);
     }
-    
+
   };
 
 };
 
 const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSelect) => {
-  
+
   /**
    * Hace un filtrado de los turnos mostrados en la tabla del dia seleccionado.
    * param: table -> elemento html de la tabla en donde se visualizarán los turnos.
    * param: dateInput -> dia elegido en el filtro.
    */
-  
+
   const dataBarbers = await getBarbers();
 
   const totalEarnedDisplay = document.getElementById('totalEarnedDisplay');
@@ -116,7 +139,7 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
   const totalVouchers = document.getElementById('totalVouchers');
   const paymentTableBody = document.querySelector('.table-pay-body');
 
-  $weekInput.removeEventListener('change', handleDateChange); 
+  $weekInput.removeEventListener('change', handleDateChange);
   $weekInput.addEventListener('change', handleDateChange);
 
   async function handleDateChange(e) {
@@ -129,8 +152,12 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
       totalEarnedEfectDisplay.innerHTML = `Efectivo: <b>$ 0.00</b>`;
       totalEarnedTransfDisplay.innerHTML = `Transferencia: <b>$ 0.00</b>`;
       totalVouchers.innerHTML = `Total vales a restar: <br class="totalEarnedInfo-br"> <b class="span-red">$ 0.00</b>`;
-      paymentTableBody.innerHTML = '';
-  
+      paymentTableBody.innerHTML = `
+        <tr>
+          <td colspan="5">Sin datos.</td>
+        </tr>
+      `;
+
       let startWeekDate = $dateInput.value;
       let endWeekDate = e.target.value;
       let endWeekDatePlusOne;
@@ -142,10 +169,15 @@ const addEndWeekFilterListner = async (table, $dateInput, $weekInput, $barberSel
       } else {
         endWeekDatePlusOne = e.target.value;
       }
-  
-      const filteredBarber = dataBarbers.filter(barber => barber.Nombre ===  $barberSelect.value);
+
+      const filteredBarber = dataBarbers.filter(barber => barber.Nombre === $barberSelect.value);
       const selectedBarber = $barberSelect.value !== 'null' ? filteredBarber[0].Id : null;
-  
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="12">Cargando...</td>
+        </tr>
+      `;
       await cashData(table, startWeekDate, selectedBarber, endWeekDatePlusOne);
     }
 
@@ -166,15 +198,15 @@ const addDateFilterListenerVoucher = async (table, dateInput, $barberSelect) => 
   dateInput.addEventListener('change', handleDateChange);
 
   async function handleDateChange(e) {
-  
+
     let selectedDate = e.target.value;
 
-    const filteredBarber = dataBarbers.filter(barber => barber.Nombre ===  $barberSelect.value);
+    const filteredBarber = dataBarbers.filter(barber => barber.Nombre === $barberSelect.value);
     const selectedBarber = $barberSelect.value !== 'null' ? filteredBarber[0].Nombre : null;
 
     await vouchersRender(table, selectedDate, selectedBarber);
   }
-    
+
 };
 
 const addBarberFilterListenerVoucher = async (table, $dateInput, $barberSelect) => {
@@ -187,9 +219,9 @@ const addBarberFilterListenerVoucher = async (table, $dateInput, $barberSelect) 
   const dataBarbers = await getBarbers();
 
   $barberSelect.addEventListener('change', async (e) => {
-    
+
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
-    
+
     let selectedDate = $dateInput.value;
 
     if (!filteredBarber.length > 0) {
@@ -202,27 +234,27 @@ const addBarberFilterListenerVoucher = async (table, $dateInput, $barberSelect) 
 }
 
 const handleDateFilter = async (dataUserActive, $dateInput, $weekInput) => {
-  $dateInput.removeEventListener('change', handleDateChange); 
+  $dateInput.removeEventListener('change', handleDateChange);
   $dateInput.addEventListener('change', handleDateChange);
-  
+
   const $textCutsForServices = document.querySelector('.infoEmployeeHistory-description-cutsForServices ul');
   const $textVales = document.querySelector('.infoEmployeeHistory-description-vouchers p');
   const $textFooter = document.querySelector('.infoEmployeeHistory-footer');
 
   $textCutsForServices.innerHTML = 'No hay registros.';
   $textVales.innerHTML = 'No hay registros.';
-  $textFooter.innerHTML = '';   
+  $textFooter.innerHTML = '';
 
   async function handleDateChange(e) {
-    
+
     if ($weekInput.value != "" && e.target.value > $weekInput.value) {
       alert("La fecha inicial no puede ser mayor a la final.");
       $dateInput.value = today;
     } else {
       $textCutsForServices.innerHTML = 'Cargando...';
       $textVales.innerHTML = 'Cargando...';
-      $textFooter.innerHTML = '';    
-  
+      $textFooter.innerHTML = '';
+
       let selectedDate = e.target.value;
       let endWeekDate = $weekInput.value;
       let endWeekDatePlusOne;
@@ -234,15 +266,15 @@ const handleDateFilter = async (dataUserActive, $dateInput, $weekInput) => {
       } else {
         endWeekDatePlusOne = $weekInput.value;
       }
-  
+
       await cutData(dataUserActive, selectedDate, endWeekDatePlusOne);
     }
-    
+
   };
 };
 
 const handleEndWeekFilter = async (dataUserActive, $dateInput, $weekInput) => {
-  $weekInput.removeEventListener('change', handleDateChange); 
+  $weekInput.removeEventListener('change', handleDateChange);
   $weekInput.addEventListener('change', handleDateChange);
 
   const $textCutsForServices = document.querySelector('.infoEmployeeHistory-description-cutsForServices ul');
@@ -251,7 +283,7 @@ const handleEndWeekFilter = async (dataUserActive, $dateInput, $weekInput) => {
 
   $textCutsForServices.innerHTML = 'No hay registros.';
   $textVales.innerHTML = 'No hay registros.';
-  $textFooter.innerHTML = ''; 
+  $textFooter.innerHTML = '';
 
   async function handleDateChange(e) {
 
@@ -262,8 +294,8 @@ const handleEndWeekFilter = async (dataUserActive, $dateInput, $weekInput) => {
 
       $textCutsForServices.innerHTML = 'Cargando...';
       $textVales.innerHTML = 'Cargando...';
-      $textFooter.innerHTML = '';    
-  
+      $textFooter.innerHTML = '';
+
       let startWeekDate = $dateInput.value;
       let endWeekDate = e.target.value;
       let endWeekDatePlusOne;
@@ -275,7 +307,7 @@ const handleEndWeekFilter = async (dataUserActive, $dateInput, $weekInput) => {
       } else {
         endWeekDatePlusOne = e.target.value;
       }
-  
+
       await cutData(dataUserActive, startWeekDate, endWeekDatePlusOne);
     }
 

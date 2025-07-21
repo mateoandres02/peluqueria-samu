@@ -22,9 +22,9 @@ const closeMenu = () => {
     /**
      * Cierra el menu
      */
-    
+
     const $btn = document.querySelector('.btnHamburger button');
-    
+
     $btn.removeEventListener('click', toggleHamburger);
     $btn.addEventListener('click', toggleHamburger);
 }

@@ -11,7 +11,7 @@ const getAllClients = async (req, res) => {
       Nombre: clients.Nombre,
       Telefono: clients.Telefono,
     }).from(clients);
-    
+
     if (data.length) {
       res.status(200).send(data);
     } else {
@@ -38,7 +38,7 @@ const getClientById = async (req, res) => {
       Nombre: clients.Nombre,
       Telefono: clients.Telefono,
     }).from(clients)
-    .where(eq(clients.Id, id));
+      .where(eq(clients.Id, id));
 
     if (data.length) {
       res.status(200).send(data[0]);
@@ -53,7 +53,7 @@ const getClientById = async (req, res) => {
       message: err.message || `Ocurrió un error al recuperar el registro del cliente con id = ${id}`
     });
   }
-  
+
 }
 
 
@@ -68,7 +68,7 @@ const postClient = async (req, res) => {
     }
     const nombreBD = await db.select().from(clients).where(sql`lower(${clients.Nombre}) = lower(${Nombre})`).limit(1);
     if (nombreBD.length > 0 && nombreBD[0]?.Nombre.toLowerCase() == Nombre.toLowerCase()) {
-      return res.status(400).send({message: "¡El nombre del cliente ya existe!"});
+      return res.status(400).send({ message: "¡El nombre del cliente ya existe!" });
     }
 
     const newClient = {
@@ -100,10 +100,10 @@ const updateClient = async (req, res) => {
 
     const response = await db.update(clients)
       .set({ Nombre, Telefono })
-      .where(eq(clients.Id,id))
+      .where(eq(clients.Id, id))
       .returning();
 
-    if (response.length) {     
+    if (response.length) {
       res.send(response[0]);
     } else {
       res.status(404).send({
@@ -123,7 +123,7 @@ const deleteClient = async (req, res) => {
     const id = req.params.id;
 
     const response = await db.delete(clients)
-      .where(eq(clients.Id,id))
+      .where(eq(clients.Id, id))
       .returning();
 
     if (response.length) {
@@ -137,7 +137,7 @@ const deleteClient = async (req, res) => {
     }
   } catch (e) {
     res.status(500).send({
-      message: e.message || "Ocurrio algun error eliminando el registro del cliente con id = " + id 
+      message: e.message || "Ocurrio algun error eliminando el registro del cliente con id = " + id
     });
   }
 }

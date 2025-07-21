@@ -24,7 +24,7 @@
     --line-grey: #4E4E56;
     --sidebar-grey: #2F2E33;
 
-    --button-color:#908cac;
+    --button-color: #908cac;
 
     --box-shadow: #00000025;
 
@@ -110,7 +110,7 @@ p {
     padding-right: 10px;
 }
 
-@media (1024px > width) {
+@media (640px > width) {
     #app {
         flex-direction: column;
         padding: 0;

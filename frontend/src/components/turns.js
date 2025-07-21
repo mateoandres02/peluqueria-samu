@@ -19,7 +19,7 @@ const renderTurns = async (turns, recurrentTurns) => {
     if (turn.turns.Regular === 'true') {
       // Obtenemos solo los días correspondientes a este turno
       const turnoRecurrente = recurrentTurns[turn.turns.Id]; // Usamos el ID del turno para obtener sus días.
-      
+
       if (turnoRecurrente) {
         turnoRecurrente.forEach(day => {
           // En el array de days pusheamos los dias pertenecientes a ese turno.
@@ -33,7 +33,7 @@ const renderTurns = async (turns, recurrentTurns) => {
       }
 
       const rruleConfig = {
-        freq: 'daily', 
+        freq: 'daily',
         interval: 1,
         dtstart: turn.turns.Date,
         until: getEndOfMonth(turn.turns.Date),
@@ -44,7 +44,7 @@ const renderTurns = async (turns, recurrentTurns) => {
         id: turn.turns.Id,
         title: turn.turns.Nombre,
         start: new Date(turn.turns.Date).toISOString(),
-        duration: '00:30:00', 
+        duration: '00:30:00',
         color: 'gray',
         className: 'fixed-turn-event',
         extendedProps: {

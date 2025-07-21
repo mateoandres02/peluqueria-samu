@@ -12,42 +12,42 @@ const getAllPaymentUsers = async (req, res) => {
 
     res.send(formattedData)
   } catch (e) {
-      res.status(500).send({
-          message: e.message || "Ocurrió algún error recuperando los porcentajes de pagos."
-      });
-    }
+    res.status(500).send({
+      message: e.message || "Ocurrió algún error recuperando los porcentajes de pagos."
+    });
+  }
 }
 
 const getPaymentUsersById = async (req, res) => {
 
   try {
-      const id = req.params.id;
+    const id = req.params.id;
 
-      const data = await db
-      .select({ 
-        id_usuario: paymentUsers.id_usuario, 
-        id_servicio: paymentUsers.id_servicio, 
+    const data = await db
+      .select({
+        id_usuario: paymentUsers.id_usuario,
+        id_servicio: paymentUsers.id_servicio,
         servicio: cutServices.Nombre,
-        porcentaje_pago: paymentUsers.porcentaje_pago 
+        porcentaje_pago: paymentUsers.porcentaje_pago
       })
       .from(paymentUsers)
       .leftJoin(cutServices, eq(cutServices.Id, paymentUsers.id_servicio))
       .where(eq(paymentUsers.id_usuario, id));
 
-      if (data.length) {
-        res.status(200).send(data);
-      } else {
-        res.status(404).send({
-            message: `No se ha encontrado el registro del servicio con id = ${id}`
-        });
-      };
+    if (data.length) {
+      res.status(200).send(data);
+    } else {
+      res.status(404).send({
+        message: `No se ha encontrado el registro del servicio con id = ${id}`
+      });
+    };
 
   } catch (err) {
-      res.status(500).send({
-          message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
-      });
+    res.status(500).send({
+      message: err.message || `Ocurrió un error al recuperar el registro del servicio con id = ${id}`
+    });
   }
-  
+
 }
 
 const postPaymentUsers = async (req, res) => {
@@ -83,7 +83,7 @@ const updatePaymentUsers = async (req, res) => {
     const id_servicio = parseInt(req.params.id_servicio);
 
     const { porcentaje_pago } = req.body;
-    
+
     if (!porcentaje_pago) {
       return res.status(400).send({
         message: "No hay ningun valor recibido."
@@ -99,7 +99,7 @@ const updatePaymentUsers = async (req, res) => {
         )
       );
 
-    if (response.rowsAffected > 0) {     
+    if (response.rowsAffected > 0) {
       res.send(response[0]);
     } else {
       res.status(404).send({

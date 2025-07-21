@@ -37,7 +37,7 @@
     outline: none;
 }
 
-@media (max-width: 1024px) {
+@media (640px > width) {
     .header {
         display: flex;
         justify-content: center;
@@ -49,7 +49,6 @@
         min-height: 80.5px !important;
         width: 100%;
         min-width: 375px;
-        max-width: -webkit-fill-available;
     }
 
     .header-title {
@@ -81,13 +80,5 @@
 
     .btnHamburger {
         display: block;
-    }
-}
-
-/* Media query específica para Safari en iOS */
-@supports (-webkit-touch-callout: none) {
-    .header {
-        max-width: -webkit-fill-available;
-        width: -webkit-fill-available;
     }
 }

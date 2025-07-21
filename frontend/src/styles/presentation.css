@@ -63,7 +63,7 @@ svg {
   }
 }
 
-@media (1024px > width) {
+@media (640px > width) {
   .presentation-content {
     height: 80vh;
   }

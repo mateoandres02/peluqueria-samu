@@ -14,8 +14,8 @@ const login = async (req, res) => {
                 Id: user.Id,
                 Nombre: user.Nombre,
                 Rol: user.Rol
-            }, 
-            config.secretJwtKey, 
+            },
+            config.secretJwtKey,
             {
                 expiresIn: config.accessTokenDuration,
             }
@@ -26,9 +26,9 @@ const login = async (req, res) => {
             secure: true,
             sameSite: 'None',
             path: '/',
-            maxAge: 1000 * 60 * 60 * 10 
+            maxAge: 1000 * 60 * 60 * 10
         });
-        
+
         res.send({ user, token })
     } catch (error) {
         res.status(401).send(error.message);
@@ -56,7 +56,7 @@ const logout = (req, res) => {
         sameSite: 'None',
         path: '/',
     });
-    res.json({ message: 'Logout Successful.'});
+    res.json({ message: 'Logout Successful.' });
 };
 
 const session = { login, register, logout };

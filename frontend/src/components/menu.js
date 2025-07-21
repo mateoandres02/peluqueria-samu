@@ -5,15 +5,14 @@ const menuAdmin = (user) => {
 
     const isMobile = window.innerWidth <= 768;
 
-
     const workSessionItem = !isMobile ? `
         <li>
             <a href="#registro-trabajo">
-                <img src="/assets/icons/work.svg" alt="Registrar sesion de trabajo" class="icon">
-                Registro de sesion de trabajo
+                <img src="/assets/icons/fingerprint-solid.svg" alt="Registrar sesion de trabajo" class="icon">
+                Marcar presencia
             </a>
         </li>
-    ` : ''; 
+    ` : '';
 
     const menu = `
         <aside class="sidebar">
@@ -54,14 +53,14 @@ const menuAdmin = (user) => {
                     </li>
                     <li>
                         <a href="#configuracion">
-                            <img src="/assets/icons/table.svg" alt="Configuración" class="icon">
+                            <img src="/assets/icons/gear-solid.svg" alt="Configuración" class="icon">
                             Configurar parametros
                         </a>
                     </li>
                     <li>
                         <a href="#recuento-vales">
                             <img src="/assets/icons/vale.svg" alt="Administrar empleados" class="icon">
-                            Recuento de vales y descuentos
+                            Retiros de dinero
                         </a>
                     </li>
                     <li>
@@ -86,7 +85,7 @@ const menuAdmin = (user) => {
 }
 
 const menuEmployee = (data) => {
-    
+
     const menu = `
         <aside class="sidebar">
             <div class="sidebar-nav">

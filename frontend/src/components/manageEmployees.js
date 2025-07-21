@@ -8,7 +8,7 @@ const manageEmployeesView = '<div class="manageEmployeesContainer containerFunct
 const postEmployee = `
   <div class="postEmployee present-container">
     <h2>Administrar empleados</h2>
-    <p class="postEmployee-p">Puede agregar nuevos empleados o quitarlos, además de cambiar su nombre y/o contraseña.</p>
+    <p class="postEmployee-p">Crea, modifica o elimina cuentas de usuarios de tus empleados.</p>
     <button type="button" class="postEmployee-btn">
       <img src="/assets/icons/person-fill-add.svg">
       Agregar <br> Empleado
@@ -59,7 +59,7 @@ const rows = (data) => {
     if (index > 0) {
       row += `
         <tr key=${user.Id}>
-          <td scope="row">${user.Id}</td>
+          <td scope="row">${index}</td>
           <td>${user.Nombre}</td>
           <td>${user.Contrasena}</td>
           <td>${user.Rol}</td>
@@ -82,14 +82,14 @@ const rows = (data) => {
 const usersData = async () => {
   try {
     const data = await getBarbers();
-      
+
     if (data.length > 1) {
       let tableEmployees = `
         <div class="table-container table-manageemployees-container">
           <table>
             <thead>
               <tr>
-                <th scope="col">ID</th>
+                <th scope="col">N°</th>
                 <th scope="col">USUARIO</th>
                 <th scope="col">CONTRASEÑA</th>
                 <th scope="col">ROL</th>
@@ -104,7 +104,7 @@ const usersData = async () => {
         <div class="table-container-footer"></div>
       `;
 
-        return tableEmployees;
+      return tableEmployees;
 
     } else {
       return '<p class="empty">No hay empleados registrados.</p>'
@@ -115,9 +115,9 @@ const usersData = async () => {
 };
 
 
-export { 
-  postEmployee, 
-  modal, 
-  manageEmployeesView,  
+export {
+  postEmployee,
+  modal,
+  manageEmployeesView,
   usersData
 };

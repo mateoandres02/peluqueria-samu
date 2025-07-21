@@ -9,12 +9,12 @@ import '../styles/modal.css';
 const today = getToday();
 
 const loadBarberSelect = async (barberSelect) => {
-  
+
   /**
    * Carga el selector de barberos con los barberos disponibles en la aplicación.
    * param: barberSelect -> elemento html del selectable de barberos.
    */
-  
+
   const barbers = await getBarbers();
 
   barbers.forEach(barber => {
@@ -31,7 +31,7 @@ const handleSelectPaymentMethod = () => {
       const selectedPaymentMethod = e.target.value;
       const rowId = e.target.dataset.id;
       const rowDate = e.target.dataset.date;
-      
+
       const turn_id_data = await getTurnById(rowId);
       const { dateParsed } = parseDate(rowDate);
 
@@ -42,9 +42,9 @@ const handleSelectPaymentMethod = () => {
 
       let precio;
       let recurrentTurn;
-      
+
       if (turn_id_data_recurrent_turn) {
-        for (const turn of turn_id_data_recurrent_turn) {   
+        for (const turn of turn_id_data_recurrent_turn) {
           if (turn.id_turno === parseInt(rowId) && turn.date === rowDate) {
             if (turn.servicio === null) {
               alert('Es necesario primero cargar el servicio.');
@@ -109,7 +109,7 @@ const handleSelectPaymentMethod = () => {
         span.style.marginTop = '1rem';
         span.style.marginBottom = '0rem';
         span.style.paddingBottom = '0rem';
-        
+
         // Remove any existing submit event listeners
         const newForm = form.cloneNode(true);
         form.parentNode.replaceChild(newForm, form);
@@ -157,12 +157,12 @@ const handleSelectPaymentMethod = () => {
             }, 2500);
 
           } else if (totalAmount === turn_id_data.precio || totalAmount === recurrentTurn.precio) {
-            
+
             const efectivo = {
               Forma_Cobro: 3,
               Pago_Efectivo: newForm.efectivo.value || 0
             }
-  
+
             const transferencia = {
               Forma_Cobro: 3,
               Pago_Transferencia: newForm.transferencia.value || 0
@@ -179,13 +179,13 @@ const handleSelectPaymentMethod = () => {
             } else {
               await putChangeService(rowId, transferencia);
             }
-  
+
             $loader.style.display = "none";
-  
+
             span.innerHTML = 'Se registró con éxito';
-            span.style.color = 'green';
+            span.style.color = '#5cb85c';
             $modalFooter.appendChild(span);
-            
+
             setTimeout(() => {
               const bootstrapModal = bootstrap.Modal.getInstance($modal._element);
               bootstrapModal.hide();
@@ -199,9 +199,9 @@ const handleSelectPaymentMethod = () => {
 
           $loader.style.display = "none";
           submitBtn.disabled = false;
-          
+
         });
-        
+
         // Clear form values
         newForm.efectivo.value = '';
         newForm.transferencia.value = '';
@@ -243,12 +243,14 @@ const handleSelectServiceChange = (cutServices, dateValue, endDateParam) => {
 
       if (turn_id_data.turns.Regular === "true") {
         const turn = {
-          servicio: selectedService.Id
+          servicio: selectedService.Id,
+          precio_unitario_servicio: selectedService.Precio
         };
         await putChangeServiceRecurrentTurns(rowId, dateParsed, turn);
       } else {
         const turn = {
-          Service: selectedService.Id
+          Service: selectedService.Id,
+          Precio_unitario_servicio: selectedService.Precio
         };
         await putChangeService(rowId, turn);
       }
@@ -269,16 +271,16 @@ const handleChangeBarber = async (table, selectable) => {
   const dataBarbers = await getBarbers();
 
   selectable.addEventListener('change', async (e) => {
-    
+
     const filteredBarber = dataBarbers.filter(barber => barber.Nombre === e.target.value);
 
     if (filteredBarber.length > 0) {
       const dataBarber = await getPaymentUsersById(filteredBarber[0].Id);
-      
+
       if (dataBarber.message) {
         table.innerHTML = `
           <tr>
-            <td scope="row" colspan="2">El barbero no tiene servicios asociados.</td>
+            <td scope="row" colspan="2">El empleado no tiene servicios asociados.</td>
           </tr>
         `;
       } else {

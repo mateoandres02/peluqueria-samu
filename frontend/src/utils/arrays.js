@@ -1,7 +1,7 @@
 import { parseDate } from "./date";
 
 const sortArrayByDate = (array) => {
-  
+
   /**
    * Ordenamos los turnos por hora (de forma ascendente).
    * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
@@ -11,7 +11,7 @@ const sortArrayByDate = (array) => {
 
     const dateA = a.date ? parseDate(a.date).completeDate : '';
     const dateB = b.date ? parseDate(b.date).completeDate : '';
-    
+
     if (dateA && dateB) {
       return new Date(dateA) - new Date(dateB);
     }
@@ -22,7 +22,7 @@ const sortArrayByDate = (array) => {
 
 
 const sortArrayByHour = (array) => {
-  
+
   /**
    * Ordenamos los turnos por hora (de forma ascendente).
    * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
@@ -31,7 +31,7 @@ const sortArrayByHour = (array) => {
   array.sort((a, b) => {
     const dateA = a.date ? parseDate(a.date).timeWithoutSeconds : '';
     const dateB = b.date ? parseDate(b.date).timeWithoutSeconds : '';
-    
+
     if (dateA && dateB) {
       return new Date(`1970-01-01T${dateA}`) - new Date(`1970-01-01T${dateB}`);
     }
@@ -41,7 +41,7 @@ const sortArrayByHour = (array) => {
 }
 
 const sortArrayByName = (array) => {
-  
+
   /**
    * Ordenamos los turnos por hora (de forma ascendente).
    * param: array -> un array que queremos ordenar de forma ascendente por hora. debe de tener un campo de hora.
@@ -51,7 +51,7 @@ const sortArrayByName = (array) => {
 
     const nameA = a.Nombre ? a.Nombre.toLowerCase() : '';
     const nameB = b.Nombre ? b.Nombre.toLowerCase() : '';
-    
+
     if (nameA < nameB) return -1;
     if (nameA > nameB) return 1;
 

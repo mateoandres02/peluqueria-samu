@@ -47,6 +47,14 @@
     margin-top: 0.8rem;
   }
 
+  .action-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    border: thin solid red;
+  }
+
   /* Cronómetro en formato columna */
   .cronometro-container {
     display: flex;

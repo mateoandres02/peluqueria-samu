@@ -17,9 +17,9 @@ const containerWorkSessionsView = `<div class="containerHistoryView containerWor
 const infoSectionWorkSessionsView = `
 <div class="present-container infoSectionHistoryTurnsView">
   <h2>Historial de sesiones de trabajo</h2>
-  <p>Visualiza un historial respecto a los dias y horas de trabajo hecho en la administración</p>
-  <div class="present-container-filters cashRegisterFilterContainer">
-    <div class="present-container-filter cashRegisterFilter">
+  <p>Marca la presencia de tu horario laboral.</p>
+  <div class="present-container-filters work-session-filters">
+    <div class="present-container-filter work-session-filter">
       <span>Filtrar por fecha</span>
       <input type="date" id="filterDateInputWorkSession" class="filter-date-cash-tracking" value="${today}"></input>
       <div class="buttons-container">
@@ -62,7 +62,7 @@ const sessionsRender = async (table, selectedDate = null) => {
       responseSessions = await getWorkSessions();
     }
 
-    if (responseSessions.message) {
+    if ( responseSessions.message ) {
       table.innerHTML = `
         <tr>
           <td colspan="5" No se encontraron sesiones para los filtros aplicados.</td>
@@ -73,9 +73,9 @@ const sessionsRender = async (table, selectedDate = null) => {
 
     const dataSessions = await responseSessions.json();
 
-    table.innerHTML = dataSessions.length
-      ? rows(dataSessions)
-      : '<tr><td colspan="5">No se encontraron sesiones para los filtros aplicados.</td></tr>';
+    table.innerHTML = dataSessions.length 
+    ? rows(dataSessions)
+    : '<tr><td colspan="5">No se encontraron sesiones para los filtros aplicados.</td></tr>';
 
   } catch (error) {
     alert("Error al renderizar el listado de sesiones");
@@ -91,9 +91,9 @@ const rows = (dataSessions) => {
 
   dataSessions.forEach((session) => {
     // const dateCreate = session.FechaSesion ? parseDate(session.FechaSesion) : {};
-    const dateFormatted = session.FechaSesion ? formatOnlyDate(session.FechaSesion) : "-";
-    const timeStart = session.HorarioInicio ? formatOnlyTime(session.HorarioInicio) : "-";
-    const timeEnd = session.HorarioFin ? formatOnlyTime(session.HorarioFin) : "-";
+    const dateFormatted = session.FechaSesion ? formatOnlyDate(session.FechaSesion): "-";
+    const timeStart = session.HorarioInicio ? formatOnlyTime(session.HorarioInicio): "-";
+    const timeEnd = session.HorarioFin ? formatOnlyTime(session.HorarioFin): "-";
     // console.log("SESSION", session)
     row += `
       <tr key=${session.Id}>
@@ -111,7 +111,7 @@ const rows = (dataSessions) => {
 
 const applyDateFilter = async (tableBodyWorkSessions, dateInput) => {
   const selectedDate = dateInput ? dateInput.value : null;
-
+  
   await sessionsRender(tableWorkSessions, selectedDate)
 }
 
@@ -120,7 +120,7 @@ const setupFilterSessions = (tableBody, dateInput) => {
     await applyDateFilter(tableBody, dateInput);
   });
 }
-
+ 
 const addDateFilterListenerWorkSessions = async (table, dateInput) => {
 
   dateInput.removeEventListener('change', handleDateChange);
@@ -182,7 +182,7 @@ const handleStartButton = (button) => {
       // Guardar en localStorage si quieres persistirlo
       localStorage.setItem("fechaInicio", fechaInicio);
       localStorage.setItem("horarioInicio", horarioInicio);
-
+      
       postWorkSession(fechaInicio, horarioInicio);
     }
 
@@ -213,7 +213,7 @@ const handleEndButton = (button) => {
 
       // console.log(`Tiempo trabajado: ${horas}h ${minutos}m ${segundos}s`);
       // console.log(`Horario de finalizacion de la sesion: ${horarioFin}`)
-
+      
       // const cantHoras = `${horas}h ${minutos}m`
       const cantHoras = `${horas}h ${minutos}m`
 

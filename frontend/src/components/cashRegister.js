@@ -192,6 +192,8 @@ const rows = (dataTurns, dataRecurrentTurns, cutServices, endDateParam) => {
       let hourTurn = user.date ? parseDate(user.date) : '';
       let isRecurrent = user.turns.Regular === "true" ? 'Si' : 'No';
 
+      console.log(user)
+
       if (user.exdate != 1) {
         row += `
           <tr key=${user.turns.Id}>

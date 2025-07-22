@@ -44,13 +44,19 @@ const handleSelectPaymentMethod = () => {
       let recurrentTurn;
 
       if (turn_id_data_recurrent_turn) {
+
         for (const turn of turn_id_data_recurrent_turn) {
           if (turn.id_turno === parseInt(rowId) && turn.date === rowDate) {
             if (turn.servicio === null) {
               alert('Es necesario primero cargar el servicio.');
               return;
             }
-            precio = turn.precio;
+            // if (turn.precio !== turn.precio_unitario_servicio) {
+            //   console.log('entro la balubi')
+            //   alert('El precio del servicio se actualizó y no coincide con el anterior precio. No se puede actualizar la forma de pago.');
+            //   return;
+            // }
+            precio = turn.precio_unitario_servicio;
             recurrentTurn = turn;
             break;
           }
@@ -63,10 +69,11 @@ const handleSelectPaymentMethod = () => {
       }
 
       if (selectedPaymentMethod === "Efectivo") {
+        // acá tendría que ser la validación en caso de que haya un problema
 
         const turn = {
           Forma_Cobro: 1,
-          Pago_Efectivo: turn_id_data.precio || precio,
+          Pago_Efectivo: turn_id_data.precio_unitario_servicio || precio,
           Pago_Transferencia: 0
         };
 
@@ -77,11 +84,12 @@ const handleSelectPaymentMethod = () => {
         }
 
       } else if (selectedPaymentMethod === "Transferencia") {
+        // acá tendría que ser la validación en caso de que haya un problema
 
         const turn = {
           Forma_Cobro: 2,
           Pago_Efectivo: 0,
-          Pago_Transferencia: turn_id_data.precio || precio
+          Pago_Transferencia: turn_id_data.precio_unitario_servicio || precio
         };
 
         if (turn_id_data.turns.Regular === "true") {
@@ -91,6 +99,8 @@ const handleSelectPaymentMethod = () => {
         }
 
       } else if (selectedPaymentMethod === "Mixto") {
+        // acá tendría que ser la validación en caso de que haya un problema
+
         const $modal = new bootstrap.Modal(document.getElementById('modalMethodPayment'));
         $modal.show()
 
@@ -141,7 +151,7 @@ const handleSelectPaymentMethod = () => {
 
           const totalAmount = parseInt(newForm.efectivo.value) + parseInt(newForm.transferencia.value);
 
-          if ((turn_id_data.turns.Regular === "false" && (totalAmount > turn_id_data.precio || totalAmount < turn_id_data.precio)) || (turn_id_data.turns.Regular === "true" && (totalAmount > recurrentTurn.precio || totalAmount < recurrentTurn.precio))) {
+          if ((turn_id_data.turns.Regular === "false" && (totalAmount > turn_id_data.precio_unitario_servicio || totalAmount < turn_id_data.precio_unitario_servicio)) || (turn_id_data.turns.Regular === "true" && (totalAmount > recurrentTurn.precio_unitario_servicio || totalAmount < recurrentTurn.precio_unitario_servicio))) {
             $loader.style.display = "none";
 
             span.innerHTML = 'El monto ingresado no coincide con el precio del servicio.';
@@ -156,7 +166,7 @@ const handleSelectPaymentMethod = () => {
               }
             }, 2500);
 
-          } else if (totalAmount === turn_id_data.precio || totalAmount === recurrentTurn.precio) {
+          } else if (totalAmount === turn_id_data.precio_unitario_servicio || totalAmount === recurrentTurn.precio_unitario_servicio) {
 
             const efectivo = {
               Forma_Cobro: 3,

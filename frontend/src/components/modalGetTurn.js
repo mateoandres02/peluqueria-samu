@@ -81,7 +81,7 @@ const actionBtnWsp = (name, day, startTime, tel, $btnWsp) => {
   $btnWsp.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos!`;
+    const msg = `¡Hola ${name}! Espero que te encuentres muy bien. Solo quería recordarte que tenés un turno agendado para el día ${day} a las ${startTime} hs. ¡Te esperamos! IMPORTANTE❗❗ ahora cambiamos de ubicación y estamos en Nicolás Isasmendi 1995`;
     let wspUrl = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`
 
     $btnWsp.href = wspUrl;
